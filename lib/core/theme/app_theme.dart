@@ -100,7 +100,7 @@ abstract class AppTheme {
     // ── Input ─────────────────────────────────────────
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
-      fillColor: AppColors.backgroundSoft,
+      fillColor: AppColors.surface,
       hintStyle: AppTypography.bodyMedium,
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
