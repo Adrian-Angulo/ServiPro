@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:servi_pro/core/theme/app_colors.dart';
 import 'package:servi_pro/core/theme/app_typography.dart';
 import 'package:servi_pro/features/auth/providers/auth_provider.dart';
+import 'package:servi_pro/features/auth/screens/login_screen.dart';
 
 class RegisterFooter extends ConsumerWidget {
   final VoidCallback onRegister;
@@ -49,7 +50,10 @@ class RegisterFooter extends ConsumerWidget {
               style: AppTypography.bodySmall.copyWith(color: AppColors.grey700),
             ),
             GestureDetector(
-              onTap: () => Navigator.of(context).pop(),
+              onTap: () => Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(builder: (_) => const LoginScreen()),
+                (route) => false,
+              ),
               child: Text(
                 'Inicia sesión',
                 style: AppTypography.bodySmall.copyWith(

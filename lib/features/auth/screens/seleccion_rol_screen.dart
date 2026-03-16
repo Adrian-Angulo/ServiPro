@@ -35,8 +35,8 @@ class SeleccionRolScreen extends ConsumerWidget {
               ),
               const SizedBox(height: AppSpacing.xxl),
 
-              // TÃ­tulo
-              Text('Â¿CÃ³mo usarÃ¡s la app?', style: AppTypography.headlineMedium),
+              // Titulo
+              Text('¿Cómo usarás la app?', style: AppTypography.headlineMedium),
               const SizedBox(height: AppSpacing.sm),
               Text(
                 'Selecciona tu perfil para personalizar tu experiencia en Pasto.',
@@ -51,7 +51,7 @@ class SeleccionRolScreen extends ConsumerWidget {
                 icon: Icons.home_rounded,
                 iconBgColor: AppColors.primaryOverlay10,
                 iconColor: AppColors.primary,
-                titulo: 'Necesito un servicio',
+                titulo: 'Soy Usuario',
                 descripcion: 'Busco expertos para reparaciones o tareas en mi hogar.',
                 seleccionado: rolSeleccionado == TipoRol.cliente,
                 onTap: () => ref.read(rolSeleccionadoProvider.notifier).state = TipoRol.cliente,
@@ -80,11 +80,17 @@ class SeleccionRolScreen extends ConsumerWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (_) => RegistroTrabajadorScreen(),
+                              builder: (_) => const RegistroTrabajadorScreen(),
+                            ),
+                          );
+                        } else {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const RegisterScreen(),
                             ),
                           );
                         }
-                        // TODO: navegar a registro cliente
                       }
                     : null,
               ),

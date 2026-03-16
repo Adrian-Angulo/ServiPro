@@ -50,12 +50,18 @@ class RegistroTrabajadorBody extends StatelessWidget {
   final GlobalKey<FormState> formKey;
   final RegistroTrabajadorForm form;
   final VoidCallback onChanged;
+  final bool isValid;
+  final VoidCallback onCrearCuenta;
+  final VoidCallback onIniciarSesion;
 
   const RegistroTrabajadorBody({
     super.key,
     required this.formKey,
     required this.form,
     required this.onChanged,
+    required this.isValid,
+    required this.onCrearCuenta,
+    required this.onIniciarSesion,
   });
 
   @override
@@ -176,6 +182,49 @@ class RegistroTrabajadorBody extends StatelessWidget {
               onChanged: onChanged,
               maxLines: 5,
               required: false,
+            ),
+            const SizedBox(height: AppSpacing.xl),
+
+            // Botón Crear cuenta
+            SizedBox(
+              width: double.infinity,
+              height: 54,
+              child: ElevatedButton(
+                onPressed: isValid ? onCrearCuenta : null,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primary,
+                  disabledBackgroundColor: AppColors.primaryOverlay50,
+                  foregroundColor: AppColors.onPrimary,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(32)),
+                  elevation: 0,
+                ),
+                child: Text(
+                  'Crear cuenta',
+                  style: AppTypography.labelLarge
+                      .copyWith(color: AppColors.onPrimary, fontSize: 16),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  '¿Ya tienes una cuenta? ',
+                  style: AppTypography.bodySmall.copyWith(color: AppColors.grey700),
+                ),
+                GestureDetector(
+                  onTap: onIniciarSesion,
+                  child: Text(
+                    'Inicia sesión',
+                    style: AppTypography.bodySmall.copyWith(
+                      color: AppColors.accent,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: AppSpacing.lg),
           ],

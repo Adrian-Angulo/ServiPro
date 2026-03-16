@@ -4,7 +4,8 @@ import 'package:servi_pro/core/theme/app_colors.dart';
 import 'package:servi_pro/core/theme/app_spacing.dart';
 import 'package:servi_pro/core/theme/app_typography.dart';
 import 'package:servi_pro/features/auth/providers/registro_trabajador_provider.dart';
-import 'package:servi_pro/features/auth/widgets/register_form.dart';
+import 'package:servi_pro/features/auth/widgets/register_formTrabajador.dart';
+import 'package:servi_pro/features/auth/screens/login_screen.dart';
 import 'package:servi_pro/features/auth/widgets/auth_widgets.dart';
 
 class RegistroTrabajadorScreen extends ConsumerStatefulWidget {
@@ -39,6 +40,10 @@ class _RegistroTrabajadorScreenState
   void _crearCuenta() {
     if (_formKey.currentState!.validate()) {
       // TODO: llamar al repositorio de auth
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (_) => const LoginScreen()),
+        (route) => false,
+      );
     }
   }
 
@@ -66,27 +71,18 @@ class _RegistroTrabajadorScreenState
               ),
             ),
 
-            // Formulario scrollable
+            // Formulario scrollable con botón al final
             Expanded(
               child: RegistroTrabajadorBody(
                 formKey: _formKey,
                 form: _form,
                 onChanged: _onFormChanged,
-              ),
-            ),
-
-            // Boton Crear mi cuenta
-            Padding(
-              padding: const EdgeInsets.fromLTRB(
-                AppSpacing.screenHorizontal,
-                AppSpacing.md,
-                AppSpacing.screenHorizontal,
-                AppSpacing.xl,
-              ),
-              child: AuthPrimaryButton(
-                label: 'Crear mi cuenta',
-                trailingIcon: Icons.arrow_forward_rounded,
-                onPressed: state.isValid ? _crearCuenta : null,
+                isValid: state.isValid,
+                onCrearCuenta: _crearCuenta,
+                onIniciarSesion: () => Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (_) => const LoginScreen()),
+                  (route) => false,
+                ),
               ),
             ),
           ],

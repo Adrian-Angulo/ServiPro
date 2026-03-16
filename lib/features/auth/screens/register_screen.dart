@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:servi_pro/core/theme/app_colors.dart';
 import 'package:servi_pro/core/theme/app_typography.dart';
 import 'package:servi_pro/features/auth/providers/auth_provider.dart';
+import 'package:servi_pro/features/auth/screens/login_screen.dart';
 import 'package:servi_pro/features/auth/widgets/register_footer.dart';
 import 'package:servi_pro/features/auth/widgets/register_form.dart';
 import 'package:servi_pro/features/auth/widgets/register_header.dart';
@@ -39,7 +40,10 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           _confirmController.text,
         );
     if (success && mounted) {
-      // TODO: navegar a home
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (_) => const LoginScreen()),
+        (route) => false,
+      );
     }
   }
 

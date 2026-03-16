@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:servi_pro/core/theme/app_colors.dart';
 import 'package:servi_pro/core/theme/app_typography.dart';
-import 'package:servi_pro/features/auth/screens/register_screen.dart';
+import 'package:servi_pro/features/auth/screens/seleccion_rol_screen.dart';
 
 class LoginFooter extends StatelessWidget {
   const LoginFooter({super.key});
@@ -35,7 +35,7 @@ class LoginFooter extends StatelessWidget {
             Text('¿No tienes cuenta? ', style: AppTypography.bodySmall.copyWith(color: AppColors.grey700)),
             GestureDetector(
               onTap: () => Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const RegisterScreen()),
+                MaterialPageRoute(builder: (_) => const SeleccionRolScreen()),
               ),
               child: Text(
                 'Regístrate',
