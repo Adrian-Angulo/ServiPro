@@ -15,7 +15,12 @@ class LoginFooter extends StatelessWidget {
             const Expanded(child: Divider()),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: Text('O continúa con', style: AppTypography.bodySmall.copyWith(color: AppColors.grey500)),
+              child: Text(
+                'O continúa con',
+                style: AppTypography.bodySmall.copyWith(
+                  color: AppColors.grey500,
+                ),
+              ),
             ),
             const Expanded(child: Divider()),
           ],
@@ -23,23 +28,29 @@ class LoginFooter extends StatelessWidget {
         const SizedBox(height: 20),
         Row(
           children: [
-            Expanded(child: _SocialButton(label: '🇬', onPressed: () {})),
-            const SizedBox(width: 16),
-            Expanded(child: _SocialButton(label: '🍎', onPressed: () {})),
+            Expanded(
+              child: _SocialButton(label: 'Google', onPressed: () {}),
+            ),
           ],
         ),
         const SizedBox(height: 28),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('¿No tienes cuenta? ', style: AppTypography.bodySmall.copyWith(color: AppColors.grey700)),
+            Text(
+              '¿No tienes cuenta? ',
+              style: AppTypography.bodySmall.copyWith(color: AppColors.grey700),
+            ),
             GestureDetector(
               onTap: () => Navigator.of(context).push(
                 MaterialPageRoute(builder: (_) => const SeleccionRolScreen()),
               ),
               child: Text(
                 'Regístrate',
-                style: AppTypography.bodySmall.copyWith(color: AppColors.accent, fontWeight: FontWeight.w700),
+                style: AppTypography.bodySmall.copyWith(
+                  color: AppColors.accent,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
             ),
           ],
@@ -48,11 +59,18 @@ class LoginFooter extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.location_on_rounded, size: 14, color: AppColors.accent),
+            const Icon(
+              Icons.location_on_rounded,
+              size: 14,
+              color: AppColors.accent,
+            ),
             const SizedBox(width: 4),
             Text(
               'PASTO, NARIÑO',
-              style: AppTypography.labelSmall.copyWith(color: AppColors.grey500, letterSpacing: 1.2),
+              style: AppTypography.labelSmall.copyWith(
+                color: AppColors.grey500,
+                letterSpacing: 1.2,
+              ),
             ),
           ],
         ),

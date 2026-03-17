@@ -26,13 +26,6 @@ class SeleccionRolScreen extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Top bar: back + stepper
-              Row(
-                children: [
-                  const AuthBackButton(),
-                  const SizedBox(width: AppSpacing.lg),
-                  AuthStepIndicator(currentStep: 0, totalSteps: 2),
-                ],
-              ),
               const SizedBox(height: AppSpacing.xxl),
 
               // Titulo
@@ -52,9 +45,11 @@ class SeleccionRolScreen extends ConsumerWidget {
                 iconBgColor: AppColors.primaryOverlay10,
                 iconColor: AppColors.primary,
                 titulo: 'Soy Usuario',
-                descripcion: 'Busco expertos para reparaciones o tareas en mi hogar.',
+                descripcion:
+                    'Busco expertos para reparaciones o tareas en mi hogar.',
                 seleccionado: rolSeleccionado == TipoRol.cliente,
-                onTap: () => ref.read(rolSeleccionadoProvider.notifier).state = TipoRol.cliente,
+                onTap: () => ref.read(rolSeleccionadoProvider.notifier).state =
+                    TipoRol.cliente,
               ),
               const SizedBox(height: AppSpacing.lg),
 
@@ -64,9 +59,11 @@ class SeleccionRolScreen extends ConsumerWidget {
                 iconBgColor: AppColors.accentOverlay10,
                 iconColor: AppColors.accent,
                 titulo: 'Soy Trabajador',
-                descripcion: 'Quiero ofrecer mis servicios y encontrar nuevos clientes.',
+                descripcion:
+                    'Quiero ofrecer mis servicios y encontrar nuevos clientes.',
                 seleccionado: rolSeleccionado == TipoRol.trabajador,
-                onTap: () => ref.read(rolSeleccionadoProvider.notifier).state = TipoRol.trabajador,
+                onTap: () => ref.read(rolSeleccionadoProvider.notifier).state =
+                    TipoRol.trabajador,
               ),
 
               const Spacer(),
@@ -99,7 +96,7 @@ class SeleccionRolScreen extends ConsumerWidget {
               // Ciudad
               Center(
                 child: Text(
-                  'PASTO, NARIÃ‘O',
+                  'PASTO, NARIÑO',
                   style: AppTypography.labelSmall.copyWith(
                     color: AppColors.grey500,
                     letterSpacing: 1.5,
@@ -114,8 +111,6 @@ class SeleccionRolScreen extends ConsumerWidget {
     );
   }
 }
-
-
 
 class _RolCard extends StatelessWidget {
   final IconData icon;
@@ -181,7 +176,9 @@ class _RolCard extends StatelessWidget {
                   const SizedBox(height: AppSpacing.xs),
                   Text(
                     descripcion,
-                    style: AppTypography.bodySmall.copyWith(color: AppColors.grey500),
+                    style: AppTypography.bodySmall.copyWith(
+                      color: AppColors.grey500,
+                    ),
                   ),
                 ],
               ),

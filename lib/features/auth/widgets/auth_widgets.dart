@@ -14,11 +14,13 @@ class AuthBackButton extends StatelessWidget {
         width: 40,
         height: 40,
         decoration: BoxDecoration(
-          color: AppColors.grey100,
           borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
         ),
-        child: const Icon(Icons.arrow_back_ios_new_rounded,
-            size: AppSpacing.iconSm, color: AppColors.grey900),
+        child: const Icon(
+          Icons.arrow_back_ios_new_rounded,
+          size: AppSpacing.iconSm,
+          color: AppColors.grey900,
+        ),
       ),
     );
   }
@@ -84,10 +86,19 @@ class AuthPrimaryButton extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(label, style: AppTypography.labelLarge.copyWith(color: AppColors.onPrimary)),
+            Text(
+              label,
+              style: AppTypography.labelLarge.copyWith(
+                color: AppColors.onPrimary,
+              ),
+            ),
             if (trailingIcon != null) ...[
               const SizedBox(width: AppSpacing.sm),
-              Icon(trailingIcon, size: AppSpacing.iconSm, color: AppColors.onPrimary),
+              Icon(
+                trailingIcon,
+                size: AppSpacing.iconSm,
+                color: AppColors.onPrimary,
+              ),
             ],
           ],
         ),
