@@ -1,71 +1,102 @@
-import 'package:flutter/foundation.dart';
-import 'package:flutter/widgets.dart';
-import 'package:servi_pro/data/models/usuario.dart';
-import 'package:servi_pro/features/auth/domain/repositories/auth_repository.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:servi_pro/features/auth/data/models/usuario.dart';
+import 'package:servi_pro/features/auth/presentation/providers/auth_provider.dart';
 
-class AuthNotifier extends ChangeNotifier {
-  final AuthRepository _repository;
-  AuthNotifier(this._repository);
-  Usuario? user;
-  bool isLoading = false;
-  String? error;
+class AuthNotifier extends AsyncNotifier<Usuario?> {
+  @override
+  Future<Usuario?> build() async {
+    final repository = ref.read(authRepositoryProvider);
+    return await repository.getCurrentUser();
+  }
 
-
-
-  Future<void> login({required String email, required String password}) async {
-    isLoading = true;
-    error = null;
-    notifyListeners();
+  Future<bool> login({required String email, required String password}) async {
+    state = const AsyncValue.loading();
 
     try {
-      user = await _repository.login(email: email, password: password);
-    } catch (e) {
-      error = _parseError(e.toString());
-    } finally {
-      isLoading = false;
-      notifyListeners();
+      final repository = ref.read(authRepositoryProvider);
+      final user = await repository.login(email: email, password: password);
+      state = AsyncValue.data(user);
+      return true;
+    } catch (e, stack) {
+      state = AsyncValue.error(_parseError(e.toString()), stack);
+      return false;
     }
   }
 
-  Future<void> registerClient({
-    required String id,
+  Future<bool> registerCliente({
     required String email,
     required String password,
     required String nombre,
     required String edad,
     required String telefono,
     required String cedula,
-    required Rol rol,
     required String ciudad,
   }) async {
-    isLoading = true;
-    error = null;
-    notifyListeners();
+    state = const AsyncValue.loading();
 
     try {
-      await _repository.registerCliente(
-        id: id,
+      final repository = ref.read(authRepositoryProvider);
+      await repository.registerCliente(
+        id: '',
         email: email,
         password: password,
         nombre: nombre,
         edad: edad,
         telefono: telefono,
         cedula: cedula,
-        rol: rol,
+        rol: Rol.cliente,
         ciudad: ciudad,
       );
-    } catch (e) {
-      error = _parseError(e.toString());
-    } finally {
-      isLoading = false;
-      notifyListeners();
+
+      // Auto login después del registro
+      final user = await repository.login(email: email, password: password);
+      state = AsyncValue.data(user);
+      return true;
+    } catch (e, stack) {
+      state = AsyncValue.error(_parseError(e.toString()), stack);
+      return false;
+    }
+  }
+
+  Future<bool> registerTrabajador({
+    required String email,
+    required String password,
+    required String nombreCompleto,
+    required int edad,
+    required String ciudad,
+    required String celular,
+    required String cedula,
+    required String sobreMi,
+  }) async {
+    state = const AsyncValue.loading();
+
+    try {
+      final repository = ref.read(authRepositoryProvider);
+      await repository.registerTrabajador(
+        email: email,
+        password: password,
+        nombreCompleto: nombreCompleto,
+        edad: edad,
+        ciudad: ciudad,
+        celular: celular,
+        cedula: cedula,
+        sobreMi: sobreMi,
+      );
+
+      // Auto login después del registro
+      final user = await repository.login(email: email, password: password);
+      state = AsyncValue.data(user);
+      return true;
+    } catch (e, stack) {
+      state = AsyncValue.error(_parseError(e.toString()), stack);
+      return false;
     }
   }
 
   Future<void> logout() async {
-    await _repository.logout();
-    user = null;
-    notifyListeners();
+    final repository = ref.read(authRepositoryProvider);
+    await repository.logout();
+    state = const AsyncValue.data(null);
   }
 
   String _parseError(String error) {
@@ -81,6 +112,15 @@ class AuthNotifier extends ChangeNotifier {
     }
     if (error.contains('network-request-failed')) {
       return 'Sin conexión a internet';
+    }
+    if (error.contains('email-already-in-use')) {
+      return 'Este correo ya está registrado';
+    }
+    if (error.contains('weak-password')) {
+      return 'La contraseña debe tener al menos 6 caracteres';
+    }
+    if (error.contains('invalid-email')) {
+      return 'Correo electrónico inválido';
     }
     return 'Ocurrió un error. Intenta de nuevo';
   }

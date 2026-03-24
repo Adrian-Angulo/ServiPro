@@ -1,4 +1,4 @@
-import 'package:servi_pro/data/models/usuario.dart';
+import 'package:servi_pro/features/auth/data/models/usuario.dart';
 
 class Cliente extends Usuario {
   final String nombre;
@@ -28,7 +28,7 @@ class Cliente extends Usuario {
       'ciudad': ciudad,
       'cedula': cedula,
       'telefono': telefono,
-      'rol': rol,
+      'rol': rol.name,
     };
   }
 

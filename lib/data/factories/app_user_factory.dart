@@ -1,6 +1,6 @@
-import 'package:servi_pro/data/models/cliente.dart';
-import 'package:servi_pro/data/models/trabajador.dart';
-import 'package:servi_pro/data/models/usuario.dart';
+import 'package:servi_pro/features/auth/data/models/cliente.dart';
+import 'package:servi_pro/features/auth/data/models/trabajador.dart';
+import 'package:servi_pro/features/auth/data/models/usuario.dart';
 
 class AppUserFactory {
   static Usuario fromMap(Map<String, dynamic> map) {

@@ -1,8 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:servi_pro/data/factories/app_user_factory.dart';
-import 'package:servi_pro/data/models/cliente.dart';
-import 'package:servi_pro/data/models/usuario.dart';
+import 'package:servi_pro/features/auth/data/models/cliente.dart';
+import 'package:servi_pro/features/auth/data/models/trabajador.dart';
+import 'package:servi_pro/features/auth/data/models/usuario.dart';
 import 'package:servi_pro/features/auth/domain/repositories/auth_repository.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
@@ -13,7 +14,7 @@ class AuthRepositoryImpl implements AuthRepository {
 
   Stream<User?> get authStateChanges => _firebaseAuth.authStateChanges();
 
-  //Registro----------------------------------------
+  //Registro Cliente----------------------------------------
   @override
   Future<void> registerCliente({
     required String id,
@@ -26,26 +27,81 @@ class AuthRepositoryImpl implements AuthRepository {
     required Rol rol,
     required String ciudad,
   }) async {
-    final credential = await _firebaseAuth.createUserWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
+    try {
+      final credential = await _firebaseAuth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
 
-    final uid = credential.user!.uid;
+      final uid = credential.user!.uid;
 
-    final user = Cliente(
-      id: uid,
-      email: email,
-      nombre: nombre,
-      rol: Rol.cliente,
-      edad: edad,
-      ciudad: ciudad,
-      contrasena: '',
-      cedula: cedula,
-      telefono: telefono,
-    );
+      final user = Cliente(
+        id: uid,
+        email: email,
+        nombre: nombre,
+        rol: Rol.cliente,
+        edad: edad,
+        ciudad: ciudad,
+        contrasena: '',
+        cedula: cedula,
+        telefono: telefono,
+      );
 
-    await _firestore.collection('users').doc(uid).set(user.toMap());
+      final userData = user.toMap();
+      print('Guardando datos del cliente en Firestore: $userData');
+
+      await _firestore.collection('users').doc(uid).set(userData);
+
+      print('Cliente registrado exitosamente con UID: $uid');
+    } catch (e) {
+      print('Error al registrar cliente: $e');
+      rethrow;
+    }
+  }
+
+  //Registro Trabajador----------------------------------------
+  @override
+  Future<void> registerTrabajador({
+    required String email,
+    required String password,
+    required String nombreCompleto,
+    required int edad,
+    required String ciudad,
+    required String celular,
+    required String cedula,
+    required String sobreMi,
+  }) async {
+    try {
+      final credential = await _firebaseAuth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      final uid = credential.user!.uid;
+
+      final user = Trabajador(
+        id: uid,
+        email: email,
+        contrasena: '',
+        nombreCompleto: nombreCompleto,
+        edad: edad,
+        ciudad: ciudad,
+        celular: celular,
+        cedula: cedula,
+        sobreMi: sobreMi,
+        rol: Rol.trabajador,
+      );
+
+      final userData = user.toMap();
+      print('Guardando datos del trabajador en Firestore: $userData');
+
+      await _firestore.collection('users').doc(uid).set(userData);
+
+      print('Trabajador registrado exitosamente con UID: $uid');
+    } catch (e) {
+      print('Error al registrar trabajador: $e');
+      rethrow;
+    }
   }
 
   //Login------------------------------------------------

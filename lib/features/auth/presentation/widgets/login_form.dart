@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:servi_pro/core/theme/app_colors.dart';
 import 'package:servi_pro/core/theme/app_typography.dart';
+import 'package:servi_pro/features/auth/data/models/usuario.dart';
 import 'package:servi_pro/features/auth/presentation/providers/auth_provider.dart';
+import 'package:servi_pro/features/client/home/screens/client_home_screen.dart';
+import 'package:servi_pro/features/worket/home/screens/worker_home_screen.dart';
 
 class LoginForm extends ConsumerStatefulWidget {
   const LoginForm({super.key});
@@ -14,7 +17,8 @@ class LoginForm extends ConsumerStatefulWidget {
 class _LoginFormState extends ConsumerState<LoginForm> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
- 
+  bool _obscurePassword = true;
+
   @override
   void dispose() {
     _emailController.dispose();
@@ -23,18 +27,40 @@ class _LoginFormState extends ConsumerState<LoginForm> {
   }
 
   Future<void> _login() async {
+    if (_emailController.text.trim().isEmpty ||
+        _passwordController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Por favor completa todos los campos')),
+      );
+      return;
+    }
+
     final success = await ref
         .read(authNotifierProvider.notifier)
         .login(
           email: _emailController.text.trim(),
           password: _passwordController.text,
         );
+
+    if (success && mounted) {
+      final user = ref.read(authNotifierProvider).value;
+      if (user != null) {
+        if (user.rol == Rol.cliente) {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (_) => const ClientHomeScreen()),
+          );
+        } else {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (_) => const WorkerHomeScreen()),
+          );
+        }
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(authNotifierProvider);
-    final notifier = ref.read(authNotifierProvider.notifier);
+    final authState = ref.watch(authNotifierProvider);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -44,9 +70,9 @@ class _LoginFormState extends ConsumerState<LoginForm> {
         TextField(
           controller: _emailController,
           keyboardType: TextInputType.emailAddress,
-          decoration: InputDecoration(
+          decoration: const InputDecoration(
             hintText: 'ServiPro@correo.com',
-            prefixIcon: const Icon(
+            prefixIcon: Icon(
               Icons.mail_outline_rounded,
               color: AppColors.grey500,
             ),
@@ -57,7 +83,7 @@ class _LoginFormState extends ConsumerState<LoginForm> {
         const SizedBox(height: 8),
         TextField(
           controller: _passwordController,
-          obscureText: true /* state.obscurePassword */,
+          obscureText: _obscurePassword,
           decoration: InputDecoration(
             hintText: '••••••••',
             prefixIcon: const Icon(
@@ -66,11 +92,16 @@ class _LoginFormState extends ConsumerState<LoginForm> {
             ),
             suffixIcon: IconButton(
               icon: Icon(
-                Icons.visibility_off_outlined,
-                /* state.obscurePassword ? Icons.visibility_off_outlined : Icons.visibility_outlined, */
+                _obscurePassword
+                    ? Icons.visibility_off_outlined
+                    : Icons.visibility_outlined,
                 color: AppColors.grey500,
               ),
-              onPressed: () {} /* notifier.togglePassword */,
+              onPressed: () {
+                setState(() {
+                  _obscurePassword = !_obscurePassword;
+                });
+              },
             ),
           ),
         ),
@@ -90,19 +121,19 @@ class _LoginFormState extends ConsumerState<LoginForm> {
             ),
           ),
         ),
-        /* if (state.error != null) ...[
+        if (authState.hasError) ...[
           const SizedBox(height: 8),
           Text(
-            state.error!,
+            authState.error.toString(),
             style: AppTypography.bodySmall.copyWith(color: AppColors.error),
           ),
-        ], */
+        ],
         const SizedBox(height: 24),
         SizedBox(
           width: double.infinity,
           height: 54,
           child: ElevatedButton(
-            onPressed: null /* state.isLoading ? null : _login */,
+            onPressed: authState.isLoading ? null : _login,
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primary,
               foregroundColor: AppColors.onPrimary,
@@ -111,19 +142,22 @@ class _LoginFormState extends ConsumerState<LoginForm> {
               ),
               elevation: 0,
             ),
-            child: /* state.isLoading
+            child: authState.isLoading
                 ? const SizedBox(
                     height: 22,
                     width: 22,
-                    child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2.5),
+                    child: CircularProgressIndicator(
+                      color: Colors.white,
+                      strokeWidth: 2.5,
+                    ),
                   )
-                :  */ Text(
-              'Iniciar sesión',
-              style: AppTypography.labelLarge.copyWith(
-                color: AppColors.onPrimary,
-                fontSize: 16,
-              ),
-            ),
+                : Text(
+                    'Iniciar sesión',
+                    style: AppTypography.labelLarge.copyWith(
+                      color: AppColors.onPrimary,
+                      fontSize: 16,
+                    ),
+                  ),
           ),
         ),
       ],

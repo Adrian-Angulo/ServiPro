@@ -1,9 +1,6 @@
-
-import 'package:servi_pro/data/models/usuario.dart';
-
+import 'package:servi_pro/features/auth/data/models/usuario.dart';
 
 abstract class AuthRepository {
-  
   Future<void> registerCliente({
     required String id,
     required String email,
@@ -14,6 +11,17 @@ abstract class AuthRepository {
     required String cedula,
     required Rol rol,
     required String ciudad,
+  });
+
+  Future<void> registerTrabajador({
+    required String email,
+    required String password,
+    required String nombreCompleto,
+    required int edad,
+    required String ciudad,
+    required String celular,
+    required String cedula,
+    required String sobreMi,
   });
 
   Future<Usuario> login({required String email, required String password});

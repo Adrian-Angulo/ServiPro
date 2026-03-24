@@ -1,4 +1,4 @@
-import 'package:servi_pro/data/models/usuario.dart';
+import 'package:servi_pro/features/auth/data/models/usuario.dart';
 import 'package:servi_pro/features/auth/domain/repositories/auth_repository.dart';
 
 class LoginUseCase {
