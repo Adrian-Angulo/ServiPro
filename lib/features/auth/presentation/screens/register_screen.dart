@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:servi_pro/core/theme/app_colors.dart';
 import 'package:servi_pro/core/theme/app_typography.dart';
-import 'package:servi_pro/features/auth/providers/auth_provider.dart';
-import 'package:servi_pro/features/auth/screens/login_screen.dart';
-import 'package:servi_pro/features/auth/widgets/register_footer.dart';
-import 'package:servi_pro/features/auth/widgets/register_form.dart';
-import 'package:servi_pro/features/auth/widgets/register_header.dart';
+
+
+import 'package:servi_pro/features/auth/presentation/widgets/register_footer.dart';
+import 'package:servi_pro/features/auth/presentation/widgets/register_form.dart';
+import 'package:servi_pro/features/auth/presentation/widgets/register_header.dart';
 
 class RegisterScreen extends ConsumerStatefulWidget {
   const RegisterScreen({super.key});
@@ -32,7 +32,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     super.dispose();
   }
 
-  Future<void> _onRegister() async {
+  /*   Future<void> _onRegister() async {
     final success = await ref.read(registerProvider.notifier).register(
           _emailController.text.trim(),
           _passwordController.text,
@@ -46,7 +46,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       );
     }
   }
-
+ */
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -90,7 +90,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       confirmController: _confirmController,
                     ),
                     const SizedBox(height: 24),
-                    RegisterFooter(onRegister: _onRegister),
+                    RegisterFooter(onRegister: () {}),
                     const SizedBox(height: 32),
                   ],
                 ),

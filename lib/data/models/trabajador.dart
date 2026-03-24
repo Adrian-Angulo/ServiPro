@@ -9,6 +9,7 @@ class Trabajador extends Usuario {
   String sobreMi;
 
   Trabajador({
+    required super.id,
     required super.email,
     required super.contrasena,
     required this.nombreCompleto,
@@ -17,10 +18,12 @@ class Trabajador extends Usuario {
     required this.celular,
     required this.cedula,
     required this.sobreMi,
+    required super.rol,
   });
 
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toMap() {
     return {
+      'id': id,
       'email': email,
       'contrasena': contrasena,
       'nombreCompleto': nombreCompleto,
@@ -29,19 +32,22 @@ class Trabajador extends Usuario {
       'celular': celular,
       'cedula': cedula,
       'sobreMi': sobreMi,
+      'rol': rol.name
     };
   }
 
-  factory Trabajador.fromJson(Map<String, dynamic> json) {
+  factory Trabajador.fromMap(Map<String, dynamic> map) {
     return Trabajador(
-      email: json['email'],
-      contrasena: json['contrasena'],
-      nombreCompleto: json['nombreCompleto'],
-      edad: json['edad'],
-      ciudad: json['ciudad'],
-      celular: json['celular'],
-      cedula: json['cedula'],
-      sobreMi: json['sobreMi'],
+      id: map['id'],
+      email: map['email'],
+      contrasena: map['contrasena'],
+      nombreCompleto: map['nombreCompleto'],
+      edad: map['edad'],
+      ciudad: map['ciudad'],
+      celular: map['celular'],
+      cedula: map['cedula'],
+      sobreMi: map['sobreMi'],
+      rol: map['rol'] == 'trabajador' ? Rol.trabajador : Rol.cliente,
     );
   }
 

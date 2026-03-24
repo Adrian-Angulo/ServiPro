@@ -2,7 +2,7 @@
 import 'package:servi_pro/core/theme/app_colors.dart';
 import 'package:servi_pro/core/theme/app_spacing.dart';
 import 'package:servi_pro/core/theme/app_typography.dart';
-import 'package:servi_pro/features/auth/providers/registro_trabajador_provider.dart';
+import 'package:servi_pro/features/auth/presentation/widgets/fiel_label.dart';
 
 class RegistroTrabajadorForm {
   final nombreCompleto = TextEditingController();
@@ -12,7 +12,7 @@ class RegistroTrabajadorForm {
   final celular = TextEditingController();
   final cedula = TextEditingController();
   final sobreMi = TextEditingController();
-
+  /* 
   void initFromState(RegistroTrabajadorState state) {
     nombreCompleto.text = state.nombreCompleto;
     edad.text = state.edad;
@@ -22,8 +22,8 @@ class RegistroTrabajadorForm {
     cedula.text = state.cedula;
     sobreMi.text = state.sobreMi;
   }
-
-  void syncProvider(RegistroTrabajadorNotifier notifier) {
+ */
+  /*   void syncProvider(RegistroTrabajadorNotifier notifier) {
     notifier.update(
       nombreCompleto: nombreCompleto.text,
       edad: edad.text,
@@ -33,7 +33,7 @@ class RegistroTrabajadorForm {
       cedula: cedula.text,
       sobreMi: sobreMi.text,
     );
-  }
+  } */
 
   void dispose() {
     nombreCompleto.dispose();
@@ -45,6 +45,8 @@ class RegistroTrabajadorForm {
     sobreMi.dispose();
   }
 }
+
+const cities = ['Pasto, Nariño', 'Bogotá', 'Medellín', 'Cali'];
 
 class RegistroTrabajadorBody extends StatelessWidget {
   final GlobalKey<FormState> formKey;
@@ -76,7 +78,10 @@ class RegistroTrabajadorBody extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _SectionHeader(icon: Icons.person_outline_rounded, label: 'Informacion Basica'),
+            _SectionHeader(
+              icon: Icons.person_outline_rounded,
+              label: 'Informacion Basica',
+            ),
             const SizedBox(height: AppSpacing.md),
 
             _AuthField(
@@ -107,11 +112,39 @@ class RegistroTrabajadorBody extends StatelessWidget {
                 ),
                 const SizedBox(width: AppSpacing.md),
                 Expanded(
-                  child: _AuthField(
-                    label: 'Ciudad',
-                    hint: 'Ej. Pasto',
-                    controller: form.ciudad,
-                    onChanged: onChanged,
+                  flex: 2,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const FieldLabel('Ciudad'),
+                      const SizedBox(height: 8),
+                      DropdownButtonFormField<String>(
+                        /*  value: state.selectedCity, */
+                        decoration: const InputDecoration(
+                          prefixIcon: Icon(
+                            Icons.location_on_outlined,
+                            color: AppColors.accent,
+                          ),
+                          contentPadding: EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 14,
+                          ),
+                        ),
+                        items: cities
+                            .map(
+                              (c) => DropdownMenuItem(
+                                value: c,
+                                child: Text(
+                                  c,
+                                  style: AppTypography.bodyMedium,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            )
+                            .toList(),
+                        onChanged: (v) => {} /* notifier.setCity(v!), */,
+                      ),
+                    ],
                   ),
                 ),
               ],
@@ -144,7 +177,8 @@ class RegistroTrabajadorBody extends StatelessWidget {
                     keyboardType: TextInputType.phone,
                     maxLength: 10,
                     minLength: 10,
-                    lengthErrorMsg: 'El celular debe tener exactamente 10 digitos',
+                    lengthErrorMsg:
+                        'El celular debe tener exactamente 10 digitos',
                   ),
                 ),
                 const SizedBox(width: AppSpacing.md),
@@ -164,20 +198,29 @@ class RegistroTrabajadorBody extends StatelessWidget {
             ),
             const SizedBox(height: AppSpacing.xl),
 
-            _SectionHeader(icon: Icons.build_outlined, label: 'Detalles Profesionales'),
+            _SectionHeader(
+              icon: Icons.build_outlined,
+              label: 'Detalles Profesionales',
+            ),
             const SizedBox(height: AppSpacing.md),
             _DetallesProfesionalesCard(),
             const SizedBox(height: AppSpacing.xl),
 
-            _SectionHeader(icon: Icons.format_list_bulleted_rounded, label: 'Sobre ti'),
+            _SectionHeader(
+              icon: Icons.format_list_bulleted_rounded,
+              label: 'Sobre ti',
+            ),
             const SizedBox(height: AppSpacing.sm),
-            Text('Cuentanos sobre ti',
-                style: AppTypography.bodySmall.copyWith(color: AppColors.grey700)),
+            Text(
+              'Cuentanos sobre ti',
+              style: AppTypography.bodySmall.copyWith(color: AppColors.grey700),
+            ),
             const SizedBox(height: AppSpacing.sm),
 
             _AuthField(
               label: '',
-              hint: 'Describe tus habilidades, que tipo de trabajos prefieres y cualquier detalle que ayude a los clientes a confiar en ti...',
+              hint:
+                  'Describe tus habilidades, que tipo de trabajos prefieres y cualquier detalle que ayude a los clientes a confiar en ti...',
               controller: form.sobreMi,
               onChanged: onChanged,
               maxLines: 5,
@@ -196,13 +239,16 @@ class RegistroTrabajadorBody extends StatelessWidget {
                   disabledBackgroundColor: AppColors.primaryOverlay50,
                   foregroundColor: AppColors.onPrimary,
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(32)),
+                    borderRadius: BorderRadius.circular(32),
+                  ),
                   elevation: 0,
                 ),
                 child: Text(
                   'Crear cuenta',
-                  style: AppTypography.labelLarge
-                      .copyWith(color: AppColors.onPrimary, fontSize: 16),
+                  style: AppTypography.labelLarge.copyWith(
+                    color: AppColors.onPrimary,
+                    fontSize: 16,
+                  ),
                 ),
               ),
             ),
@@ -212,7 +258,9 @@ class RegistroTrabajadorBody extends StatelessWidget {
               children: [
                 Text(
                   '¿Ya tienes una cuenta? ',
-                  style: AppTypography.bodySmall.copyWith(color: AppColors.grey700),
+                  style: AppTypography.bodySmall.copyWith(
+                    color: AppColors.grey700,
+                  ),
                 ),
                 GestureDetector(
                   onTap: onIniciarSesion,
@@ -245,9 +293,13 @@ class _SectionHeader extends StatelessWidget {
       children: [
         Icon(icon, color: AppColors.primary, size: AppSpacing.iconMd),
         const SizedBox(width: AppSpacing.sm),
-        Text(label,
-            style: AppTypography.titleMedium
-                .copyWith(color: AppColors.primary, fontWeight: FontWeight.w700)),
+        Text(
+          label,
+          style: AppTypography.titleMedium.copyWith(
+            color: AppColors.primary,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
       ],
     );
   }
@@ -259,7 +311,10 @@ class _DetallesProfesionalesCard extends StatelessWidget {
     return GestureDetector(
       onTap: () {},
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: AppSpacing.lg),
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.lg,
+          vertical: AppSpacing.lg,
+        ),
         decoration: BoxDecoration(
           color: AppColors.surface,
           borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
@@ -274,15 +329,25 @@ class _DetallesProfesionalesCard extends StatelessWidget {
                 color: AppColors.primaryOverlay10,
                 borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
               ),
-              child: const Icon(Icons.work_outline_rounded,
-                  color: AppColors.primary, size: AppSpacing.iconMd),
+              child: const Icon(
+                Icons.work_outline_rounded,
+                color: AppColors.primary,
+                size: AppSpacing.iconMd,
+              ),
             ),
             const SizedBox(width: AppSpacing.md),
             Expanded(
-              child: Text('Agregar Detalle Profesional y Portafolio',
-                  style: AppTypography.titleSmall, textAlign: TextAlign.center),
+              child: Text(
+                'Agregar Detalle Profesional y Portafolio',
+                style: AppTypography.titleSmall,
+                textAlign: TextAlign.center,
+              ),
             ),
-            const Icon(Icons.chevron_right_rounded, color: AppColors.grey500, size: AppSpacing.iconMd),
+            const Icon(
+              Icons.chevron_right_rounded,
+              color: AppColors.grey500,
+              size: AppSpacing.iconMd,
+            ),
           ],
         ),
       ),
@@ -323,7 +388,10 @@ class _AuthField extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (label.isNotEmpty) ...[
-          Text(label, style: AppTypography.labelMedium.copyWith(color: AppColors.grey700)),
+          Text(
+            label,
+            style: AppTypography.labelMedium.copyWith(color: AppColors.grey700),
+          ),
           const SizedBox(height: AppSpacing.xs),
         ],
         TextFormField(
@@ -335,12 +403,16 @@ class _AuthField extends StatelessWidget {
           style: AppTypography.bodyMedium,
           decoration: InputDecoration(
             hintText: hint,
-            hintStyle: AppTypography.bodyMedium.copyWith(color: AppColors.grey500),
+            hintStyle: AppTypography.bodyMedium.copyWith(
+              color: AppColors.grey500,
+            ),
             filled: true,
             fillColor: AppColors.surface,
             counterText: '',
             contentPadding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.md, vertical: AppSpacing.md),
+              horizontal: AppSpacing.md,
+              vertical: AppSpacing.md,
+            ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
               borderSide: const BorderSide(color: AppColors.grey300),
@@ -366,8 +438,12 @@ class _AuthField extends StatelessWidget {
             if (customValidator != null) return customValidator!(v);
             if (required && (v == null || v.isEmpty)) return 'Campo requerido';
             if (v != null && v.isNotEmpty) {
-              if (minLength != null && maxLength != null && minLength == maxLength && v.length != minLength!) {
-                return lengthErrorMsg ?? 'Debe tener exactamente $minLength digitos';
+              if (minLength != null &&
+                  maxLength != null &&
+                  minLength == maxLength &&
+                  v.length != minLength!) {
+                return lengthErrorMsg ??
+                    'Debe tener exactamente $minLength digitos';
               }
               if (minLength != null && v.length < minLength!) {
                 return lengthErrorMsg ?? 'Minimo $minLength digitos';

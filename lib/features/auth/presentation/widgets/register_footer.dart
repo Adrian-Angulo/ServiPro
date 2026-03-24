@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:servi_pro/core/theme/app_colors.dart';
 import 'package:servi_pro/core/theme/app_typography.dart';
-import 'package:servi_pro/features/auth/providers/auth_provider.dart';
-import 'package:servi_pro/features/auth/screens/login_screen.dart';
+
+import 'package:servi_pro/features/auth/presentation/screens/login_screen.dart';
 
 class RegisterFooter extends ConsumerWidget {
   final VoidCallback onRegister;
@@ -13,7 +13,7 @@ class RegisterFooter extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // Lee acceptedTerms e isLoading directamente del provider
-    final state = ref.watch(registerProvider);
+    /* final state = ref.watch(registerProvider); */
 
     return Column(
       children: [
@@ -21,24 +21,30 @@ class RegisterFooter extends ConsumerWidget {
           width: double.infinity,
           height: 54,
           child: ElevatedButton(
-            onPressed: (state.acceptedTerms && !state.isLoading) ? onRegister : null,
+            onPressed:
+                () {} /* (state.acceptedTerms && !state.isLoading) ? onRegister : null */,
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primary,
               disabledBackgroundColor: AppColors.primaryOverlay50,
               foregroundColor: AppColors.onPrimary,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(32),
+              ),
               elevation: 0,
             ),
-            child: state.isLoading
+            child: /* state.isLoading
                 ? const SizedBox(
                     height: 22,
                     width: 22,
                     child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2.5),
                   )
-                : Text(
-                    'Crear cuenta',
-                    style: AppTypography.labelLarge.copyWith(color: AppColors.onPrimary, fontSize: 16),
-                  ),
+                : */ Text(
+              'Crear cuenta',
+              style: AppTypography.labelLarge.copyWith(
+                color: AppColors.onPrimary,
+                fontSize: 16,
+              ),
+            ),
           ),
         ),
         const SizedBox(height: 20),

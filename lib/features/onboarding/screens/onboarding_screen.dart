@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:servi_pro/core/theme/app_colors.dart';
 import 'package:servi_pro/core/theme/app_typography.dart';
-import 'package:servi_pro/features/auth/screens/seleccion_rol_screen.dart';
+import 'package:servi_pro/features/auth/presentation/screens/seleccion_rol_screen.dart';
 import 'package:servi_pro/features/onboarding/providers/onboarding_provider.dart';
 import 'package:servi_pro/features/onboarding/widgets/onboarding_page.dart';
 import 'package:servi_pro/features/onboarding/widgets/page_indicator.dart';

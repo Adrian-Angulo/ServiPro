@@ -3,10 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:servi_pro/core/theme/app_colors.dart';
 import 'package:servi_pro/core/theme/app_spacing.dart';
 import 'package:servi_pro/core/theme/app_typography.dart';
-import 'package:servi_pro/features/auth/providers/registro_trabajador_provider.dart';
-import 'package:servi_pro/features/auth/widgets/register_formTrabajador.dart';
-import 'package:servi_pro/features/auth/screens/login_screen.dart';
-import 'package:servi_pro/features/auth/widgets/auth_widgets.dart';
+import 'package:servi_pro/features/auth/presentation/widgets/register_formTrabajador.dart';
+import 'package:servi_pro/features/auth/presentation/screens/login_screen.dart';
+import 'package:servi_pro/features/auth/presentation/widgets/auth_widgets.dart';
 
 class RegistroTrabajadorScreen extends ConsumerStatefulWidget {
   const RegistroTrabajadorScreen({super.key});
@@ -21,21 +20,6 @@ class _RegistroTrabajadorScreenState
   final _formKey = GlobalKey<FormState>();
   final _form = RegistroTrabajadorForm();
 
-  @override
-  void initState() {
-    super.initState();
-    _form.initFromState(ref.read(registroTrabajadorProvider));
-  }
-
-  @override
-  void dispose() {
-    _form.dispose();
-    super.dispose();
-  }
-
-  void _onFormChanged() {
-    _form.syncProvider(ref.read(registroTrabajadorProvider.notifier));
-  }
 
   void _crearCuenta() {
     if (_formKey.currentState!.validate()) {
@@ -49,7 +33,7 @@ class _RegistroTrabajadorScreenState
 
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(registroTrabajadorProvider);
+    
 
     return Scaffold(
       backgroundColor: AppColors.backgroundSoft,
@@ -76,8 +60,9 @@ class _RegistroTrabajadorScreenState
               child: RegistroTrabajadorBody(
                 formKey: _formKey,
                 form: _form,
-                onChanged: _onFormChanged,
-                isValid: state.isValid,
+                onChanged: (){},
+                //TODO: CAMBIAR EL isValid
+                isValid: true,
                 onCrearCuenta: _crearCuenta,
                 onIniciarSesion: () => Navigator.of(context).pushAndRemoveUntil(
                   MaterialPageRoute(builder: (_) => const LoginScreen()),

@@ -1,20 +1,24 @@
 ﻿import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:servi_pro/core/theme/app_colors.dart';
 import 'package:servi_pro/core/theme/app_spacing.dart';
 import 'package:servi_pro/core/theme/app_typography.dart';
-import 'package:servi_pro/features/auth/providers/rol_provider.dart';
-import 'package:servi_pro/features/auth/widgets/auth_widgets.dart';
-import 'package:servi_pro/features/auth/screens/register_screen.dart';
-import 'package:servi_pro/features/auth/screens/registro_trabajador_screen.dart';
+import 'package:servi_pro/features/auth/presentation/screens/register_screen.dart';
+import 'package:servi_pro/features/auth/presentation/screens/registro_trabajador_screen.dart';
+import 'package:servi_pro/features/auth/presentation/widgets/auth_widgets.dart';
 
-class SeleccionRolScreen extends ConsumerWidget {
+enum Rol { cliente, trabajador }
+
+class SeleccionRolScreen extends StatefulWidget {
   const SeleccionRolScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final rolSeleccionado = ref.watch(rolSeleccionadoProvider);
+  State<SeleccionRolScreen> createState() => _SeleccionRolScreenState();
+}
 
+class _SeleccionRolScreenState extends State<SeleccionRolScreen> {
+  Rol? rolSeleccionado;
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -47,9 +51,13 @@ class SeleccionRolScreen extends ConsumerWidget {
                 titulo: 'Soy Usuario',
                 descripcion:
                     'Busco expertos para reparaciones o tareas en mi hogar.',
-                seleccionado: rolSeleccionado == TipoRol.cliente,
-                onTap: () => ref.read(rolSeleccionadoProvider.notifier).state =
-                    TipoRol.cliente,
+                seleccionado: rolSeleccionado == Rol.cliente,
+                onTap: () {
+                  setState(() {
+                    rolSeleccionado = Rol.cliente;
+                  });
+                } /* ref.read(rolSeleccionadoProvider.notifier).state =
+                    TipoRol.cliente, */,
               ),
               const SizedBox(height: AppSpacing.lg),
 
@@ -61,9 +69,15 @@ class SeleccionRolScreen extends ConsumerWidget {
                 titulo: 'Soy Trabajador',
                 descripcion:
                     'Quiero ofrecer mis servicios y encontrar nuevos clientes.',
-                seleccionado: rolSeleccionado == TipoRol.trabajador,
-                onTap: () => ref.read(rolSeleccionadoProvider.notifier).state =
-                    TipoRol.trabajador,
+                seleccionado:
+                    rolSeleccionado ==
+                    Rol.trabajador /* rolSeleccionado == TipoRol.trabajador */,
+                onTap: () {
+                  setState(() {
+                    rolSeleccionado = Rol.trabajador;
+                  });
+                } /* ref.read(rolSeleccionadoProvider.notifier).state =
+                    TipoRol.trabajador, */,
               ),
 
               const Spacer(),
@@ -73,7 +87,7 @@ class SeleccionRolScreen extends ConsumerWidget {
                 label: 'Continuar',
                 onPressed: rolSeleccionado != null
                     ? () {
-                        if (rolSeleccionado == TipoRol.trabajador) {
+                        if (rolSeleccionado == Rol.trabajador) {
                           Navigator.push(
                             context,
                             MaterialPageRoute(

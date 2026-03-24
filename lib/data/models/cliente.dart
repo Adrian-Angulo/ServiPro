@@ -1,45 +1,48 @@
-import 'dart:convert';
 import 'package:servi_pro/data/models/usuario.dart';
 
 class Cliente extends Usuario {
   final String nombre;
-  final int edad;
+  final String edad;
   final String ciudad;
-  final String telefono;
   final String cedula;
-  final String numeroTelefono;
+  final String telefono;
 
   Cliente({
+    required super.id,
     required this.nombre,
     required this.edad,
     required this.ciudad,
     required super.email,
     required super.contrasena,
-    required this.telefono,
     required this.cedula,
-    required this.numeroTelefono,
+    required this.telefono,
+    required super.rol,
   });
-  @override
+
   Map<String, dynamic> toMap() {
     return {
+      'id': id,
       'nombre': nombre,
+      'email': email,
       'edad': edad,
       'ciudad': ciudad,
-      'email': email,
+      'cedula': cedula,
       'telefono': telefono,
+      'rol': rol,
     };
   }
 
-  factory Cliente.fromJson(Map<String, dynamic> json) {
+  factory Cliente.fromMap(Map<String, dynamic> map) {
     return Cliente(
-      nombre: json['nombre'],
-      edad: json['edad'],
-      ciudad: json['ciudad'],
-      email: json['email'],
-      contrasena: json['contrasena'] ?? '',
-      telefono: json['telefono'],
-      cedula: json['cedula'],
-      numeroTelefono: json['numeroTelefono'],
+      id: map['id'],
+      nombre: map['nombre'],
+      edad: map['edad'],
+      ciudad: map['ciudad'],
+      email: map['email'],
+      contrasena: map['contrasena'] ?? '',
+      cedula: map['cedula'],
+      telefono: map['telefono'],
+      rol: map['rol'] == 'cliente' ? Rol.cliente : Rol.trabajador,
     );
   }
 }

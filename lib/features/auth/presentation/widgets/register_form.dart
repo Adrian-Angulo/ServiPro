@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:servi_pro/core/theme/app_colors.dart';
 import 'package:servi_pro/core/theme/app_typography.dart';
-import 'package:servi_pro/features/auth/providers/auth_provider.dart';
 
 class RegisterForm extends ConsumerWidget {
   final TextEditingController nameController;
@@ -22,9 +21,9 @@ class RegisterForm extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(registerProvider);
+    /*     final state = ref.watch(registerProvider);
     final notifier = ref.read(registerProvider.notifier);
-
+ */
     const cities = ['Pasto, Nariño', 'Bogotá', 'Medellín', 'Cali'];
 
     return Column(
@@ -38,7 +37,10 @@ class RegisterForm extends ConsumerWidget {
           textCapitalization: TextCapitalization.words,
           decoration: const InputDecoration(
             hintText: 'Ej. Juan Pérez',
-            prefixIcon: Icon(Icons.person_outline_rounded, color: AppColors.grey500),
+            prefixIcon: Icon(
+              Icons.person_outline_rounded,
+              color: AppColors.grey500,
+            ),
           ),
         ),
         const SizedBox(height: 16),
@@ -71,18 +73,30 @@ class RegisterForm extends ConsumerWidget {
                   const _FieldLabel('Ciudad'),
                   const SizedBox(height: 8),
                   DropdownButtonFormField<String>(
-                    value: state.selectedCity,
+                    /*  value: state.selectedCity, */
                     decoration: const InputDecoration(
-                      prefixIcon: Icon(Icons.location_on_outlined, color: AppColors.accent),
-                      contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+                      prefixIcon: Icon(
+                        Icons.location_on_outlined,
+                        color: AppColors.accent,
+                      ),
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 14,
+                      ),
                     ),
                     items: cities
-                        .map((c) => DropdownMenuItem(
-                              value: c,
-                              child: Text(c, style: AppTypography.bodyMedium, overflow: TextOverflow.ellipsis),
-                            ))
+                        .map(
+                          (c) => DropdownMenuItem(
+                            value: c,
+                            child: Text(
+                              c,
+                              style: AppTypography.bodyMedium,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        )
                         .toList(),
-                    onChanged: (v) => notifier.setCity(v!),
+                    onChanged: (v) => {} /* notifier.setCity(v!), */,
                   ),
                 ],
               ),
@@ -99,7 +113,10 @@ class RegisterForm extends ConsumerWidget {
           keyboardType: TextInputType.emailAddress,
           decoration: const InputDecoration(
             hintText: 'ServiPro@ejemplo.com',
-            prefixIcon: Icon(Icons.mail_outline_rounded, color: AppColors.grey500),
+            prefixIcon: Icon(
+              Icons.mail_outline_rounded,
+              color: AppColors.grey500,
+            ),
           ),
         ),
         const SizedBox(height: 16),
@@ -109,16 +126,21 @@ class RegisterForm extends ConsumerWidget {
         const SizedBox(height: 8),
         TextField(
           controller: passwordController,
-          obscureText: state.obscurePassword,
+          obscureText: true/* state.obscurePassword */,
           decoration: InputDecoration(
             hintText: 'Mínimo 8 caracteres',
-            prefixIcon: const Icon(Icons.lock_outline_rounded, color: AppColors.grey500),
+            prefixIcon: const Icon(
+              Icons.lock_outline_rounded,
+              color: AppColors.grey500,
+            ),
             suffixIcon: IconButton(
               icon: Icon(
-                state.obscurePassword ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+                /* state.obscurePassword
+                    ? Icons.visibility_off_outlined
+                    :  */Icons.visibility_outlined,
                 color: AppColors.grey500,
               ),
-              onPressed: notifier.togglePassword,
+              onPressed: (){} /* notifier.togglePassword */,
             ),
           ),
         ),
@@ -129,16 +151,21 @@ class RegisterForm extends ConsumerWidget {
         const SizedBox(height: 8),
         TextField(
           controller: confirmController,
-          obscureText: state.obscureConfirm,
+          obscureText: true /* state.obscureConfirm */,
           decoration: InputDecoration(
             hintText: 'Repite tu contraseña',
-            prefixIcon: const Icon(Icons.refresh_rounded, color: AppColors.grey500),
+            prefixIcon: const Icon(
+              Icons.refresh_rounded,
+              color: AppColors.grey500,
+            ),
             suffixIcon: IconButton(
               icon: Icon(
-                state.obscureConfirm ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+               /*  state.obscureConfirm
+                    ? Icons.visibility_off_outlined
+                    :  */Icons.visibility_outlined,
                 color: AppColors.grey500,
               ),
-              onPressed: notifier.toggleConfirm,
+              onPressed: (){} /*  notifier.toggleConfirm */,
             ),
           ),
         ),
@@ -149,25 +176,35 @@ class RegisterForm extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Checkbox(
-              value: state.acceptedTerms,
+              value: true /* state.acceptedTerms */,
               activeColor: AppColors.primary,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-              onChanged: (v) => notifier.setTerms(v ?? false),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(4),
+              ),
+              onChanged: (v) => {} /* (v) => notifier.setTerms(v ?? false) */,
             ),
             Expanded(
               child: RichText(
                 text: TextSpan(
-                  style: AppTypography.bodySmall.copyWith(color: AppColors.grey700),
+                  style: AppTypography.bodySmall.copyWith(
+                    color: AppColors.grey700,
+                  ),
                   children: const [
                     TextSpan(text: 'Acepto los '),
                     TextSpan(
                       text: 'términos',
-                      style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.w700),
+                      style: TextStyle(
+                        color: AppColors.primary,
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                     TextSpan(text: ' y '),
                     TextSpan(
                       text: 'políticas de privacidad',
-                      style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.w700),
+                      style: TextStyle(
+                        color: AppColors.primary,
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                     TextSpan(text: '.'),
                   ],
@@ -178,13 +215,13 @@ class RegisterForm extends ConsumerWidget {
         ),
 
         // Error
-        if (state.error != null) ...[
+        /* if (state.error != null) ...[
           const SizedBox(height: 12),
           Text(
             state.error!,
             style: AppTypography.bodySmall.copyWith(color: AppColors.error),
           ),
-        ],
+        ], */
       ],
     );
   }
@@ -195,5 +232,6 @@ class _FieldLabel extends StatelessWidget {
   const _FieldLabel(this.text);
 
   @override
-  Widget build(BuildContext context) => Text(text, style: AppTypography.labelMedium);
+  Widget build(BuildContext context) =>
+      Text(text, style: AppTypography.labelMedium);
 }
