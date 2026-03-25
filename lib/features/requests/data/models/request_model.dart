@@ -1,34 +1,42 @@
 class RequestModel {
-  final int id;
+  int id;
   final int idClient;
   final int idTypeService;
   final String details;
   final String addres;
-  final DateTime dateCreated;
-  final DateTime dateUpdate;
-  final DateTime dateFinish;
+  DateTime dateCreated;
+  DateTime dateUpdate;
+  DateTime dateFinish;
 
   RequestModel({
-    required this.id,
+    this.id = 0,
     required this.idClient,
     required this.idTypeService,
     required this.details,
     required this.addres,
-    required this.dateCreated,
-    required this.dateUpdate,
-    required this.dateFinish,
-  });
+    DateTime? dateCreated,
+    DateTime? dateUpdate,
+    DateTime? dateFinish,
+  }) : dateCreated = dateCreated ?? DateTime.now(),
+       dateUpdate = dateUpdate ?? DateTime.now(),
+       dateFinish = dateFinish ?? DateTime.now();
 
   factory RequestModel.fromMap(Map<String, dynamic> map) {
     return RequestModel(
-      id: map['id'] as int,
-      idClient: map['idClient'] as int,
-      idTypeService: map['idTypeService'] as int,
-      details: map['details'] as String,
-      addres: map['addres'] as String,
-      dateCreated: DateTime.parse(map['dateCreated'] as String),
-      dateUpdate: DateTime.parse(map['dateUpdate'] as String),
-      dateFinish: DateTime.parse(map['dateFinish'] as String),
+      id: map['id'] as int? ?? 0,
+      idClient: map['idClient'] as int? ?? 0,
+      idTypeService: map['idTypeService'] as int? ?? 0,
+      details: map['details'] as String? ?? '',
+      addres: map['addres'] as String? ?? '',
+      dateCreated: map['dateCreated'] != null
+          ? DateTime.parse(map['dateCreated'] as String)
+          : DateTime.now(),
+      dateUpdate: map['dateUpdate'] != null
+          ? DateTime.parse(map['dateUpdate'] as String)
+          : DateTime.now(),
+      dateFinish: map['dateFinish'] != null
+          ? DateTime.parse(map['dateFinish'] as String)
+          : DateTime.now(),
     );
   }
 
