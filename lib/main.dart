@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:servi_pro/core/theme/app_theme.dart';
+import 'package:servi_pro/features/onboarding/screens/onboarding_screen.dart';
 import 'package:servi_pro/features/requests/presentation/screens/register_request_screen.dart';
 import 'firebase_options.dart';
 
