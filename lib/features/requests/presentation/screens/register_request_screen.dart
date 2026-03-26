@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:servi_pro/features/auth/presentation/providers/auth_provider.dart';
 import 'package:servi_pro/features/requests/data/models/request_model.dart';
 import 'package:servi_pro/features/requests/presentation/providers/request_notifier.dart';
 
@@ -55,9 +56,8 @@ class _RegisterRequestScreenState extends ConsumerState<RegisterRequestScreen> {
                       child: ElevatedButton.icon(
                         onPressed: () {
                           final r = RequestModel(
-                            id: 1,
                             title: "Fuga de agua",
-                            idClient: 2,
+                            idClient: "afadsfasdf",
                             idTypeService: 1,
                             details: "Cual quier detalle",
                             addres: "Las mecerdes",
@@ -148,7 +148,11 @@ class _RegisterRequestScreenState extends ConsumerState<RegisterRequestScreen> {
                                   ),
                                 ),
                                 FilledButton(
-                                  onPressed: () {},
+                                  onPressed: () async {
+                                    await ref
+                                        .read(requestNotifierProvider.notifier)
+                                        .deleteRquest(id: r.id ??"");
+                                  },
                                   child: Text("Cancelar"),
                                 ),
                               ],

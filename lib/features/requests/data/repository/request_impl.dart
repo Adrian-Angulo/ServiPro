@@ -12,12 +12,17 @@ class RequestImpl implements RequestRepository {
   Future<List<RequestModel>> allRequest() async {
     final snapshot = await _firestore.collection('requests').get();
     return snapshot.docs
-        .map((doc) => RequestModel.fromMap(doc.data()))
+        .map((doc) => RequestModel.fromMap(doc.data()).copyWith(id: doc.id))
         .toList();
   }
 
   @override
   Future<void> registerRequest(RequestModel r) async {
     await _firestore.collection('requests').add(r.toMap());
+  }
+
+  @override
+  Future<void> deleteRequest(String id) async {
+    await _firestore.collection('requests').doc(id).delete();
   }
 }
