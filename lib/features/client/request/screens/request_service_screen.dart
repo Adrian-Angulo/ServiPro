@@ -7,7 +7,7 @@ import 'package:servi_pro/features/client/request/presentation/request_provider.
 import 'package:servi_pro/features/client/request/widgets/service_category_grid.dart';
 import 'package:servi_pro/features/client/request/widgets/job_description_field.dart';
 import 'package:servi_pro/features/client/request/widgets/location_section.dart';
-import 'package:servi_pro/core/widgets/error_dialog.dart';
+import 'package:servi_pro/core/widgets/success_dialog.dart';
 
 class RequestServiceScreen extends ConsumerStatefulWidget {
   const RequestServiceScreen({super.key});
@@ -97,8 +97,8 @@ class _RequestServiceScreenState extends ConsumerState<RequestServiceScreen> {
         child: ElevatedButton.icon(
           onPressed: formState.isValid
               ? () {
-                  // TODO: llamada a Firebase — si falla muestra el diálogo
-                  showErrorDialog(context);
+                  // TODO: llamada a Firebase — si falla muestra error, si ok muestra éxito
+                  showSuccessDialog(context);
                 }
               : () {
                   String mensaje = '';
