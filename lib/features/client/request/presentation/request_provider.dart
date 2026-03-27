@@ -11,7 +11,10 @@ class RequestFormState {
     this.zone,
   });
 
-  bool get isValid => category != null;
+  bool get isValid =>
+      category != null &&
+      description.trim().length >= 10 &&
+      zone != null;
 
   RequestFormState copyWith({
     String? category,

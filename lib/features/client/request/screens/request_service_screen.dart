@@ -7,6 +7,7 @@ import 'package:servi_pro/features/client/request/presentation/request_provider.
 import 'package:servi_pro/features/client/request/widgets/service_category_grid.dart';
 import 'package:servi_pro/features/client/request/widgets/job_description_field.dart';
 import 'package:servi_pro/features/client/request/widgets/location_section.dart';
+import 'package:servi_pro/core/widgets/error_dialog.dart';
 
 class RequestServiceScreen extends ConsumerStatefulWidget {
   const RequestServiceScreen({super.key});
@@ -94,7 +95,28 @@ class _RequestServiceScreenState extends ConsumerState<RequestServiceScreen> {
           AppSpacing.xl,
         ),
         child: ElevatedButton.icon(
-          onPressed: formState.isValid ? () {} : null,
+          onPressed: formState.isValid
+              ? () {
+                  // TODO: llamada a Firebase — si falla muestra el diálogo
+                  showErrorDialog(context);
+                }
+              : () {
+                  String mensaje = '';
+                  if (formState.category == null) {
+                    mensaje = 'Selecciona una categoría';
+                  } else if (formState.description.trim().length < 10) {
+                    mensaje = 'Escribe una descripción de al menos 10 caracteres';
+                  } else if (formState.zone == null) {
+                    mensaje = 'Selecciona tu zona';
+                  }
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(mensaje),
+                      backgroundColor: AppColors.error,
+                      behavior: SnackBarBehavior.floating,
+                    ),
+                  );
+                },
           icon: const Icon(Icons.arrow_forward_rounded),
           iconAlignment: IconAlignment.end,
           label: Text(
@@ -103,7 +125,6 @@ class _RequestServiceScreenState extends ConsumerState<RequestServiceScreen> {
           ),
           style: ElevatedButton.styleFrom(
             backgroundColor: AppColors.primary,
-            disabledBackgroundColor: AppColors.grey300,
             minimumSize: const Size(double.infinity, 52),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
