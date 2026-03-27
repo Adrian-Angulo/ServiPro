@@ -1,71 +1,61 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:servi_pro/core/theme/app_colors.dart';
-import 'package:servi_pro/core/theme/app_typography.dart';
-import 'package:servi_pro/features/auth/presentation/providers/auth_provider.dart';
-import 'package:servi_pro/features/auth/presentation/screens/login_screen.dart';
+import 'package:servi_pro/features/client/home/widgets/home_action_cards.dart';
+import 'package:servi_pro/features/client/home/widgets/home_header.dart';
+import 'package:servi_pro/features/client/home/widgets/recommended_workers_section.dart';
 
-class ClientHomeScreen extends ConsumerWidget {
+class ClientHomeScreen extends StatelessWidget {
   const ClientHomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final authState = ref.watch(authNotifierProvider);
-    final user = authState.value;
-
+  Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Inicio - Cliente'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: () async {
-              await ref.read(authNotifierProvider.notifier).logout();
-              if (context.mounted) {
-                Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(builder: (_) => const LoginScreen()),
-                  (route) => false,
-                );
-              }
-            },
-          ),
-        ],
-      ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
+      backgroundColor: AppColors.backgroundSoft,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(
-                Icons.home_rounded,
-                size: 80,
-                color: AppColors.primary,
-              ),
-              const SizedBox(height: 24),
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: const [
+              // Header con ubicación y avatar
+              HomeHeader(userName: 'Alejandro'),
+              SizedBox(height: 24),
+
+              // Saludo
               Text(
-                '¡Bienvenido Cliente!',
-                style: AppTypography.headlineMedium,
-                textAlign: TextAlign.center,
+                '¡Hola, Alejandro! 👋',
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
-              const SizedBox(height: 16),
-              if (user != null)
-                Text(
-                  user.email,
-                  style: AppTypography.bodyLarge.copyWith(
-                    color: AppColors.grey500,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              const SizedBox(height: 32),
+              SizedBox(height: 4),
               Text(
-                'Pantalla de inicio para clientes',
-                style: AppTypography.bodyMedium,
-                textAlign: TextAlign.center,
+                '¿Qué servicio necesitas hoy?',
+                style: TextStyle(fontSize: 14, color: AppColors.grey500),
               ),
+              SizedBox(height: 24),
+
+              // Tarjetas de acción
+              HomeActionCards(),
+              SizedBox(height: 28),
+
+              // Trabajadores recomendados
+              RecommendedWorkersSection(),
             ],
           ),
         ),
+      ),
+
+      // Bottom nav
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        selectedItemColor: AppColors.primary,
+        unselectedItemColor: AppColors.grey500,
+        currentIndex: 0,
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.home_rounded), label: 'Inicio'),
+          BottomNavigationBarItem(icon: Icon(Icons.list_alt_rounded), label: 'Mis solicitudes'),
+          BottomNavigationBarItem(icon: Icon(Icons.work_outline_rounded), label: 'Trabajadores'),
+          BottomNavigationBarItem(icon: Icon(Icons.person_outline_rounded), label: 'Perfil'),
+        ],
       ),
     );
   }

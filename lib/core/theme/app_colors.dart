@@ -12,9 +12,9 @@ abstract class AppColors {
   // ── Background ────────────────────────────────────
   static const Color background = Color.fromRGBO(255, 255, 255, 1.0);
   static const Color backgroundSoft = Color.fromRGBO(
-    224,
-    240,
-    245,
+    247,
+    250,
+    252,
     1.0,
   ); // Azul muy claro
   static const Color backgroundMuted = Color.fromRGBO(
