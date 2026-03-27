@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:servi_pro/core/theme/app_colors.dart';
+import 'package:servi_pro/features/client/request/screens/request_service_screen.dart';
 
 class HomeActionCards extends StatelessWidget {
   const HomeActionCards({super.key});
@@ -10,7 +11,10 @@ class HomeActionCards extends StatelessWidget {
       children: [
         // Tarjeta naranja - Solicitar servicio
         GestureDetector(
-          onTap: () {},
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const RequestServiceScreen()),
+          ),
           child: Container(
             width: double.infinity,
             padding: const EdgeInsets.all(20),
