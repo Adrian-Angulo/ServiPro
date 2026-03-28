@@ -142,4 +142,11 @@ class AuthRepositoryImpl implements AuthRepository {
 
     return AppUserFactory.fromMap(doc.data()!);
   }
+
+  //Recuperar contraseña------------------------------------
+
+  @override
+  Future<void> sendPasswordReset({required String email}) async {
+    await _firebaseAuth.sendPasswordResetEmail(email: email);
+  }
 }

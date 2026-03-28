@@ -99,6 +99,11 @@ class AuthNotifier extends AsyncNotifier<Usuario?> {
     state = const AsyncValue.data(null);
   }
 
+  Future<void> sendPasswordReset({required String email}) async {
+    final repository = ref.read(authRepositoryProvider);
+    await repository.sendPasswordReset(email: email);
+  }
+
   String _parseError(String error) {
     if (error.contains('user-not-found')) {
       return 'No existe una cuenta con ese correo';

@@ -7,6 +7,8 @@ import 'package:servi_pro/features/auth/presentation/providers/auth_provider.dar
 import 'package:servi_pro/features/client/home/screens/client_home_screen.dart';
 import 'package:servi_pro/features/worket/home/screens/worker_home_screen.dart';
 
+import 'package:servi_pro/features/auth/presentation/screens/forgot_password_screen.dart';
+
 class LoginForm extends ConsumerStatefulWidget {
   const LoginForm({super.key});
 
@@ -109,7 +111,11 @@ class _LoginFormState extends ConsumerState<LoginForm> {
         Align(
           alignment: Alignment.centerRight,
           child: TextButton(
-            onPressed: () {},
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) => const ForgotPasswordScreen(),
+              ),
+            ),
             style: TextButton.styleFrom(
               padding: EdgeInsets.zero,
               minimumSize: Size.zero,
