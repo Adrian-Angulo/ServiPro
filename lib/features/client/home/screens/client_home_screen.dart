@@ -7,6 +7,7 @@ import 'package:servi_pro/features/client/home/presentation/home_provider.dart';
 import 'package:servi_pro/features/client/home/widgets/home_action_cards.dart';
 import 'package:servi_pro/features/client/home/widgets/home_header.dart';
 import 'package:servi_pro/features/client/home/widgets/recommended_workers_section.dart';
+import 'package:servi_pro/features/client/my_requests/presentation/screens/my_requests_screen.dart';
 
 class ClientHomeScreen extends ConsumerWidget {
   const ClientHomeScreen({super.key});
@@ -16,9 +17,10 @@ class ClientHomeScreen extends ConsumerWidget {
     final userName = ref.watch(clientNameProvider);
     final navIndex = ref.watch(bottomNavIndexProvider);
 
-    return Scaffold(
-      backgroundColor: AppColors.backgroundSoft,
-      body: SafeArea(
+    // Lista de pantallas para cada pestaña del bottom nav
+    final screens = [
+      // Pestaña 0: Inicio
+      SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(
             horizontal: AppSpacing.screenHorizontal,
@@ -43,6 +45,16 @@ class ClientHomeScreen extends ConsumerWidget {
           ),
         ),
       ),
+      // Pestaña 1: Mis Solicitudes
+      const MyRequestsScreen(),
+      // Pestaña 2 y 3: Próximamente
+      const Center(child: Text('Trabajadores - Próximamente')),
+      const Center(child: Text('Perfil - Próximamente')),
+    ];
+
+    return Scaffold(
+      backgroundColor: AppColors.backgroundSoft,
+      body: screens[navIndex],
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         selectedItemColor: AppColors.primary,
