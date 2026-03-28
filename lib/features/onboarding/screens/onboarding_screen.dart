@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:servi_pro/core/theme/app_colors.dart';
 import 'package:servi_pro/core/theme/app_typography.dart';
-import 'package:servi_pro/features/auth/presentation/screens/seleccion_rol_screen.dart';
+import 'package:servi_pro/features/auth/presentation/screens/login_screen.dart';
 import 'package:servi_pro/features/onboarding/providers/onboarding_provider.dart';
 import 'package:servi_pro/features/onboarding/widgets/onboarding_page.dart';
 import 'package:servi_pro/features/onboarding/widgets/page_indicator.dart';
@@ -66,8 +66,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         curve: Curves.easeInOut,
       );
     } else {
-      Navigator.of(context).push(
-        MaterialPageRoute(builder: (_) => const SeleccionRolScreen()),
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (_) => const LoginScreen()),
       );
     }
   }
