@@ -98,7 +98,7 @@ class _RequestServiceScreenState extends ConsumerState<RequestServiceScreen> {
           onPressed: formState.isValid
               ? () {
                   // TODO: llamada a Firebase — si falla muestra error, si ok muestra éxito
-                  showSuccessDialog(context);
+                  showSuccessDialog(context, ref);
                 }
               : () {
                   String mensaje = '';

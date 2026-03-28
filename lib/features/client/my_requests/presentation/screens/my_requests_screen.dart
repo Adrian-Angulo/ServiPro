@@ -24,48 +24,47 @@ class MyRequestsScreen extends ConsumerWidget {
       appBar: AppBar(
         backgroundColor: AppColors.backgroundSoft,
         elevation: 0,
-        leading: const BackButton(color: AppColors.grey900),
+        automaticallyImplyLeading: false,
         title: Text('Mis Solicitudes', style: AppTypography.titleLarge),
       ),
-      body: Column(
-        children: [
+      body: CustomScrollView(
+        slivers: [
           // ── Filtros ──────────────────────────────────────────────────────
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.screenHorizontal,
-              vertical: AppSpacing.md,
-            ),
-            child: FilterTabs(
-              selected: filtroActivo,
-              onSelected: (nuevoFiltro) {
-                // Actualizamos el filtro en el provider
-                ref.read(filtroSolicitudProvider.notifier).state = nuevoFiltro;
-              },
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+              child: FilterTabs(
+                selected: filtroActivo,
+                onSelected: (nuevoFiltro) {
+                  ref.read(filtroSolicitudProvider.notifier).state = nuevoFiltro;
+                },
+              ),
             ),
           ),
 
           // ── Lista de solicitudes ─────────────────────────────────────────
-          Expanded(
-            child: solicitudes.isEmpty
-                ? _EmptyState() // Si no hay resultados, mostramos un mensaje
-                : ListView.builder(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.screenHorizontal,
-                      vertical: AppSpacing.sm,
-                    ),
-                    itemCount: solicitudes.length,
-                    itemBuilder: (context, index) {
-                      final solicitud = solicitudes[index];
-                      return SolicitudCard(
-                        solicitud: solicitud,
-                        // Solo las solicitudes pendientes tienen botón de cancelar
-                        onCancelar: solicitud.estado == EstadoSolicitud.pendiente
-                            ? () => _confirmarCancelacion(context, ref, solicitud)
-                            : null,
-                      );
-                    },
+          solicitudes.isEmpty
+              ? SliverFillRemaining(child: _EmptyState())
+              : SliverPadding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.screenHorizontal,
+                    vertical: AppSpacing.sm,
                   ),
-          ),
+                  sliver: SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        final solicitud = solicitudes[index];
+                        return SolicitudCard(
+                          solicitud: solicitud,
+                          onCancelar: solicitud.estado == EstadoSolicitud.pendiente
+                              ? () => _confirmarCancelacion(context, ref, solicitud)
+                              : null,
+                        );
+                      },
+                      childCount: solicitudes.length,
+                    ),
+                  ),
+                ),
         ],
       ),
     );

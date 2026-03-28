@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:servi_pro/core/theme/app_colors.dart';
 import 'package:servi_pro/core/theme/app_spacing.dart';
 import 'package:servi_pro/core/theme/app_typography.dart';
+import 'package:servi_pro/features/client/home/presentation/home_provider.dart';
 
-void showSuccessDialog(BuildContext context) {
+void showSuccessDialog(BuildContext context, WidgetRef ref) {
   showDialog(
     context: context,
     barrierDismissible: false,
@@ -50,7 +52,10 @@ void showSuccessDialog(BuildContext context) {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: () => Navigator.popUntil(context, (r) => r.isFirst),
+                onPressed: () {
+                  Navigator.popUntil(context, (r) => r.isFirst);
+                  ref.read(bottomNavIndexProvider.notifier).state = 1;
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.accent,
                   minimumSize: const Size(double.infinity, 50),
