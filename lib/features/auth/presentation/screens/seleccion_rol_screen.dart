@@ -30,7 +30,13 @@ class _SeleccionRolScreenState extends State<SeleccionRolScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Top bar: back + stepper
-              const SizedBox(height: AppSpacing.xxl),
+              IconButton(
+                icon: const Icon(Icons.arrow_back_ios_new_rounded),
+                onPressed: () => Navigator.pop(context),
+                padding: EdgeInsets.zero,
+                alignment: Alignment.centerLeft,
+              ),
+              const SizedBox(height: AppSpacing.lg),
 
               // Titulo
               Text('¿Cómo usarás la app?', style: AppTypography.headlineMedium),
