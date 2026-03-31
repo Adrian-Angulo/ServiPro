@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
       title: 'ServiPro',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
-      home: RegisterRequestScreen() /* const OnboardingScreen() */,
+      home: const OnboardingScreen(),
     );
   }
 }

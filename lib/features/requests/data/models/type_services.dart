@@ -1,5 +1,5 @@
 class TypeServices {
-  final int id;
+  final String id;
   final String name;
   final String description;
   final DateTime dateCreated;
@@ -10,6 +10,20 @@ class TypeServices {
     required this.description,
     required this.dateCreated,
   });
+
+  TypeServices copyWith({
+    String? id,
+    String? name,
+    String? description,
+    DateTime? dateCreated,
+  }) {
+    return TypeServices(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      dateCreated: dateCreated ?? this.dateCreated,
+    );
+  }
 
   factory TypeServices.fromJson(Map<String, dynamic> json) {
     return TypeServices(
@@ -22,7 +36,6 @@ class TypeServices {
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
       'name': name,
       'description': description,
       'dateCreated': dateCreated.toIso8601String(),

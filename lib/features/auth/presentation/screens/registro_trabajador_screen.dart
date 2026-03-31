@@ -5,8 +5,8 @@ import 'package:servi_pro/core/theme/app_spacing.dart';
 import 'package:servi_pro/core/theme/app_typography.dart';
 import 'package:servi_pro/features/auth/presentation/providers/auth_provider.dart';
 import 'package:servi_pro/features/auth/presentation/screens/login_screen.dart';
+import 'package:servi_pro/features/auth/presentation/screens/worket_home.dart';
 import 'package:servi_pro/features/auth/presentation/widgets/auth_widgets.dart';
-import 'package:servi_pro/features/worket/home/screens/worker_home_screen.dart';
 
 class RegistroTrabajadorScreen extends ConsumerStatefulWidget {
   const RegistroTrabajadorScreen({super.key});
@@ -63,7 +63,7 @@ class _RegistroTrabajadorScreenState
 
     if (success && mounted) {
       Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (_) => const WorkerHomeScreen()),
+        MaterialPageRoute(builder: (_) => const WorketHome()),
         (route) => false,
       );
     }

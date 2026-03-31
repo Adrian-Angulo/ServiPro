@@ -3,8 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:servi_pro/core/theme/app_colors.dart';
 import 'package:servi_pro/core/theme/app_typography.dart';
 import 'package:servi_pro/features/auth/presentation/providers/auth_provider.dart';
+import 'package:servi_pro/features/auth/presentation/screens/client_home.dart';
 import 'package:servi_pro/features/auth/presentation/screens/login_screen.dart';
-import 'package:servi_pro/features/client/home/screens/client_home_screen.dart';
+
 
 class RegisterScreen extends ConsumerStatefulWidget {
   const RegisterScreen({super.key});
@@ -65,7 +66,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
     if (success && mounted) {
       Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (_) => const ClientHomeScreen()),
+        MaterialPageRoute(builder: (_) => const ClientHome()),
         (route) => false,
       );
     }

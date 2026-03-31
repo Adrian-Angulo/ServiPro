@@ -4,8 +4,8 @@ import 'package:servi_pro/core/theme/app_colors.dart';
 import 'package:servi_pro/core/theme/app_typography.dart';
 import 'package:servi_pro/features/auth/data/models/usuario.dart';
 import 'package:servi_pro/features/auth/presentation/providers/auth_provider.dart';
-import 'package:servi_pro/features/client/home/screens/client_home_screen.dart';
-import 'package:servi_pro/features/worket/home/screens/worker_home_screen.dart';
+import 'package:servi_pro/features/auth/presentation/screens/client_home.dart';
+import 'package:servi_pro/features/auth/presentation/screens/worket_home.dart';
 
 class LoginForm extends ConsumerStatefulWidget {
   const LoginForm({super.key});
@@ -47,11 +47,11 @@ class _LoginFormState extends ConsumerState<LoginForm> {
       if (user != null) {
         if (user.rol == Rol.cliente) {
           Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (_) => const ClientHomeScreen()),
+            MaterialPageRoute(builder: (_) => const ClientHome()),
           );
         } else {
           Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (_) => const WorkerHomeScreen()),
+            MaterialPageRoute(builder: (_) => const WorketHome()),
           );
         }
       }

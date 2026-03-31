@@ -37,14 +37,19 @@ class OnboardingPage extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Image.asset('assets/logos/logo.png', height: 90),
+          Image.asset('assets/logo.png', height: 90),
           const SizedBox(height: 8),
           RichText(
             text: TextSpan(
-              style: AppTypography.headlineMedium.copyWith(fontWeight: FontWeight.w800),
+              style: AppTypography.headlineMedium.copyWith(
+                fontWeight: FontWeight.w800,
+              ),
               children: [
                 const TextSpan(text: 'Servi'),
-                const TextSpan(text: 'Pro', style: TextStyle(color: AppColors.accent)),
+                const TextSpan(
+                  text: 'Pro',
+                  style: TextStyle(color: AppColors.accent),
+                ),
               ],
             ),
           ),
@@ -57,20 +62,27 @@ class OnboardingPage extends StatelessWidget {
           Text(
             data.titleHighlight,
             textAlign: TextAlign.center,
-            style: AppTypography.headlineMedium.copyWith(color: AppColors.primary, height: 1.3),
+            style: AppTypography.headlineMedium.copyWith(
+              color: AppColors.primary,
+              height: 1.3,
+            ),
           ),
           const SizedBox(height: 20),
           if (data.descriptionLink.isEmpty)
             Text(
               data.description,
               textAlign: TextAlign.center,
-              style: AppTypography.bodyMedium.copyWith(color: AppColors.grey700),
+              style: AppTypography.bodyMedium.copyWith(
+                color: AppColors.grey700,
+              ),
             )
           else
             RichText(
               textAlign: TextAlign.center,
               text: TextSpan(
-                style: AppTypography.bodyMedium.copyWith(color: AppColors.grey700),
+                style: AppTypography.bodyMedium.copyWith(
+                  color: AppColors.grey700,
+                ),
                 children: [
                   TextSpan(text: data.description),
                   TextSpan(
@@ -91,7 +103,11 @@ class OnboardingPage extends StatelessWidget {
             children: [
               _Badge(icon: data.badge1Icon, label: data.badge1Label),
               const SizedBox(width: 16),
-              _Badge(icon: data.badge2Icon, label: data.badge2Label, iconColor: AppColors.accent),
+              _Badge(
+                icon: data.badge2Icon,
+                label: data.badge2Label,
+                iconColor: AppColors.accent,
+              ),
             ],
           ),
         ],
@@ -105,7 +121,11 @@ class _Badge extends StatelessWidget {
   final String label;
   final Color iconColor;
 
-  const _Badge({required this.icon, required this.label, this.iconColor = AppColors.primary});
+  const _Badge({
+    required this.icon,
+    required this.label,
+    this.iconColor = AppColors.primary,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -114,14 +134,23 @@ class _Badge extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(24),
-        boxShadow: const [BoxShadow(color: AppColors.blackOverlay10, blurRadius: 8, offset: Offset(0, 2))],
+        boxShadow: const [
+          BoxShadow(
+            color: AppColors.blackOverlay10,
+            blurRadius: 8,
+            offset: Offset(0, 2),
+          ),
+        ],
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(icon, size: 18, color: iconColor),
           const SizedBox(width: 6),
-          Text(label, style: AppTypography.labelMedium.copyWith(color: AppColors.grey900)),
+          Text(
+            label,
+            style: AppTypography.labelMedium.copyWith(color: AppColors.grey900),
+          ),
         ],
       ),
     );
