@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:servi_pro/features/auth/presentation/providers/auth_provider.dart';
-import 'package:servi_pro/features/auth/presentation/screens/login_screen.dart';
-import 'package:servi_pro/features/requests/presentation/screens/register_request_screen.dart';
-import 'package:servi_pro/features/requests/presentation/screens/solicitudes_screen.dart';
 
 class ClientHome extends ConsumerStatefulWidget {
   const ClientHome({super.key});
@@ -14,36 +10,41 @@ class ClientHome extends ConsumerStatefulWidget {
 
 class _ClientHomeState extends ConsumerState<ClientHome> {
   int _selectedIndex = 0;
+  late final PageController _pageController = PageController(initialPage: 0);
+
+  final List<Widget> _pages = const [
+    Center(child: Text("Home")),
+    Center(child: Text("Solicitudes")),
+    Center(child: Text("Trabajadores")),
+    Center(child: Text("Perfil")),
+  ];
+
+  void _onTabTapped(int index) {
+    setState(() => _selectedIndex = index);
+    _pageController.animateToPage(
+      index,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final List<Widget> _pages = [
-      const Center(child: RegisterRequestScreen()),
-      const Center(child: SolicitudesScreen()),
-      const Center(child: Text("Trabajadores")),
-      Center(
-        child: ElevatedButton(
-          onPressed: () {
-            ref.read(authNotifierProvider.notifier).logout();
-            Navigator.pushReplacement(
-              context,
-              DialogRoute(
-                context: context,
-                builder: (context) => LoginScreen(),
-              ),
-            );
-          },
-          child: Text("Cerrar sesion"),
-        ),
-      ),
-    ];
-
     return Scaffold(
-      appBar: AppBar(title: const Text("Client Home")),
-      body: _pages[_selectedIndex],
+      body: PageView(
+        controller: _pageController,
+        onPageChanged: (index) => setState(() => _selectedIndex = index),
+        children: _pages,
+      ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
-        onTap: (index) => setState(() => _selectedIndex = index),
+        onTap: _onTabTapped,
         type: BottomNavigationBarType.fixed,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: "Inicio"),
