@@ -8,6 +8,7 @@ import 'package:servi_pro/features/requests/domain/entities/request_entity.dart'
 import 'package:servi_pro/features/requests/presentation/providers/request_filter_provider.dart';
 import 'package:servi_pro/features/requests/presentation/providers/request_notifier.dart';
 import 'package:servi_pro/features/requests/presentation/screens/create_request_screen.dart';
+import 'package:servi_pro/features/requests/presentation/screens/ver_detalles_solicitud_screen.dart';
 import 'package:servi_pro/features/requests/presentation/widgets/empty_requests_widget.dart';
 import 'package:servi_pro/features/requests/presentation/widgets/request_card.dart';
 import 'package:servi_pro/features/requests/presentation/widgets/request_filter_chip.dart';
@@ -314,14 +315,28 @@ class MisSolicitudesScreen extends ConsumerWidget {
                         final request = filteredRequests[index];
                         final uiStatus = _mapStatusToUI(request.status);
 
-                        return RequestCard(
-                          status: uiStatus,
-                          title: request.title,
-                          description: request.details,
-                          time: _formatTime(request.dateCreated),
-                          onCancel: uiStatus == 'Pendiente'
-                              ? () => _cancelRequest(context, ref, request.id!)
-                              : null,
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    VerDetallesSolicitudScreen(
+                                      request: request,
+                                    ),
+                              ),
+                            );
+                          },
+                          child: RequestCard(
+                            status: uiStatus,
+                            title: request.title,
+                            description: request.details,
+                            time: _formatTime(request.dateCreated),
+                            onCancel: uiStatus == 'Pendiente'
+                                ? () =>
+                                      _cancelRequest(context, ref, request.id!)
+                                : null,
+                          ),
                         );
                       },
                     ),
