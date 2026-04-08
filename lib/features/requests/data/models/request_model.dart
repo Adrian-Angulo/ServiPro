@@ -1,48 +1,38 @@
-class RequestModel {
-  String? id;
-  final String idClient;
-  final String title;
-  final int idTypeService;
-  final String details;
-  final String addres;
-  String status;
-  DateTime dateCreated;
+import 'package:servi_pro/features/requests/domain/entities/request_entity.dart';
 
-  DateTime? dateFinish;
-
+class RequestModel extends RequestEntity {
   RequestModel({
-    this.id,
-    required this.idClient,
-    required this.idTypeService,
-    required this.details,
-    required this.addres,
-    this.status = "pending",
-    DateTime? dateCreated,
-
-    this.dateFinish,
-    required this.title,
-  }) : dateCreated = dateCreated ?? DateTime.now();
+    super.id,
+    required super.idClient,
+    required super.idTypeService,
+    required super.details,
+    required super.addres,
+    required super.title,
+    super.status,
+    super.dateCreated,
+    super.dateFinish,
+  });
   factory RequestModel.fromMap(Map<String, dynamic> map) {
     return RequestModel(
       id: map['id'],
       idClient: map['idClient'],
-      idTypeService: map['idTypeService'] as int? ?? 0,
-      details: map['details'] as String? ?? '',
-      addres: map['addres'] as String? ?? '',
-      status: map['status'] as String,
+      title: map['title'],
+      idTypeService: map['idTypeService'],
+      details: map['details'],
+      addres: map['addres'],
+      status: map['status'],
       dateCreated: map['dateCreated'] != null
-          ? DateTime.parse(map['dateCreated'] as String)
+          ? DateTime.parse(map['dateCreated'])
           : DateTime.now(),
       dateFinish: map['dateFinish'] != null
-          ? DateTime.parse(map['dateFinish'] as String)
+          ? DateTime.parse(map['dateFinish'])
           : null,
-      title: map['title'] ?? "no definido",
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
-        'idClient': idClient,
+      'idClient': idClient,
       'title': title,
       'idTypeService': idTypeService,
       'details': details,
@@ -57,7 +47,7 @@ class RequestModel {
     String? id,
     String? idClient,
     String? title,
-    int? idTypeService,
+    String? idTypeService,
     String? details,
     String? addres,
     String? status,

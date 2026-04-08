@@ -1,8 +1,9 @@
-
-import 'package:servi_pro/features/requests/data/models/request_model.dart';
+import 'package:fpdart/fpdart.dart';
+import 'package:servi_pro/core/errors/failures.dart';
+import 'package:servi_pro/features/requests/domain/entities/request_entity.dart';
 
 abstract class RequestRepository {
-  Future<void> registerRequest(RequestModel request);
-  Future<List<RequestModel>> allRequest();
-  Future<void> deleteRequest(String id);
+  Future<Either<Failure, Unit>> registerRequest(RequestEntity request);
+  Future<Either<Failure, List<RequestEntity>>> allRequest();
+  Future<Either<Failure, Unit>> deleteRequest(String id);
 }

@@ -1,6 +1,6 @@
-import 'dart:io';
-
-import 'package:servi_pro/features/requests/data/models/request_model.dart';
+import 'package:fpdart/fpdart.dart';
+import 'package:servi_pro/core/errors/failures.dart';
+import 'package:servi_pro/features/requests/domain/entities/request_entity.dart';
 import 'package:servi_pro/features/requests/domain/repository/request_repository.dart';
 
 class RegisterUseCase {
@@ -8,15 +8,27 @@ class RegisterUseCase {
 
   RegisterUseCase(this._repository);
 
-  Future<void> call(RequestModel r) async {
-    try {
-      return await _repository.registerRequest(r);
-    } on SocketException {
-      throw Exception(
-        "Sin conexión a internet. Verifica tu red e intenta de nuevo.",
-      );
-    } catch (e) {
-      throw Exception("Error al crear la solicitud");
+  Future<Either<Failure, Unit>> call(RequestEntity request) async {
+    // Validaciones básicas
+    if (request.title.trim().isEmpty) {
+      return left(const ValidationFailure(message: 'El título es requerido'));
     }
+
+    if (request.details.trim().isEmpty) {
+      return left(
+        const ValidationFailure(message: 'La descripción es requerida'),
+      );
+    }
+
+    if (request.idTypeService.trim().isEmpty) {
+      return left(
+        const ValidationFailure(
+          message: 'Debes seleccionar un tipo de servicio',
+        ),
+      );
+    }
+
+    // Llamar al repositorio
+    return await _repository.registerRequest(request);
   }
 }

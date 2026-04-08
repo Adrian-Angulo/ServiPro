@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:servi_pro/core/theme/app_colors.dart';
 import 'package:servi_pro/core/theme/app_spacing.dart';
@@ -40,10 +39,6 @@ class TitleInputField extends StatelessWidget {
             ),
             const SizedBox(width: AppSpacing.sm),
             Text(labelText, style: AppTypography.labelLarge),
-            const Text(
-              ' *',
-              style: TextStyle(color: AppColors.error, fontSize: 16),
-            ),
           ],
         ),
         const SizedBox(height: AppSpacing.md),
