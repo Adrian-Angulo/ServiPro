@@ -5,6 +5,7 @@ import 'package:servi_pro/core/theme/app_colors.dart';
 import 'package:servi_pro/core/theme/app_spacing.dart';
 import 'package:servi_pro/core/theme/app_typography.dart';
 import 'package:servi_pro/features/requests/presentation/screens/create_request_screen.dart';
+import 'package:servi_pro/features/requests/presentation/screens/mis_solicitudes_screen.dart';
 
 class ClientHome extends ConsumerStatefulWidget {
   const ClientHome({super.key});
@@ -19,7 +20,7 @@ class _ClientHomeState extends ConsumerState<ClientHome> {
 
   final List<Widget> _pages = const [
     Center(child: HomeClientScreen()),
-    Center(child: Text("Solicitudes")),
+    Center(child: MisSolicitudesScreen()),
     Center(child: Text("Trabajadores")),
     Center(child: Text("Perfil")),
   ];

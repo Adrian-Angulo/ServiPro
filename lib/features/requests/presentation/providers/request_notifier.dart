@@ -6,12 +6,14 @@ import 'package:servi_pro/features/requests/data/repository/request_impl.dart';
 import 'package:servi_pro/features/requests/domain/entities/request_entity.dart';
 import 'package:servi_pro/features/requests/domain/repository/request_repository.dart';
 import 'package:servi_pro/features/requests/domain/useCase/deleted_request_use_case.dart';
+import 'package:servi_pro/features/requests/domain/useCase/get_all_requests_use_case.dart';
 import 'package:servi_pro/features/requests/domain/useCase/register_use_case.dart';
 
 class RequestNotifier extends AsyncNotifier<List<RequestEntity>> {
   @override
   FutureOr<List<RequestEntity>> build() async {
-    final result = await ref.read(requestRepositoryProvider).allRequest();
+    final useCase = ref.read(getAllRequestsUseCaseProvider);
+    final result = await useCase.call();
 
     return result.fold((failure) => throw failure, (requests) => requests);
   }
@@ -25,22 +27,13 @@ class RequestNotifier extends AsyncNotifier<List<RequestEntity>> {
 
     return result.fold(
       (failure) {
-        // Mantener el estado actual y retornar el error
         state = AsyncValue.error(failure, StackTrace.current);
         return failure;
       },
       (_) async {
         // Recargar la lista de solicitudes
-        final requestsResult = await ref
-            .read(requestRepositoryProvider)
-            .allRequest();
-
-        state = requestsResult.fold(
-          (failure) => AsyncValue.error(failure, StackTrace.current),
-          (requests) => AsyncValue.data(requests),
-        );
-
-        return null; // Sin error
+        await _reloadRequests();
+        return null;
       },
     );
   }
@@ -58,18 +51,26 @@ class RequestNotifier extends AsyncNotifier<List<RequestEntity>> {
         return failure;
       },
       (_) async {
-        final requestsResult = await ref
-            .read(requestRepositoryProvider)
-            .allRequest();
-
-        state = requestsResult.fold(
-          (failure) => AsyncValue.error(failure, StackTrace.current),
-          (requests) => AsyncValue.data(requests),
-        );
-
+        await _reloadRequests();
         return null;
       },
     );
+  }
+
+  Future<void> _reloadRequests() async {
+    final useCase = ref.read(getAllRequestsUseCaseProvider);
+    final result = await useCase.call();
+
+    state = result.fold(
+      (failure) => AsyncValue.error(failure, StackTrace.current),
+      (requests) => AsyncValue.data(requests),
+    );
+  }
+
+  // Método para refrescar manualmente
+  Future<void> refresh() async {
+    state = const AsyncValue.loading();
+    await _reloadRequests();
   }
 }
 
@@ -77,6 +78,11 @@ class RequestNotifier extends AsyncNotifier<List<RequestEntity>> {
 final requestRepositoryProvider = Provider<RequestRepository>(
   (ref) => RequestImpl(),
 );
+
+final getAllRequestsUseCaseProvider = Provider<GetAllRequestsUseCase>((ref) {
+  final repo = ref.read(requestRepositoryProvider);
+  return GetAllRequestsUseCase(repo);
+});
 
 final registerRequestUseCaseProvider = Provider<RegisterUseCase>((ref) {
   final repo = ref.read(requestRepositoryProvider);
