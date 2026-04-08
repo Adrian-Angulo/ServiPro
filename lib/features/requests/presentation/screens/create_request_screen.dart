@@ -234,7 +234,7 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
                     ),
 
                     LocationSection(addressController: addressController),
-                    const SizedBox(height: AppSpacing.xxl),
+                    const SizedBox(height: 80),
                   ],
                 ),
               ),

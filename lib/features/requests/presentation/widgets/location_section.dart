@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:servi_pro/core/theme/app_colors.dart';
 import 'package:servi_pro/core/theme/app_spacing.dart';
 import 'package:servi_pro/core/theme/app_typography.dart';
+import 'package:servi_pro/features/requests/presentation/screens/map_screen.dart';
 
 class LocationSection extends StatefulWidget {
   final TextEditingController addressController;
@@ -78,45 +79,7 @@ class _LocationSectionState extends State<LocationSection> {
             borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
             child: Stack(
               children: [
-                Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(AppSpacing.lg),
-                        decoration: const BoxDecoration(
-                          color: AppColors.primary,
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Icon(
-                          Icons.location_on,
-                          color: AppColors.onPrimary,
-                          size: AppSpacing.iconLg,
-                        ),
-                      ),
-                      const SizedBox(height: AppSpacing.md),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: AppSpacing.lg,
-                          vertical: AppSpacing.sm,
-                        ),
-                        decoration: BoxDecoration(
-                          color: AppColors.surface,
-                          borderRadius: BorderRadius.circular(
-                            AppSpacing.radiusFull,
-                          ),
-                        ),
-                        child: Text(
-                          'TU UBICACIÓN',
-                          style: AppTypography.labelSmall.copyWith(
-                            color: AppColors.primary,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                MapScreen(),
                 Positioned(
                   right: AppSpacing.lg,
                   bottom: AppSpacing.lg,
