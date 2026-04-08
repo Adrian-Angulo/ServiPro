@@ -6,7 +6,7 @@ abstract class AppColors {
   static const Color onPrimary = Color.fromRGBO(255, 255, 255, 1.0);
 
   // ── Accent ────────────────────────────────────────
-  static const Color accent = Color.fromRGBO(235, 110, 35, 1.0); // Orange
+  static const Color accent = Color.fromRGBO(242, 113, 39, 1); // Orange
   static const Color onAccent = Color.fromRGBO(255, 255, 255, 1.0);
 
   // ── Background ────────────────────────────────────

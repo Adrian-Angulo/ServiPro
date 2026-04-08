@@ -3,7 +3,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:servi_pro/core/theme/app_colors.dart';
 
 abstract class AppTypography {
-
   // ── Display ───────────────────────────────────────
   // Uso: Heroes, splash screens, números grandes
   static TextStyle displayLarge = GoogleFonts.nunito(
