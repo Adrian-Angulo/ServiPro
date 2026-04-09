@@ -332,7 +332,7 @@ class MisSolicitudesScreen extends ConsumerWidget {
                             title: request.title,
                             description: request.details,
                             time: _formatTime(request.dateCreated),
-                            onCancel: uiStatus == 'Pendiente'
+                            onPress: uiStatus == 'Pendiente'
                                 ? () =>
                                       _cancelRequest(context, ref, request.id!)
                                 : null,

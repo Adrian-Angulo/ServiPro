@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:servi_pro/core/theme/app_colors.dart';
 import 'package:servi_pro/core/theme/app_spacing.dart';
 import 'package:servi_pro/core/theme/app_typography.dart';
+import 'package:servi_pro/features/auth/presentation/providers/auth_provider.dart';
 import 'package:servi_pro/features/requests/domain/entities/request_entity.dart';
 import 'package:servi_pro/features/requests/presentation/providers/request_notifier.dart';
 import 'package:servi_pro/features/requests/presentation/widgets/detail_description_widget.dart';
@@ -148,6 +149,7 @@ class VerDetallesSolicitudScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final uiStatus = _mapStatusToUI(request.status);
     final isPending = uiStatus == 'Pendiente';
+    
 
     return Scaffold(
       backgroundColor: AppColors.background,

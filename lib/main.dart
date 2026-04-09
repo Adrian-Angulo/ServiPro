@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:servi_pro/core/theme/app_theme.dart';
 import 'package:servi_pro/features/auth/presentation/screens/client_home.dart';
+import 'package:servi_pro/features/auth/presentation/screens/login_screen.dart';
 import 'package:servi_pro/features/onboarding/screens/onboarding_screen.dart';
 import 'firebase_options.dart';
 
@@ -21,7 +22,7 @@ class MyApp extends StatelessWidget {
       title: 'ServiPro',
       theme: AppTheme.light,
       debugShowCheckedModeBanner: false,
-      home: const ClientHome(),
+      home: const OnboardingScreen(),
     );
   }
 }

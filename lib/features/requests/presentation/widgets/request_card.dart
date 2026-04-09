@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:servi_pro/core/theme/app_colors.dart';
 import 'package:servi_pro/core/theme/app_spacing.dart';
 import 'package:servi_pro/core/theme/app_typography.dart';
+import 'package:servi_pro/features/auth/presentation/providers/auth_provider.dart';
 
-class RequestCard extends StatelessWidget {
+class RequestCard extends ConsumerWidget {
   final String status;
   final String title;
   final String description;
   final String time;
-  final VoidCallback? onCancel;
+  final VoidCallback? onPress;
 
   const RequestCard({
     super.key,
@@ -16,7 +18,7 @@ class RequestCard extends StatelessWidget {
     required this.title,
     required this.description,
     required this.time,
-    this.onCancel,
+    this.onPress,
   });
 
   Color _getStatusColor() {
@@ -50,12 +52,12 @@ class RequestCard extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final statusColor = _getStatusColor();
-
+    final user = ref.watch(authNotifierProvider).value;
     return Card(
       elevation: 6,
-      
+
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
       ),
@@ -142,11 +144,11 @@ class RequestCard extends StatelessWidget {
                       const SizedBox(height: AppSpacing.lg),
 
                       // Botón de cancelar (alineado a la derecha)
-                      if (onCancel != null)
+                      if (onPress != null)
                         Align(
                           alignment: Alignment.centerRight,
                           child: ElevatedButton(
-                            onPressed: onCancel,
+                            onPressed: onPress,
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xFF1E3A5F),
                               foregroundColor: Colors.white,
@@ -162,7 +164,9 @@ class RequestCard extends StatelessWidget {
                               ),
                             ),
                             child: Text(
-                              'Cancelar Solicitud',
+                              user!.rol == 'cliente'
+                                  ? 'Cancelar Solicitud'
+                                  : 'Postularme',
                               style: AppTypography.labelLarge.copyWith(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w600,

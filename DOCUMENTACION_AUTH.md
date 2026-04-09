@@ -15,7 +15,7 @@
 El sistema de autenticación sigue una arquitectura limpia (Clean Architecture) con las siguientes capas:
 
 ```
-lib/features/auth/
+lib/features/request/
 ├── data/
 │   ├── models/          # Modelos de datos específicos de Firebase
 │   └── repositories/    # Implementación de repositorios

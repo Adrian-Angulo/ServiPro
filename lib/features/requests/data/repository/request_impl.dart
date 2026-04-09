@@ -62,7 +62,7 @@ class RequestImpl implements RequestRepository {
       return left(const NetworkFailure());
     } on FirebaseException catch (e) {
       return left(
-        FirebaseFailure(
+        FirebaseFailure(  
           message: 'Error al guardar: ${e.message ?? "Error desconocido"}',
           code: e.code,
         ),

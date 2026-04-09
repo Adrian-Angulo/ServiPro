@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:servi_pro/features/auth/presentation/providers/auth_provider.dart';
+import 'package:servi_pro/features/auth/presentation/screens/login_screen.dart';
 import 'package:servi_pro/features/requests/presentation/providers/request_notifier.dart';
+import 'package:servi_pro/features/requests/presentation/widgets/request_card.dart';
 
 class WorketHome extends StatelessWidget {
   const WorketHome({super.key});
@@ -20,11 +23,11 @@ class _WorketHomeStateful extends StatefulWidget {
 
 class _WorketHomeStatefulState extends State<_WorketHomeStateful> {
   int _currentIndex = 0;
-  final List<Widget> _pages = const [
-    Center(child: Text('Inicio')),
-    Center(child: SolicitudesWorkScreen()),
-    Center(child: Text('Postulaciones')),
-    Center(child: Text('Perfil')),
+  final List<Widget> _pages = [
+    const Center(child: Text('Inicio')),
+    const Center(child: SolicitudesWorkScreen()),
+    const Center(child: Text('Postulaciones')),
+    Perfil(),
   ];
 
   @override
@@ -53,8 +56,52 @@ class _WorketHomeStatefulState extends State<_WorketHomeStateful> {
   }
 }
 
+class Perfil extends ConsumerWidget {
+  const Perfil({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Center(
+      child: Center(
+        child: ElevatedButton(
+          onPressed: () async {
+            await ref.read(authNotifierProvider.notifier).logout();
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => LoginScreen()),
+            );
+          },
+          child: const Text("Cerrar sesion"),
+        ),
+      ),
+    );
+  }
+}
+
 class SolicitudesWorkScreen extends ConsumerWidget {
   const SolicitudesWorkScreen({super.key});
+
+  String _formatTime(DateTime dateCreated) {
+    final now = DateTime.now();
+    final difference = now.difference(dateCreated);
+
+    if (difference.inSeconds < 60) return 'Hace un momento';
+    if (difference.inMinutes < 60) {
+      return 'Hace ${difference.inMinutes} ${difference.inMinutes == 1 ? "minuto" : "minutos"}';
+    }
+    if (difference.inHours < 24) {
+      return 'Hace ${difference.inHours} ${difference.inHours == 1 ? "hora" : "horas"}';
+    }
+    if (difference.inDays < 7) {
+      return 'Hace ${difference.inDays} ${difference.inDays == 1 ? "día" : "días"}';
+    }
+    if (difference.inDays < 30) {
+      final weeks = (difference.inDays / 7).floor();
+      return 'Hace $weeks ${weeks == 1 ? "semana" : "semanas"}';
+    }
+    final months = (difference.inDays / 30).floor();
+    return 'Hace $months ${months == 1 ? "mes" : "meses"}';
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -86,67 +133,16 @@ class SolicitudesWorkScreen extends ConsumerWidget {
             separatorBuilder: (_, __) => const SizedBox(height: 8),
             itemBuilder: (context, index) {
               final request = data[index];
-              return Card(
-                elevation: 2,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: ListTile(
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
-                  ),
-                  leading: CircleAvatar(
-                    backgroundColor: Theme.of(
-                      context,
-                    ).colorScheme.primaryContainer,
-                    child: Icon(
-                      Icons.work_outline,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                  ),
-                  title: Text(
-                    request.title,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        request.details,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      const SizedBox(height: 4),
-                      Row(
-                        children: [
-                          const Icon(
-                            Icons.location_on_outlined,
-                            size: 14,
-                            color: Colors.grey,
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            request.addres,
-                            style: const TextStyle(
-                              fontSize: 12,
-                              color: Colors.grey,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  trailing: ElevatedButton(
-                    onPressed: () {
-                      // TODO: navegar al detalle o postularse
-                    },
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
-                    ),
-                    child: const Text('Postularme'),
-                  ),
-                ),
+              return RequestCard(
+                status: request.status,
+                title: request.title,
+                description: request.details,
+                time: _formatTime(request.dateCreated),
+                onPress: () {
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text("Postulacion")));
+                },
               );
             },
           ),
