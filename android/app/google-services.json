@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "24631487108",
-    "project_id": "servipro-3589c",
-    "storage_bucket": "servipro-3589c.firebasestorage.app"
+    "project_number": "283567111668",
+    "project_id": "servipro-46fad",
+    "storage_bucket": "servipro-46fad.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:24631487108:android:a8bbb56ee05d874e6370d1",
+        "mobilesdk_app_id": "1:283567111668:android:f89bcff03b6f27687f8da1",
         "android_client_info": {
           "package_name": "com.example.servi_pro"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyA1Ngf8If0zQqofj8jHfIrpfax7pDEkf6g"
+          "current_key": "AIzaSyBiPqUm_xuO8BaH2aRt40OSUY3nICthEGo"
         }
       ],
       "services": {

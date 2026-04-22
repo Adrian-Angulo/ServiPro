@@ -55,7 +55,7 @@ class RequestImpl implements RequestRepository {
         dateFinish: request.dateFinish,
       );
 
-      await _firestore.collection('requests').add(requestModel.toMap());
+      await _firestore.collection('requests').add(requestModel.toMap(), );
 
       return right(unit);
     } on SocketException {

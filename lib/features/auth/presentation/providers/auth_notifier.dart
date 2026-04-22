@@ -48,8 +48,7 @@ class AuthNotifier extends AsyncNotifier<Usuario?> {
         ciudad: ciudad,
       );
 
-      // Auto login después del registro
-      final user = await repository.login(email: email, password: password);
+      final user = await repository.getCurrentUser();
       state = AsyncValue.data(user);
       return true;
     } catch (e, stack) {
@@ -83,8 +82,7 @@ class AuthNotifier extends AsyncNotifier<Usuario?> {
         sobreMi: sobreMi,
       );
 
-      // Auto login después del registro
-      final user = await repository.login(email: email, password: password);
+      final user = await repository.getCurrentUser();
       state = AsyncValue.data(user);
       return true;
     } catch (e, stack) {
