@@ -4,6 +4,7 @@ import 'package:servi_pro/core/theme/app_colors.dart';
 import 'package:servi_pro/core/theme/app_typography.dart';
 import 'package:servi_pro/features/auth/presentation/screens/login_screen.dart';
 import 'package:servi_pro/features/onboarding/providers/onboarding_provider.dart';
+import 'package:servi_pro/features/onboarding/providers/onboarding_seen_provider.dart';
 import 'package:servi_pro/features/onboarding/widgets/onboarding_page.dart';
 import 'package:servi_pro/features/onboarding/widgets/page_indicator.dart';
 
@@ -22,7 +23,8 @@ const _pages = [
   OnboardingData(
     title: 'Agenda en minutos,\nsin llamadas',
     titleHighlight: 'sin complicaciones.',
-    description: 'Solicita el servicio que necesitas y recibe\nconfirmación al instante.',
+    description:
+        'Solicita el servicio que necesitas y recibe\nconfirmación al instante.',
     descriptionLink: '',
     descriptionEnd: '',
     badge1Icon: Icons.calendar_today_rounded,
@@ -33,7 +35,8 @@ const _pages = [
   OnboardingData(
     title: 'Profesionales\nverificados,',
     titleHighlight: 'resultados reales.',
-    description: 'Todos nuestros expertos pasan por un proceso\nde verificación para tu tranquilidad.',
+    description:
+        'Todos nuestros expertos pasan por un proceso\nde verificación para tu tranquilidad.',
     descriptionLink: '',
     descriptionEnd: '',
     badge1Icon: Icons.star_rounded,
@@ -59,16 +62,20 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     super.dispose();
   }
 
-  void _next(int currentPage) {
+  Future<void> _next(int currentPage) async {
     if (currentPage < _pages.length - 1) {
       _controller.nextPage(
         duration: const Duration(milliseconds: 350),
         curve: Curves.easeInOut,
       );
     } else {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) => const LoginScreen()),
-      );
+      final repo = ref.read(onboardingRepositoryProvider);
+      await repo.markOnboardingComplete();
+      if (mounted) {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (_) => const LoginScreen()),
+        );
+      }
     }
   }
 
@@ -85,7 +92,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
               child: PageView.builder(
                 controller: _controller,
                 itemCount: _pages.length,
-                onPageChanged: (i) => ref.read(onboardingProvider.notifier).setPage(i),
+                onPageChanged: (i) =>
+                    ref.read(onboardingProvider.notifier).setPage(i),
                 itemBuilder: (_, i) => OnboardingPage(data: _pages[i]),
               ),
             ),
@@ -101,12 +109,19 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primary,
                     foregroundColor: AppColors.onPrimary,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(32),
+                    ),
                     elevation: 0,
                   ),
                   child: Text(
-                    currentPage < _pages.length - 1 ? 'Siguiente →' : 'Empezar →',
-                    style: AppTypography.labelLarge.copyWith(color: AppColors.onPrimary, fontSize: 16),
+                    currentPage < _pages.length - 1
+                        ? 'Siguiente →'
+                        : 'Empezar →',
+                    style: AppTypography.labelLarge.copyWith(
+                      color: AppColors.onPrimary,
+                      fontSize: 16,
+                    ),
                   ),
                 ),
               ),
@@ -115,11 +130,18 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.location_on_rounded, size: 14, color: AppColors.accent),
+                const Icon(
+                  Icons.location_on_rounded,
+                  size: 14,
+                  color: AppColors.accent,
+                ),
                 const SizedBox(width: 4),
                 Text(
                   'PASTO, NARIÑO',
-                  style: AppTypography.labelSmall.copyWith(color: AppColors.grey500, letterSpacing: 1.2),
+                  style: AppTypography.labelSmall.copyWith(
+                    color: AppColors.grey500,
+                    letterSpacing: 1.2,
+                  ),
                 ),
               ],
             ),
