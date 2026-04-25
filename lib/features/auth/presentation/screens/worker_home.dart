@@ -10,7 +10,7 @@ import 'package:servi_pro/features/auth/presentation/providers/auth_provider.dar
 import 'package:servi_pro/features/auth/presentation/screens/login_screen.dart';
 import 'package:servi_pro/features/requests/presentation/providers/request_notifier.dart';
 import 'package:servi_pro/features/requests/presentation/screens/ver_detalles_solicitud_screen.dart';
-import 'package:servi_pro/features/requests/presentation/widgets/request_card.dart';
+import 'package:servi_pro/features/requests/presentation/widgets/cards/request_card.dart';
 
 class WorketHome extends ConsumerStatefulWidget {
   const WorketHome({super.key});

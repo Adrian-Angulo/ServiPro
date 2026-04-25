@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:servi_pro/features/requests/presentation/widgets/title_input_field.dart';
+import 'package:servi_pro/core/widgets/inputs/title_input_field.dart';
 
 class RequestDetailsSection extends StatefulWidget {
   final TextEditingController titleController;

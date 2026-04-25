@@ -5,16 +5,15 @@ import 'package:servi_pro/core/theme/app_spacing.dart';
 import 'package:servi_pro/core/theme/app_typography.dart';
 import 'package:servi_pro/core/utils/status_mapper.dart';
 import 'package:servi_pro/core/utils/time_formatter.dart';
-import 'package:servi_pro/features/application/domain/entities/application_entity.dart';
 import 'package:servi_pro/features/application/presentation/providers/add_application_notifier.dart';
 import 'package:servi_pro/features/application/presentation/providers/application_providers.dart';
-import 'package:servi_pro/features/application/presentation/widgets/postulacion_card.dart';
+import 'package:servi_pro/features/application/presentation/widgets/cards/postulacion_card.dart';
 import 'package:servi_pro/features/auth/presentation/providers/auth_provider.dart';
 import 'package:servi_pro/features/requests/domain/entities/request_entity.dart';
 import 'package:servi_pro/features/requests/presentation/providers/request_notifier.dart';
-import 'package:servi_pro/features/requests/presentation/widgets/detail_description_widget.dart';
-import 'package:servi_pro/features/requests/presentation/widgets/detail_header_widget.dart';
-import 'package:servi_pro/features/requests/presentation/widgets/detail_location_widget.dart';
+import 'package:servi_pro/core/widgets/detail/detail_description_widget.dart';
+import 'package:servi_pro/core/widgets/detail/detail_header_widget.dart';
+import 'package:servi_pro/core/widgets/detail/detail_location_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class VerDetallesSolicitudScreen extends ConsumerWidget {
@@ -173,6 +172,7 @@ class VerDetallesSolicitudScreen extends ConsumerWidget {
                     status: uiStatus,
                     timeAgo: _formatTimeAgo(request.dateCreated),
                     date: request.dateCreated,
+                    typeService: request.idTypeService,
                   ),
                   Padding(
                     padding: const EdgeInsets.all(AppSpacing.screenHorizontal),
@@ -188,22 +188,6 @@ class VerDetallesSolicitudScreen extends ConsumerWidget {
                         const SizedBox(height: AppSpacing.lg),
 
                         // Categoría
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.category_outlined,
-                              size: 18,
-                              color: AppColors.grey500,
-                            ),
-                            const SizedBox(width: AppSpacing.sm),
-                            Text(
-                              request.idTypeService,
-                              style: AppTypography.bodyMedium.copyWith(
-                                color: AppColors.grey700,
-                              ),
-                            ),
-                          ],
-                        ),
 
                         // Sección postulaciones (solo vista cliente)
                         if (!isWorkerView) ...[

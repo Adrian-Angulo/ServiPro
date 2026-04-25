@@ -33,8 +33,9 @@ class PostulacionCard extends StatelessWidget {
         boxShadow: [
           BoxShadow(
             color: AppColors.blackOverlay10,
-            blurRadius: 8,
-            offset: const Offset(0, 2),
+            blurRadius: 12,
+            spreadRadius: 1,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
@@ -43,20 +44,31 @@ class PostulacionCard extends StatelessWidget {
         children: [
           // Avatar + info
           Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // Avatar placeholder
+              // Avatar with gradient background
               Container(
-                width: 72,
-                height: 72,
+                width: 76,
+                height: 76,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFE8D5B7),
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFFE8D5B7), Color(0xFFD4B896)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
                   borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color(0xFF8B6914).withOpacity(0.2),
+                      blurRadius: 6,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
                 ),
-                child: Icon(
-                  Icons.person,
-                  size: 40,
-                  color: const Color(0xFF8B6914),
+                child: const Icon(
+                  Icons.person_rounded,
+                  size: 42,
+                  color: Color(0xFF8B6914),
                 ),
               ),
               const SizedBox(width: AppSpacing.lg),
@@ -70,26 +82,40 @@ class PostulacionCard extends StatelessWidget {
                         fontWeight: FontWeight.w800,
                         color: AppColors.grey900,
                         fontSize: 18,
+                        letterSpacing: -0.3,
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.xs),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 3,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppColors.grey900.withOpacity(0.06),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: Text(
+                        especialidad.toUpperCase(),
+                        style: AppTypography.labelSmall.copyWith(
+                          color: AppColors.grey700,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 0.8,
+                          fontSize: 12,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                     const SizedBox(height: AppSpacing.xs),
                     Row(
                       children: [
-                        Text(
-                          especialidad.toUpperCase(),
-                          style: AppTypography.labelSmall.copyWith(
-                            color: AppColors.grey500,
-                            fontWeight: FontWeight.w600,
-                            letterSpacing: 0.5,
-                          ),
-                        ),
-                        const SizedBox(width: AppSpacing.sm),
                         const Icon(
-                          Icons.star,
+                          Icons.star_rounded,
                           color: Color(0xFFFFC107),
-                          size: 16,
+                          size: 17,
                         ),
-                        const SizedBox(width: 2),
+                        const SizedBox(width: 3),
                         Text(
                           rating.toStringAsFixed(1),
                           style: AppTypography.labelMedium.copyWith(
@@ -97,14 +123,14 @@ class PostulacionCard extends StatelessWidget {
                             fontWeight: FontWeight.w700,
                           ),
                         ),
+                        const SizedBox(width: AppSpacing.xs),
+                        Text(
+                          '· $trabajosRealizados trabajos',
+                          style: AppTypography.bodySmall.copyWith(
+                            color: AppColors.grey500,
+                          ),
+                        ),
                       ],
-                    ),
-                    const SizedBox(height: AppSpacing.xs),
-                    Text(
-                      '($trabajosRealizados trabajos)',
-                      style: AppTypography.bodySmall.copyWith(
-                        color: AppColors.grey500,
-                      ),
                     ),
                   ],
                 ),
@@ -114,16 +140,32 @@ class PostulacionCard extends StatelessWidget {
 
           const SizedBox(height: AppSpacing.lg),
 
+          // Divider
+          Divider(
+            color: AppColors.grey900.withOpacity(0.07),
+            thickness: 1,
+            height: 1,
+          ),
+
+          const SizedBox(height: AppSpacing.lg),
+
           // Botones
           Row(
             children: [
               Expanded(
-                child: ElevatedButton(
+                child: OutlinedButton.icon(
                   onPressed: onWhatsApp,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.accent,
-                    foregroundColor: Colors.white,
-                    elevation: 0,
+                  icon: const Icon(Icons.chat_rounded, size: 18),
+                  label: Text(
+                    'WhatsApp',
+                    style: AppTypography.labelLarge.copyWith(
+                      color: AppColors.accent,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: AppColors.accent,
+                    side: BorderSide(color: AppColors.accent, width: 1.5),
                     padding: const EdgeInsets.symmetric(
                       vertical: AppSpacing.md,
                     ),
@@ -131,19 +173,20 @@ class PostulacionCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
                     ),
                   ),
-                  child: Text(
-                    'WhatsApp',
+                ),
+              ),
+              const SizedBox(width: AppSpacing.md),
+              Expanded(
+                child: ElevatedButton.icon(
+                  onPressed: onAceptar,
+                  icon: const Icon(Icons.check_circle_rounded, size: 18),
+                  label: Text(
+                    'Aceptar',
                     style: AppTypography.labelLarge.copyWith(
                       color: Colors.white,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
-                ),
-              ),
-              const SizedBox(width: AppSpacing.md),
-              Expanded(
-                child: ElevatedButton(
-                  onPressed: onAceptar,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF1E3A5F),
                     foregroundColor: Colors.white,
@@ -153,13 +196,6 @@ class PostulacionCard extends StatelessWidget {
                     ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-                    ),
-                  ),
-                  child: Text(
-                    'Aceptar',
-                    style: AppTypography.labelLarge.copyWith(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w700,
                     ),
                   ),
                 ),

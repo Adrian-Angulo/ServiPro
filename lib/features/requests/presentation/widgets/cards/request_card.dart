@@ -4,7 +4,7 @@ import 'package:servi_pro/core/theme/app_colors.dart';
 import 'package:servi_pro/core/theme/app_spacing.dart';
 import 'package:servi_pro/core/theme/app_typography.dart';
 import 'package:servi_pro/features/auth/presentation/providers/auth_provider.dart';
-import 'package:servi_pro/features/auth/presentation/screens/seleccion_rol_screen.dart';
+
 
 class RequestCard extends ConsumerWidget {
   final String status;
@@ -113,7 +113,7 @@ class RequestCard extends ConsumerWidget {
                       // Título
                       Text(
                         title,
-                        style: AppTypography.titleMedium.copyWith(
+                        style: AppTypography.titleLarge.copyWith(
                           fontWeight: FontWeight.w700,
                           color: AppColors.grey900,
                           height: 1.3,

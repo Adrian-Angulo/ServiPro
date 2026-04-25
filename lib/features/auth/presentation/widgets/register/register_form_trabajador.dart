@@ -2,7 +2,8 @@
 import 'package:servi_pro/core/theme/app_colors.dart';
 import 'package:servi_pro/core/theme/app_spacing.dart';
 import 'package:servi_pro/core/theme/app_typography.dart';
-import 'package:servi_pro/features/auth/presentation/widgets/fiel_label.dart';
+import 'package:servi_pro/features/auth/presentation/widgets/common/field_label.dart';
+
 
 class RegistroTrabajadorForm {
   final nombreCompleto = TextEditingController();

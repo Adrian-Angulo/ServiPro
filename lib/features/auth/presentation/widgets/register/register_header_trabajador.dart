@@ -2,7 +2,7 @@
 import 'package:servi_pro/core/theme/app_colors.dart';
 import 'package:servi_pro/core/theme/app_spacing.dart';
 import 'package:servi_pro/core/theme/app_typography.dart';
-import 'package:servi_pro/features/auth/presentation/widgets/auth_widgets.dart';
+import 'package:servi_pro/features/auth/presentation/widgets/common/auth_widgets.dart';
 
 class RegistroTrabajadorHeader extends StatelessWidget {
   const RegistroTrabajadorHeader({super.key});

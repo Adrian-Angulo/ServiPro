@@ -11,9 +11,9 @@ import 'package:servi_pro/features/requests/presentation/providers/request_filte
 import 'package:servi_pro/features/requests/presentation/providers/request_notifier.dart';
 import 'package:servi_pro/features/requests/presentation/screens/create_request_screen.dart';
 import 'package:servi_pro/features/requests/presentation/screens/ver_detalles_solicitud_screen.dart';
-import 'package:servi_pro/features/requests/presentation/widgets/empty_requests_widget.dart';
-import 'package:servi_pro/features/requests/presentation/widgets/request_card.dart';
-import 'package:servi_pro/features/requests/presentation/widgets/request_filter_chip.dart';
+import 'package:servi_pro/core/widgets/empty/empty_requests_widget.dart';
+import 'package:servi_pro/features/requests/presentation/widgets/cards/request_card.dart';
+import 'package:servi_pro/core/widgets/filters/request_filter_chip.dart';
 
 class MisSolicitudesScreen extends ConsumerWidget {
   const MisSolicitudesScreen({super.key});

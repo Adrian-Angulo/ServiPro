@@ -7,9 +7,9 @@ import 'package:servi_pro/core/theme/app_typography.dart';
 import 'package:servi_pro/features/auth/presentation/providers/auth_provider.dart';
 import 'package:servi_pro/features/requests/domain/entities/request_entity.dart';
 import 'package:servi_pro/features/requests/presentation/providers/request_notifier.dart';
-import 'package:servi_pro/features/requests/presentation/widgets/action_buttons.dart';
-import 'package:servi_pro/features/requests/presentation/widgets/service_category_card.dart';
-import 'package:servi_pro/features/requests/presentation/widgets/title_input_field.dart';
+import 'package:servi_pro/features/requests/presentation/widgets/form/action_buttons.dart';
+import 'package:servi_pro/features/requests/presentation/widgets/cards/service_category_card.dart';
+import 'package:servi_pro/core/widgets/inputs/title_input_field.dart';
 
 class CreateRequestScreen extends ConsumerStatefulWidget {
   const CreateRequestScreen({super.key});

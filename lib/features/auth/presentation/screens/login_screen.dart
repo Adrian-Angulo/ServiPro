@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:servi_pro/core/theme/app_colors.dart';
-import 'package:servi_pro/features/auth/presentation/widgets/login_footer.dart';
-import 'package:servi_pro/features/auth/presentation/widgets/login_form.dart';
-import 'package:servi_pro/features/auth/presentation/widgets/login_header.dart';
+import 'package:servi_pro/features/auth/presentation/widgets/login/login_footer.dart';
+import 'package:servi_pro/features/auth/presentation/widgets/login/login_form.dart';
+import 'package:servi_pro/features/auth/presentation/widgets/login/login_header.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
