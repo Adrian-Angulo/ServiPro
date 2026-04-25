@@ -1,6 +1,6 @@
 import 'package:fpdart/fpdart.dart';
 import 'package:servi_pro/core/errors/failures.dart';
-import 'package:servi_pro/features/application/domain/entites/application_entity.dart';
+import 'package:servi_pro/features/application/domain/entities/application_entity.dart';
 
 abstract class ApplicationRepository {
   Future<Either<Failure, Unit>> addAplication({

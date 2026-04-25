@@ -5,9 +5,9 @@ import 'package:mockito/mockito.dart';
 import 'package:servi_pro/core/errors/failures.dart';
 import 'package:servi_pro/features/requests/domain/entities/request_entity.dart';
 import 'package:servi_pro/features/requests/domain/repository/request_repository.dart';
-import 'package:servi_pro/features/requests/domain/useCase/deleted_request_use_case.dart';
-import 'package:servi_pro/features/requests/domain/useCase/get_all_requests_use_case.dart';
-import 'package:servi_pro/features/requests/domain/useCase/register_use_case.dart';
+import 'package:servi_pro/features/requests/domain/usecases/deleted_request_use_case.dart';
+import 'package:servi_pro/features/requests/domain/usecases/get_all_requests_use_case.dart';
+import 'package:servi_pro/features/requests/domain/usecases/register_use_case.dart';
 
 import 'request_test.mocks.dart';
 
@@ -94,8 +94,6 @@ void main() {
         },
       );
 
-
-
       test('deberia filtrar solicitudes por usuario correctamente', () async {
         // Arrange: Crear solicitudes de diferentes usuarios
         final requestsList = [
@@ -147,8 +145,6 @@ void main() {
           verify(mockRepository.deleteRequest(requestId)).called(1);
         },
       );
-
-      
     });
   });
 }

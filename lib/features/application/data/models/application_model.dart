@@ -1,4 +1,4 @@
-import 'package:servi_pro/features/application/domain/entites/application_entity.dart';
+import 'package:servi_pro/features/application/domain/entities/application_entity.dart';
 
 class ApplicationModel extends ApplicationEntity {
   ApplicationModel({

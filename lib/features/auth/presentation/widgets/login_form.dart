@@ -5,7 +5,7 @@ import 'package:servi_pro/core/theme/app_typography.dart';
 import 'package:servi_pro/features/auth/data/models/usuario.dart';
 import 'package:servi_pro/features/auth/presentation/providers/auth_provider.dart';
 import 'package:servi_pro/features/auth/presentation/screens/client_home.dart';
-import 'package:servi_pro/features/auth/presentation/screens/worket_home.dart';
+import 'package:servi_pro/features/auth/presentation/screens/worker_home.dart';
 
 import 'package:servi_pro/features/auth/presentation/screens/forgot_password_screen.dart';
 

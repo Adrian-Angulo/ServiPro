@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:servi_pro/features/application/presentation/riverpood/providers.dart';
+import 'package:servi_pro/features/application/presentation/providers/application_providers.dart';
 
 class Addapplicationnotifier extends AsyncNotifier<void> {
   @override

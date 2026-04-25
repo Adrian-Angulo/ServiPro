@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:servi_pro/data/factories/app_user_factory.dart';
+import 'package:servi_pro/core/utils/app_user_factory.dart';
 import 'package:servi_pro/features/auth/data/models/cliente.dart';
 import 'package:servi_pro/features/auth/data/models/trabajador.dart';
 import 'package:servi_pro/features/auth/data/models/usuario.dart';

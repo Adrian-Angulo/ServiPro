@@ -5,9 +5,9 @@ import 'package:servi_pro/core/errors/failures.dart';
 import 'package:servi_pro/features/requests/data/repository/request_impl.dart';
 import 'package:servi_pro/features/requests/domain/entities/request_entity.dart';
 import 'package:servi_pro/features/requests/domain/repository/request_repository.dart';
-import 'package:servi_pro/features/requests/domain/useCase/deleted_request_use_case.dart';
-import 'package:servi_pro/features/requests/domain/useCase/get_all_requests_use_case.dart';
-import 'package:servi_pro/features/requests/domain/useCase/register_use_case.dart';
+import 'package:servi_pro/features/requests/domain/usecases/deleted_request_use_case.dart';
+import 'package:servi_pro/features/requests/domain/usecases/get_all_requests_use_case.dart';
+import 'package:servi_pro/features/requests/domain/usecases/register_use_case.dart';
 
 class RequestNotifier extends AsyncNotifier<List<RequestEntity>> {
   @override
