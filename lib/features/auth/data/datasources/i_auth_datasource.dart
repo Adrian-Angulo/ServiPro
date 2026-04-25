@@ -1,8 +1,9 @@
+import 'package:servi_pro/core/domain/enums/rol.dart';
 import 'package:servi_pro/features/auth/data/models/usuario.dart';
 
-abstract class AuthRepository {
-  Future<void> registerCliente({
-    required String id,
+abstract class IAuthDatasource {
+  Future<Usuario> login({required String email, required String password});
+  Future<Usuario> registerCliente({
     required String email,
     required String password,
     required String nombre,
@@ -12,7 +13,6 @@ abstract class AuthRepository {
     required Rol rol,
     required String ciudad,
   });
-
   Future<void> registerTrabajador({
     required String email,
     required String password,
@@ -23,10 +23,7 @@ abstract class AuthRepository {
     required String cedula,
     required String sobreMi,
   });
-
-  Future<Usuario> login({required String email, required String password});
-  Future<void> logout();
   Future<Usuario?> getCurrentUser();
-  Future<Usuario?> getWorkerById({required String id});
+  Future<void> logout();
   Future<void> sendPasswordReset({required String email});
 }

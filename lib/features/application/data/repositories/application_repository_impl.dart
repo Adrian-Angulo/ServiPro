@@ -1,5 +1,4 @@
-import 'package:fpdart/src/either.dart';
-import 'package:fpdart/src/unit.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:servi_pro/core/errors/failures.dart';
 import 'package:servi_pro/features/application/data/datasources/application_firebase_datasource.dart';
 import 'package:servi_pro/features/application/domain/entities/application_entity.dart';

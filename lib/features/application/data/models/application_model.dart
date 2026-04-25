@@ -1,11 +1,16 @@
 import 'package:servi_pro/features/application/domain/entities/application_entity.dart';
 
-class ApplicationModel extends ApplicationEntity {
+class ApplicationModel {
+  final String id;
+  final String idworker;
+  final String idrequest;
+  final String state;
+
   ApplicationModel({
-    required super.id,
-    required super.idworker,
-    required super.idrequest,
-    required super.state,
+    required this.id,
+    required this.idworker,
+    required this.idrequest,
+    required this.state,
   });
 
   Map<String, dynamic> toMap() {
@@ -14,19 +19,10 @@ class ApplicationModel extends ApplicationEntity {
 
   factory ApplicationModel.fromMap(Map<String, dynamic> map) {
     return ApplicationModel(
-      id: map['id'],
-      idworker: map['idworker'],
-      idrequest: map['idrequest'],
-      state: map['state'],
-    );
-  }
-
-  ApplicationEntity toEntity() {
-    return ApplicationEntity(
-      id: id,
-      idworker: idworker,
-      idrequest: idrequest,
-      state: state,
+      id: map['id'] ?? '',
+      idworker: map['idworker'] ?? '',
+      idrequest: map['idrequest'] ?? '',
+      state: map['state'] ?? 'pending',
     );
   }
 
@@ -36,6 +32,15 @@ class ApplicationModel extends ApplicationEntity {
       idworker: entity.idworker,
       idrequest: entity.idrequest,
       state: entity.state,
+    );
+  }
+
+  ApplicationEntity toEntity() {
+    return ApplicationEntity(
+      id: id,
+      idworker: idworker,
+      idrequest: idrequest,
+      state: state,
     );
   }
 }

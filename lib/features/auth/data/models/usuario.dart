@@ -1,4 +1,6 @@
-enum Rol { cliente, trabajador }
+import 'package:servi_pro/core/domain/enums/rol.dart';
+
+export 'package:servi_pro/core/domain/enums/rol.dart';
 
 class Usuario {
   final String id;
@@ -6,6 +8,10 @@ class Usuario {
   final String contrasena;
   final Rol rol;
 
-  Usuario({ required this.email, required this.contrasena, required this.rol, required this.id});
-  
+  Usuario({
+    required this.id,
+    required this.email,
+    required this.contrasena,
+    required this.rol,
+  });
 }

@@ -3,17 +3,18 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:servi_pro/core/theme/app_colors.dart';
 import 'package:servi_pro/core/theme/app_spacing.dart';
 import 'package:servi_pro/core/theme/app_typography.dart';
+import 'package:servi_pro/core/utils/status_mapper.dart';
+import 'package:servi_pro/core/utils/time_formatter.dart';
+import 'package:servi_pro/features/application/domain/entities/application_entity.dart';
 import 'package:servi_pro/features/application/presentation/providers/add_application_notifier.dart';
 import 'package:servi_pro/features/application/presentation/providers/application_providers.dart';
 import 'package:servi_pro/features/application/presentation/widgets/postulacion_card.dart';
-import 'package:servi_pro/features/auth/data/models/trabajador.dart';
 import 'package:servi_pro/features/auth/presentation/providers/auth_provider.dart';
 import 'package:servi_pro/features/requests/domain/entities/request_entity.dart';
 import 'package:servi_pro/features/requests/presentation/providers/request_notifier.dart';
 import 'package:servi_pro/features/requests/presentation/widgets/detail_description_widget.dart';
 import 'package:servi_pro/features/requests/presentation/widgets/detail_header_widget.dart';
 import 'package:servi_pro/features/requests/presentation/widgets/detail_location_widget.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class VerDetallesSolicitudScreen extends ConsumerWidget {
@@ -28,41 +29,9 @@ class VerDetallesSolicitudScreen extends ConsumerWidget {
     this.alreadyApplied = false,
   });
 
-  String _mapStatusToUI(String status) {
-    switch (status.toLowerCase()) {
-      case 'pending':
-        return 'Pendiente';
-      case 'in_progress':
-        return 'En progreso';
-      case 'completed':
-        return 'Completado';
-      case 'cancelled':
-        return 'Cancelado';
-      default:
-        return 'Pendiente';
-    }
-  }
-
-  String _formatTimeAgo(DateTime dateCreated) {
-    final now = DateTime.now();
-    final difference = now.difference(dateCreated);
-    if (difference.inSeconds < 60) return 'Hace un momento';
-    if (difference.inMinutes < 60) {
-      return 'Hace ${difference.inMinutes} ${difference.inMinutes == 1 ? "minuto" : "minutos"}';
-    }
-    if (difference.inHours < 24) {
-      return 'Hace ${difference.inHours} ${difference.inHours == 1 ? "hora" : "horas"}';
-    }
-    if (difference.inDays < 7) {
-      return 'Hace ${difference.inDays} ${difference.inDays == 1 ? "día" : "días"}';
-    }
-    if (difference.inDays < 30) {
-      final weeks = (difference.inDays / 7).floor();
-      return 'Hace $weeks ${weeks == 1 ? "semana" : "semanas"}';
-    }
-    final months = (difference.inDays / 30).floor();
-    return 'Hace $months ${months == 1 ? "mes" : "meses"}';
-  }
+  String _mapStatusToUI(String status) => StatusMapper.toUI(status);
+  String _formatTimeAgo(DateTime dateCreated) =>
+      TimeFormatter.timeAgo(dateCreated);
 
   Future<void> _cancelRequest(BuildContext context, WidgetRef ref) async {
     final confirmed = await showDialog<bool>(
@@ -384,18 +353,8 @@ class _ClientCancelButton extends StatelessWidget {
   }
 }
 
-// Provider para obtener datos del trabajador por ID
-final _workerDataProvider = FutureProvider.family<Trabajador?, String>((
-  ref,
-  workerId,
-) async {
-  final doc = await FirebaseFirestore.instance
-      .collection('users')
-      .doc(workerId)
-      .get();
-  if (!doc.exists) return null;
-  return Trabajador.fromMap(doc.data()!);
-});
+// Provider para obtener datos del trabajador por ID — usa el usecase de auth
+// (eliminado acceso directo a Firestore)
 
 class _PostulacionesSection extends ConsumerWidget {
   final String requestId;
@@ -467,7 +426,7 @@ class _PostulacionItem extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final workerAsync = ref.watch(_workerDataProvider(application.idworker));
+    final workerAsync = ref.watch(workerByIdProvider(application.idworker));
 
     return workerAsync.when(
       loading: () => const SizedBox(

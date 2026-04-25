@@ -4,6 +4,7 @@ import 'package:servi_pro/core/theme/app_colors.dart';
 import 'package:servi_pro/core/theme/app_spacing.dart';
 import 'package:servi_pro/core/theme/app_typography.dart';
 import 'package:servi_pro/features/auth/presentation/providers/auth_provider.dart';
+import 'package:servi_pro/features/auth/presentation/screens/seleccion_rol_screen.dart';
 
 class RequestCard extends ConsumerWidget {
   final String status;
@@ -24,7 +25,7 @@ class RequestCard extends ConsumerWidget {
   Color _getStatusColor() {
     switch (status.toLowerCase()) {
       case 'pendiente':
-        return const Color(0xFF1E3A5F); // Azul oscuro
+        return const Color(0xFF1E3A5F);
       case 'en progreso':
         return AppColors.accent;
       case 'completado':
@@ -55,9 +56,11 @@ class RequestCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final statusColor = _getStatusColor();
     final user = ref.watch(authNotifierProvider).value;
+
+    if (user == null) return const SizedBox.shrink();
+
     return Card(
       elevation: 6,
-
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
       ),
@@ -84,7 +87,6 @@ class RequestCard extends ConsumerWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          // Estado
                           Row(
                             children: [
                               Icon(
@@ -102,14 +104,6 @@ class RequestCard extends ConsumerWidget {
                                 ),
                               ),
                             ],
-                          ),
-
-                          // Tiempo
-                          Text(
-                            time,
-                            style: AppTypography.bodySmall.copyWith(
-                              color: AppColors.grey500,
-                            ),
                           ),
                         ],
                       ),
@@ -143,7 +137,7 @@ class RequestCard extends ConsumerWidget {
 
                       const SizedBox(height: AppSpacing.lg),
 
-                      // Botón de cancelar (alineado a la derecha)
+                      // Botón de acción (alineado a la derecha)
                       if (onPress != null)
                         Align(
                           alignment: Alignment.centerRight,
@@ -164,7 +158,7 @@ class RequestCard extends ConsumerWidget {
                               ),
                             ),
                             child: Text(
-                              user!.rol == 'cliente'
+                              user.rol.name == "cliente"
                                   ? 'Cancelar Solicitud'
                                   : 'Postularme',
                               style: AppTypography.labelLarge.copyWith(

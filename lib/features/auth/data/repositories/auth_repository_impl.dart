@@ -149,4 +149,13 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<void> sendPasswordReset({required String email}) async {
     await _firebaseAuth.sendPasswordResetEmail(email: email);
   }
+
+  //Obtener trabajador por ID-------------------------------
+
+  @override
+  Future<Usuario?> getWorkerById({required String id}) async {
+    final doc = await _firestore.collection('users').doc(id).get();
+    if (!doc.exists) return null;
+    return AppUserFactory.fromMap(doc.data()!);
+  }
 }

@@ -1,8 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:servi_pro/features/application/data/datasources/i_application_datasource.dart';
 import 'package:servi_pro/features/application/data/models/application_model.dart';
 import 'package:servi_pro/features/application/domain/entities/application_entity.dart';
 
-class ApplicationFirebaseDatasource {
+class ApplicationFirebaseDatasource implements IApplicationDatasource {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   Future<void> addAplication(ApplicationEntity application) async {
