@@ -5,16 +5,16 @@ import 'package:servi_pro/core/theme/app_spacing.dart';
 import 'package:servi_pro/core/theme/app_typography.dart';
 import 'package:servi_pro/core/utils/status_mapper.dart';
 import 'package:servi_pro/core/utils/time_formatter.dart';
+import 'package:servi_pro/core/widgets/buttons/bottom_action_button.dart';
 import 'package:servi_pro/features/application/presentation/providers/add_application_notifier.dart';
 import 'package:servi_pro/features/application/presentation/providers/application_providers.dart';
-import 'package:servi_pro/features/application/presentation/widgets/cards/postulacion_card.dart';
+import 'package:servi_pro/features/application/presentation/widgets/postulaciones_section.dart';
 import 'package:servi_pro/features/auth/presentation/providers/auth_provider.dart';
 import 'package:servi_pro/features/requests/domain/entities/request_entity.dart';
 import 'package:servi_pro/features/requests/presentation/providers/request_notifier.dart';
 import 'package:servi_pro/core/widgets/detail/detail_description_widget.dart';
 import 'package:servi_pro/core/widgets/detail/detail_header_widget.dart';
 import 'package:servi_pro/core/widgets/detail/detail_location_widget.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class VerDetallesSolicitudScreen extends ConsumerWidget {
   final RequestEntity request;
@@ -192,7 +192,7 @@ class VerDetallesSolicitudScreen extends ConsumerWidget {
                         // Sección postulaciones (solo vista cliente)
                         if (!isWorkerView) ...[
                           const SizedBox(height: AppSpacing.xl),
-                          _PostulacionesSection(requestId: request.id!),
+                          PostulacionesSection(requestId: request.id!),
                         ],
 
                         const SizedBox(height: 80),
@@ -206,240 +206,23 @@ class VerDetallesSolicitudScreen extends ConsumerWidget {
 
           // Botón inferior — varía según el rol
           if (isWorkerView)
-            _WorkerActionButton(
-              alreadyApplied: alreadyApplied,
-              isPending: isPending,
+            BottomActionButton(
+              label: alreadyApplied ? 'Ya te postulaste' : 'Postularme',
+              onPressed: alreadyApplied || !isPending
+                  ? null
+                  : () => _applyToRequest(context, ref),
               isLoading: isLoading,
-              onApply: () => _applyToRequest(context, ref),
+              backgroundColor: AppColors.primary,
             )
           else if (isPending)
-            _ClientCancelButton(
+            BottomActionButton(
+              label: 'Cancelar Solicitud',
+              onPressed: () => _cancelRequest(context, ref),
               isLoading: isLoading,
-              onCancel: () => _cancelRequest(context, ref),
-            ),
-        ],
-      ),
-    );
-  }
-}
-
-class _WorkerActionButton extends StatelessWidget {
-  final bool alreadyApplied;
-  final bool isPending;
-  final bool isLoading;
-  final VoidCallback onApply;
-
-  const _WorkerActionButton({
-    required this.alreadyApplied,
-    required this.isPending,
-    required this.isLoading,
-    required this.onApply,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.screenHorizontal),
-      decoration: BoxDecoration(
-        color: AppColors.background,
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.blackOverlay10,
-            blurRadius: 8,
-            offset: const Offset(0, -2),
-          ),
-        ],
-      ),
-      child: SafeArea(
-        child: SizedBox(
-          width: double.infinity,
-          child: ElevatedButton(
-            onPressed: alreadyApplied || !isPending || isLoading
-                ? null
-                : onApply,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primary,
-              disabledBackgroundColor: AppColors.grey300,
-              elevation: 2,
-              padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-              ),
-            ),
-            child: isLoading
-                ? const SizedBox(
-                    height: 20,
-                    width: 20,
-                    child: CircularProgressIndicator(
-                      color: Colors.white,
-                      strokeWidth: 2.5,
-                    ),
-                  )
-                : Text(
-                    alreadyApplied ? 'Ya te postulaste' : 'Postularme',
-                    style: AppTypography.labelLarge.copyWith(
-                      color: alreadyApplied ? AppColors.grey500 : Colors.white,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _ClientCancelButton extends StatelessWidget {
-  final bool isLoading;
-  final VoidCallback onCancel;
-
-  const _ClientCancelButton({required this.isLoading, required this.onCancel});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.screenHorizontal),
-      decoration: BoxDecoration(
-        color: AppColors.background,
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.blackOverlay10,
-            blurRadius: 8,
-            offset: const Offset(0, -2),
-          ),
-        ],
-      ),
-      child: SafeArea(
-        child: SizedBox(
-          width: double.infinity,
-          child: ElevatedButton(
-            onPressed: isLoading ? null : onCancel,
-            style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.accent,
-              foregroundColor: AppColors.onError,
-              elevation: 2,
-              padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-              ),
             ),
-            child: Text(
-              'Cancelar Solicitud',
-              style: AppTypography.labelLarge.copyWith(
-                color: AppColors.onError,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-          ),
-        ),
+        ],
       ),
-    );
-  }
-}
-
-// Provider para obtener datos del trabajador por ID — usa el usecase de auth
-// (eliminado acceso directo a Firestore)
-
-class _PostulacionesSection extends ConsumerWidget {
-  final String requestId;
-
-  const _PostulacionesSection({required this.requestId});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final applicationsAsync = ref.watch(
-      applicationsByRequestProvider(requestId),
-    );
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Postulaciones',
-          style: AppTypography.titleLarge.copyWith(
-            color: AppColors.grey900,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-        const SizedBox(height: AppSpacing.lg),
-        applicationsAsync.when(
-          loading: () => const Center(child: CircularProgressIndicator()),
-          error: (_, __) => Text(
-            'Error al cargar postulaciones',
-            style: AppTypography.bodyMedium.copyWith(color: AppColors.error),
-          ),
-          data: (applications) {
-            if (applications.isEmpty) {
-              return Text(
-                'Aún no hay postulaciones para esta solicitud',
-                style: AppTypography.bodyMedium.copyWith(
-                  color: AppColors.grey500,
-                ),
-              );
-            }
-            return ListView.separated(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: applications.length,
-              separatorBuilder: (_, __) =>
-                  const SizedBox(height: AppSpacing.lg),
-              itemBuilder: (context, index) {
-                final app = applications[index];
-                return _PostulacionItem(application: app);
-              },
-            );
-          },
-        ),
-      ],
-    );
-  }
-}
-
-class _PostulacionItem extends ConsumerWidget {
-  final dynamic application;
-
-  const _PostulacionItem({required this.application});
-
-  Future<void> _openWhatsApp(String celular) async {
-    final number = celular.replaceAll(RegExp(r'\D'), '');
-    final uri = Uri.parse('https://wa.me/57$number');
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(uri, mode: LaunchMode.externalApplication);
-    }
-  }
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final workerAsync = ref.watch(workerByIdProvider(application.idworker));
-
-    return workerAsync.when(
-      loading: () => const SizedBox(
-        height: 80,
-        child: Center(child: CircularProgressIndicator()),
-      ),
-      error: (_, __) => const SizedBox.shrink(),
-      data: (worker) {
-        if (worker == null) return const SizedBox.shrink();
-        return PostulacionCard(
-          nombreTrabajador: worker.nombreCompleto,
-          especialidad: worker.sobreMi.isNotEmpty
-              ? worker.sobreMi
-              : 'Trabajador',
-          rating: 4.9,
-          trabajosRealizados: 42,
-          celular: worker.celular,
-          onWhatsApp: () => _openWhatsApp(worker.celular),
-          onAceptar: () {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('${worker.nombreCompleto} aceptado'),
-                backgroundColor: AppColors.primary,
-                behavior: SnackBarBehavior.floating,
-              ),
-            );
-          },
-        );
-      },
     );
   }
 }
