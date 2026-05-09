@@ -4,10 +4,10 @@ import 'package:servi_pro/core/theme/app_colors.dart';
 import 'package:servi_pro/core/theme/app_typography.dart';
 import 'package:servi_pro/features/auth/data/models/usuario.dart';
 import 'package:servi_pro/features/auth/presentation/providers/auth_provider.dart';
-import 'package:servi_pro/features/auth/presentation/screens/client_home.dart';
-import 'package:servi_pro/features/auth/presentation/screens/worker_home.dart';
+import 'package:servi_pro/features/auth/presentation/screens/client/client_home.dart';
+import 'package:servi_pro/features/auth/presentation/screens/worker/worker_home.dart';
 
-import 'package:servi_pro/features/auth/presentation/screens/forgot_password_screen.dart';
+import 'package:servi_pro/features/auth/presentation/screens/restar_password/forgot_password_screen.dart';
 
 class LoginForm extends ConsumerStatefulWidget {
   const LoginForm({super.key});

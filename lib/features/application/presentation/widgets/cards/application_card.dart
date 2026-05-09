@@ -2,157 +2,129 @@ import 'package:flutter/material.dart';
 import 'package:servi_pro/core/theme/app_colors.dart';
 import 'package:servi_pro/core/theme/app_spacing.dart';
 import 'package:servi_pro/core/theme/app_typography.dart';
-import 'package:servi_pro/core/utils/status_mapper.dart';
 import 'package:servi_pro/features/application/domain/entities/application_entity.dart';
 import 'package:servi_pro/features/requests/domain/entities/request_entity.dart';
 
 /// Card que muestra una postulación del trabajador con el estado y datos de la solicitud.
 class ApplicationCard extends StatelessWidget {
   final ApplicationEntity application;
-  final RequestEntity? request;
+  final RequestEntity request;
   final VoidCallback? onTap;
 
   const ApplicationCard({
     super.key,
     required this.application,
-    this.request,
+    required this.request,
     this.onTap,
   });
 
-  Color _stateColor(String state) {
-    switch (state.toLowerCase()) {
-      case 'pending':
-        return const Color(0xFF1E3A5F);
-      case 'in_progress':
-        return AppColors.accent;
-      case 'completed':
-        return AppColors.primary;
-      case 'cancelled':
-        return AppColors.grey500;
-      default:
-        return const Color(0xFF1E3A5F);
-    }
-  }
 
-  IconData _stateIcon(String state) {
-    switch (state.toLowerCase()) {
-      case 'pending':
-        return Icons.schedule;
-      case 'in_progress':
-        return Icons.build;
-      case 'completed':
-        return Icons.check_circle;
-      case 'cancelled':
-        return Icons.cancel;
-      default:
-        return Icons.schedule;
+  String _stateApplication(ApplicationStatus application) {
+    switch (application) {
+      case ApplicationStatus.aceptado:
+        return "ACEPTADO";
+      case ApplicationStatus.postulado:
+        return "POSTULADO";
+      case ApplicationStatus.noDisponible:
+        return "NO DISPONIBLE";
+      case ApplicationStatus.finalizado:
+        return "FINALIZADO";
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final stateLabel = StatusMapper.toUI(application.state);
+    /* final stateLabel = StatusMapper.toUI(application.state);
     final color = _stateColor(application.state);
-    final icon = _stateIcon(application.state);
+    final icon = _stateIcon(application.state); */
 
     return Card(
       elevation: 6,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
       ),
-      child: InkWell(
+      child: ClipRRect(
         borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-        onTap: onTap,
         child: IntrinsicHeight(
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Container(width: 6, color: color),
+              // Barra vertical de estado (izquierda)
+              Container(
+                width: 6,
+                decoration: BoxDecoration(color: Color(0xFF1E3A5F)),
+              ),
+
+              // Contenido principal
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.all(AppSpacing.lg),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              Icon(icon, size: 18, color: color),
-                              const SizedBox(width: AppSpacing.sm),
-                              Text(
-                                stateLabel.toUpperCase(),
-                                style: AppTypography.labelMedium.copyWith(
-                                  color: color,
-                                  fontWeight: FontWeight.w700,
-                                  letterSpacing: 0.5,
-                                ),
-                              ),
-                            ],
-                          ),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: AppSpacing.md,
-                              vertical: AppSpacing.xs,
-                            ),
-                            decoration: BoxDecoration(
-                              color: AppColors.primaryOverlay10,
-                              borderRadius: BorderRadius.circular(
-                                AppSpacing.radiusFull,
-                              ),
-                            ),
-                            child: Text(
-                              'Postulación',
-                              style: AppTypography.labelSmall.copyWith(
-                                color: AppColors.primary,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: AppSpacing.md),
+                      // Header: Estado y tiempo
                       Text(
-                        request?.title ??
-                            'Solicitud #${application.idrequest.substring(0, 6)}',
-                        style: AppTypography.titleMedium.copyWith(
+                        _stateApplication(application.state),
+                        style: TextStyle(
+                          color: Color.fromRGBO(100, 116, 139, 1),
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+
+                      const SizedBox(height: AppSpacing.md),
+
+                      // Título
+                      Text(
+                        request.title,
+                        style: AppTypography.titleLarge.copyWith(
                           fontWeight: FontWeight.w700,
                           color: AppColors.grey900,
+                          height: 1.3,
                         ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      if (request != null) ...[
-                        const SizedBox(height: AppSpacing.sm),
-                        Text(
-                          request!.details,
-                          style: AppTypography.bodyMedium.copyWith(
-                            color: AppColors.grey700,
-                          ),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
+
+                      const SizedBox(height: AppSpacing.xs),
+
+                      // Descripción
+                      Text(
+                        request.addres,
+                        style: AppTypography.bodyMedium.copyWith(
+                          color: AppColors.grey700,
+                          height: 1.5,
                         ),
-                        const SizedBox(height: AppSpacing.sm),
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.location_on_outlined,
-                              size: 14,
-                              color: AppColors.grey500,
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: AppSpacing.xs),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: ElevatedButton(
+                          onPressed: () {},
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF1E3A5F),
+                            foregroundColor: Colors.white,
+                            elevation: 0,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: AppSpacing.xl,
+                              vertical: AppSpacing.xs,
                             ),
-                            const SizedBox(width: AppSpacing.xs),
-                            Expanded(
-                              child: Text(
-                                request!.addres,
-                                style: AppTypography.bodySmall.copyWith(
-                                  color: AppColors.grey500,
-                                ),
-                                overflow: TextOverflow.ellipsis,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                AppSpacing.radiusMd,
                               ),
                             ),
-                          ],
+                          ),
+                          child: Text(
+                            'Cancelar Solicitud',
+                            style: AppTypography.labelLarge.copyWith(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
                         ),
-                      ],
+                      ),
                     ],
                   ),
                 ),

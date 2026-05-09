@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:servi_pro/core/theme/app_colors.dart';
 import 'package:servi_pro/core/theme/app_typography.dart';
 import 'package:servi_pro/features/auth/presentation/screens/login_screen.dart';
-import 'package:servi_pro/features/onboarding/providers/onboarding_provider.dart';
-import 'package:servi_pro/features/onboarding/providers/onboarding_seen_provider.dart';
+import 'package:servi_pro/features/onboarding/onboarding_provider.dart';
+import 'package:servi_pro/features/onboarding/onboarding_service.dart';
+
 import 'package:servi_pro/features/onboarding/widgets/onboarding_page.dart';
 import 'package:servi_pro/features/onboarding/widgets/page_indicator.dart';
 
@@ -55,6 +57,7 @@ class OnboardingScreen extends ConsumerStatefulWidget {
 
 class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   final _controller = PageController();
+  int _currentPage = 0;
 
   @override
   void dispose() {
@@ -62,27 +65,23 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     super.dispose();
   }
 
-  Future<void> _next(int currentPage) async {
-    if (currentPage < _pages.length - 1) {
+  Future<void> _next() async {
+    if (_currentPage < _pages.length - 1) {
       _controller.nextPage(
         duration: const Duration(milliseconds: 350),
         curve: Curves.easeInOut,
       );
     } else {
-      final repo = ref.read(onboardingRepositoryProvider);
-      await repo.markOnboardingComplete();
+
+      await ref.read(onboardingNotifier.notifier).completeOnboarding();
       if (mounted) {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => const LoginScreen()),
-        );
+        context.go('/login');
       }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final currentPage = ref.watch(onboardingProvider);
-
     return Scaffold(
       backgroundColor: AppColors.backgroundSoft,
       body: SafeArea(
@@ -92,12 +91,11 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
               child: PageView.builder(
                 controller: _controller,
                 itemCount: _pages.length,
-                onPageChanged: (i) =>
-                    ref.read(onboardingProvider.notifier).setPage(i),
+                onPageChanged: (i) => setState(() => _currentPage = i),
                 itemBuilder: (_, i) => OnboardingPage(data: _pages[i]),
               ),
             ),
-            PageIndicator(count: _pages.length, current: currentPage),
+            PageIndicator(count: _pages.length, current: _currentPage),
             const SizedBox(height: 24),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 32),
@@ -105,7 +103,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                 width: double.infinity,
                 height: 54,
                 child: ElevatedButton(
-                  onPressed: () => _next(currentPage),
+                  onPressed: _next,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primary,
                     foregroundColor: AppColors.onPrimary,
@@ -115,7 +113,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                     elevation: 0,
                   ),
                   child: Text(
-                    currentPage < _pages.length - 1
+                    _currentPage < _pages.length - 1
                         ? 'Siguiente →'
                         : 'Empezar →',
                     style: AppTypography.labelLarge.copyWith(

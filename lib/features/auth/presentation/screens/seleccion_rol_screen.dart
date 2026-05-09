@@ -2,8 +2,8 @@
 import 'package:servi_pro/core/theme/app_colors.dart';
 import 'package:servi_pro/core/theme/app_spacing.dart';
 import 'package:servi_pro/core/theme/app_typography.dart';
-import 'package:servi_pro/features/auth/presentation/screens/register_screen.dart';
-import 'package:servi_pro/features/auth/presentation/screens/registro_trabajador_screen.dart';
+import 'package:servi_pro/features/auth/presentation/screens/client/register_screen.dart';
+import 'package:servi_pro/features/auth/presentation/screens/worker/registro_trabajador_screen.dart';
 import 'package:servi_pro/features/auth/presentation/widgets/common/auth_widgets.dart';
 
 enum Rol { cliente, trabajador }

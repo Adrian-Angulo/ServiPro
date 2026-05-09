@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:servi_pro/core/theme/app_colors.dart';
-import 'package:servi_pro/core/theme/app_theme.dart';
-import 'package:servi_pro/features/auth/presentation/screens/login_screen.dart';
-import 'package:servi_pro/features/onboarding/providers/onboarding_seen_provider.dart';
-import 'package:servi_pro/features/onboarding/screens/onboarding_screen.dart';
+import 'package:servi_pro/core/routes/app_router.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -19,9 +15,16 @@ class MyApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isFirstLaunch = ref.watch(isFirstLaunchProvider);
+    final router = ref.watch(appRouterProvider);
 
-    return MaterialApp(
+    return MaterialApp.router(
+      title: "ServiPro",
+      theme: ThemeData.light(),
+      debugShowCheckedModeBanner: false,
+      routerConfig: router,
+    );
+
+    /*     return MaterialApp(
       title: 'ServiPro',
       theme: AppTheme.light,
       debugShowCheckedModeBanner: false,
@@ -38,7 +41,6 @@ class MyApp extends ConsumerWidget {
         data: (isFirst) =>
             isFirst ? const OnboardingScreen() : const LoginScreen(),
       ),
-    );
+    ); */
   }
 }
-

@@ -4,7 +4,7 @@ class ApplicationModel {
   final String id;
   final String idworker;
   final String idrequest;
-  final String state;
+  final ApplicationStatus state;
 
   ApplicationModel({
     required this.id,

@@ -18,7 +18,7 @@ class ApplicationRepositoryImpl implements ApplicationRepository {
         id: "",
         idworker: idWorker,
         idrequest: idRequest,
-        state: "pending",
+        state: ApplicationStatus.postulado,
       );
       await firebaseDatasource.addAplication(application);
       return Right(unit);

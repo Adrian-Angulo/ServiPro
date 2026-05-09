@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:servi_pro/core/theme/app_colors.dart';
 import 'package:servi_pro/features/application/presentation/providers/application_providers.dart';
-import 'package:servi_pro/features/application/presentation/screens/mis_postulaciones_screen.dart';
+import 'package:servi_pro/features/auth/presentation/screens/worker/mis_postulaciones_screen.dart';
 import 'package:servi_pro/features/auth/presentation/providers/auth_provider.dart';
-import 'package:servi_pro/features/auth/presentation/screens/login_screen.dart';
-import 'package:servi_pro/features/requests/presentation/screens/solicitudes_worker_screen.dart';
+import 'package:servi_pro/features/auth/presentation/screens/worker/profile_worker.dart';
+import 'package:servi_pro/features/auth/presentation/screens/worker/solicitudes_worker_screen.dart';
 
 class WorketHome extends ConsumerStatefulWidget {
   const WorketHome({super.key});
@@ -34,7 +34,7 @@ class _WorketHomeState extends ConsumerState<WorketHome> {
       const Center(child: Text('Inicio')),
       const SolicitudesWorkerScreen(),
       const MisPostulacionesScreen(),
-      const _Perfil(),
+      const ProfileWorker(),
     ];
 
     return Scaffold(
@@ -45,41 +45,30 @@ class _WorketHomeState extends ConsumerState<WorketHome> {
         type: BottomNavigationBarType.fixed,
         selectedItemColor: AppColors.primary,
         unselectedItemColor: AppColors.grey500,
+        showUnselectedLabels: true,
+        elevation: 8,
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Inicio'),
           BottomNavigationBarItem(
-            icon: Icon(Icons.inbox),
-            label: 'Solicitudes',
+            icon: Icon(Icons.grid_view_outlined),
+            activeIcon: Icon(Icons.grid_view_rounded),
+            label: 'Inicio',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.work),
-            label: 'Postulaciones',
+            icon: Icon(Icons.near_me_outlined),
+            activeIcon: Icon(Icons.near_me_rounded),
+            label: 'Aplicaciones',
           ),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Perfil'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.notifications_active_outlined),
+            activeIcon: Icon(Icons.notifications_active_sharp),
+            label: 'Alertas',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person_outline),
+            activeIcon: Icon(Icons.person),
+            label: 'Perfil',
+          ),
         ],
-      ),
-    );
-  }
-}
-
-class _Perfil extends ConsumerWidget {
-  const _Perfil();
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Center(
-      child: ElevatedButton(
-        onPressed: () async {
-          await ref.read(authNotifierProvider.notifier).logout();
-          if (context.mounted) {
-            Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (_) => const LoginScreen()),
-              (route) => false,
-            );
-          }
-        },
-        child: const Text('Cerrar sesión'),
       ),
     );
   }

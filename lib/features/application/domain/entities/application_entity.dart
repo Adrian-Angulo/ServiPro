@@ -1,8 +1,16 @@
+enum ApplicationStatus {
+  postulado,
+  aceptado,
+  noDisponible,
+  finalizado,
+}
+
 class ApplicationEntity {
   final String id;
   final String idworker;
   final String idrequest;
-  final String state;
+  final ApplicationStatus state;
+
 
   ApplicationEntity({
     required this.id,

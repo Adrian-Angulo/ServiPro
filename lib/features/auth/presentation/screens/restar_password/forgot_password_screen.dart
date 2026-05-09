@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:servi_pro/core/theme/app_colors.dart';
 import 'package:servi_pro/core/theme/app_typography.dart';
-import 'package:servi_pro/features/auth/presentation/screens/verify_code_screen.dart';
+import 'package:servi_pro/features/auth/presentation/screens/restar_password/verify_code_screen.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});

@@ -5,6 +5,7 @@ import 'package:servi_pro/core/theme/app_spacing.dart';
 import 'package:servi_pro/core/theme/app_typography.dart';
 import 'package:servi_pro/core/utils/status_mapper.dart';
 import 'package:servi_pro/core/utils/time_formatter.dart';
+import 'package:servi_pro/core/widgets/filters/list_request_filter_chip.dart';
 import 'package:servi_pro/features/auth/presentation/providers/auth_provider.dart';
 import 'package:servi_pro/features/requests/domain/entities/request_entity.dart';
 import 'package:servi_pro/features/requests/presentation/providers/request_filter_provider.dart';
@@ -13,14 +14,11 @@ import 'package:servi_pro/features/requests/presentation/screens/create_request_
 import 'package:servi_pro/features/requests/presentation/screens/ver_detalles_solicitud_screen.dart';
 import 'package:servi_pro/core/widgets/empty/empty_requests_widget.dart';
 import 'package:servi_pro/features/requests/presentation/widgets/cards/request_card.dart';
-import 'package:servi_pro/core/widgets/filters/request_filter_chip.dart';
 
 class MisSolicitudesScreen extends ConsumerWidget {
   const MisSolicitudesScreen({super.key});
 
   String _mapStatusToUI(String status) => StatusMapper.toUI(status);
-  String _formatTime(DateTime dateCreated) =>
-      TimeFormatter.timeAgo(dateCreated);
 
   // Filtrar solicitudes
   List<RequestEntity> _filterRequests(
@@ -205,30 +203,9 @@ class MisSolicitudesScreen extends ConsumerWidget {
 
                 final counts = _countByStatus(requests, userId);
 
-                return Container(
-                  height: 60,
-                  padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
-                  child: ListView.separated(
-                    scrollDirection: Axis.horizontal,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.screenHorizontal,
-                    ),
-                    itemCount: RequestFilterType.values.length,
-                    separatorBuilder: (context, index) =>
-                        const SizedBox(width: AppSpacing.md),
-                    itemBuilder: (context, index) {
-                      final filter = RequestFilterType.values[index];
-                      return RequestFilterChip(
-                        label: filter.label,
-                        isSelected: selectedFilter == filter,
-                        count: counts[filter],
-                        onTap: () {
-                          ref.read(requestFilterProvider.notifier).state =
-                              filter;
-                        },
-                      );
-                    },
-                  ),
+                return ListRequestFilterChip(
+                  selectedFilter: selectedFilter,
+                  counts: counts,
                 );
               },
               loading: () => const SizedBox(height: 60),
@@ -295,10 +272,7 @@ class MisSolicitudesScreen extends ConsumerWidget {
                             );
                           },
                           child: RequestCard(
-                            status: uiStatus,
-                            title: request.title,
-                            description: request.details,
-                            time: _formatTime(request.dateCreated),
+                            requestEntity: request,
                             onPress: uiStatus == 'Pendiente'
                                 ? () =>
                                       _cancelRequest(context, ref, request.id!)

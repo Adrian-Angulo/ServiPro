@@ -5,7 +5,7 @@ import 'package:servi_pro/core/theme/app_spacing.dart';
 import 'package:servi_pro/core/theme/app_typography.dart';
 import 'package:servi_pro/features/auth/presentation/providers/auth_provider.dart';
 import 'package:servi_pro/features/auth/presentation/screens/login_screen.dart';
-import 'package:servi_pro/features/auth/presentation/screens/worker_home.dart';
+import 'package:servi_pro/features/auth/presentation/screens/worker/worker_home.dart';
 import 'package:servi_pro/features/auth/presentation/widgets/common/auth_widgets.dart';
 
 class RegistroTrabajadorScreen extends ConsumerStatefulWidget {

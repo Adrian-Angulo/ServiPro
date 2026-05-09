@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:servi_pro/core/theme/app_colors.dart';
 import 'package:servi_pro/core/theme/app_typography.dart';
-import 'package:servi_pro/features/auth/presentation/screens/password_reset_success_screen.dart';
+import 'package:servi_pro/features/auth/presentation/screens/restar_password/password_reset_success_screen.dart';
 
 class VerifyCodeScreen extends StatefulWidget {
   final String email;
