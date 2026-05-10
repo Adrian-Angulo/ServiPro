@@ -12,7 +12,15 @@ class AuthRepositoryImpl implements AuthRepository {
 
   AuthRepositoryImpl();
 
-  Stream<User?> get authStateChanges => _firebaseAuth.authStateChanges();
+  @override
+  Stream<Usuario?> authStateChanges() {
+    return _firebaseAuth.authStateChanges().asyncMap((usu) async {
+      if (usu == null) return null;
+      final doc = await _firestore.collection('users').doc(usu.uid).get();
+      if (!doc.exists || doc.data() == null) return null;
+      return AppUserFactory.fromMap(doc.data()!);
+    });
+  }
 
   //Registro Cliente----------------------------------------
   @override

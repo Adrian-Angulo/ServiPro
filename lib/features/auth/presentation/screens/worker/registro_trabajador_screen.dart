@@ -1,11 +1,12 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:servi_pro/core/theme/app_colors.dart';
 import 'package:servi_pro/core/theme/app_spacing.dart';
 import 'package:servi_pro/core/theme/app_typography.dart';
 import 'package:servi_pro/features/auth/presentation/providers/auth_provider.dart';
 import 'package:servi_pro/features/auth/presentation/screens/login_screen.dart';
-import 'package:servi_pro/features/auth/presentation/screens/worker/worker_home.dart';
+import 'package:servi_pro/features/auth/presentation/screens/worker/worker_shell.dart';
 import 'package:servi_pro/features/auth/presentation/widgets/common/auth_widgets.dart';
 
 class RegistroTrabajadorScreen extends ConsumerStatefulWidget {
@@ -45,29 +46,7 @@ class _RegistroTrabajadorScreenState
     super.dispose();
   }
 
-  Future<void> _crearCuenta() async {
-    if (!_formKey.currentState!.validate()) return;
-
-    final success = await ref
-        .read(authNotifierProvider.notifier)
-        .registerTrabajador(
-          email: _correoController.text.trim(),
-          password: _passwordController.text,
-          nombreCompleto: _nombreController.text.trim(),
-          edad: int.parse(_edadController.text),
-          ciudad: _selectedCity,
-          celular: _celularController.text.trim(),
-          cedula: _cedulaController.text.trim(),
-          sobreMi: _sobreMiController.text.trim(),
-        );
-
-    if (success && mounted) {
-      Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (_) => const WorketHome()),
-        (route) => false,
-      );
-    }
-  }
+ 
 
   @override
   Widget build(BuildContext context) {
@@ -322,7 +301,31 @@ class _RegistroTrabajadorScreenState
                         width: double.infinity,
                         height: 54,
                         child: ElevatedButton(
-                          onPressed: authState.isLoading ? null : _crearCuenta,
+                          onPressed: authState.isLoading
+                              ? null
+                              : () async {
+                                  if (!_formKey.currentState!.validate())
+                                    return;
+
+                                  final success = await ref
+                                      .read(authNotifierProvider.notifier)
+                                      .registerTrabajador(
+                                        email: _correoController.text.trim(),
+                                        password: _passwordController.text,
+                                        nombreCompleto: _nombreController.text
+                                            .trim(),
+                                        edad: int.parse(_edadController.text),
+                                        ciudad: _selectedCity,
+                                        celular: _celularController.text.trim(),
+                                        cedula: _cedulaController.text.trim(),
+                                        sobreMi: _sobreMiController.text.trim(),
+                                      );
+
+                                  if (success && mounted) {
+                                    
+                                    //Mesaje de Registro
+                                  }
+                                },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.primary,
                             disabledBackgroundColor: AppColors.primaryOverlay50,

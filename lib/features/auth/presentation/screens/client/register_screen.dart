@@ -3,9 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:servi_pro/core/theme/app_colors.dart';
 import 'package:servi_pro/core/theme/app_typography.dart';
 import 'package:servi_pro/features/auth/presentation/providers/auth_provider.dart';
-import 'package:servi_pro/features/auth/presentation/screens/client/client_home.dart';
+import 'package:servi_pro/features/auth/presentation/screens/client/client_shell.dart';
 import 'package:servi_pro/features/auth/presentation/screens/login_screen.dart';
-
 
 class RegisterScreen extends ConsumerStatefulWidget {
   const RegisterScreen({super.key});
@@ -52,7 +51,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       return;
     }
 
-    final success = await ref
+    await ref
         .read(authNotifierProvider.notifier)
         .registerCliente(
           email: _emailController.text.trim(),
@@ -63,13 +62,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           cedula: _cedulaController.text.trim(),
           ciudad: _selectedCity,
         );
-
-    if (success && mounted) {
-      Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (_) => const ClientHome()),
-        (route) => false,
-      );
-    }
   }
 
   @override

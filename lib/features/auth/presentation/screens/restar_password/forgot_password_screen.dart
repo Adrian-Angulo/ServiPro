@@ -53,7 +53,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const SizedBox(height: 60),
-              Image.asset('assets/logos/logo.png', height: 80),
+              Image.asset('assets/logo.png', height: 80),
               const SizedBox(height: 8),
               RichText(
                 text: TextSpan(

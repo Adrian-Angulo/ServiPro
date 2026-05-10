@@ -4,25 +4,26 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:servi_pro/core/theme/app_colors.dart';
 import 'package:servi_pro/core/theme/app_spacing.dart';
 import 'package:servi_pro/core/theme/app_typography.dart';
+import 'package:servi_pro/features/auth/presentation/screens/client/perfil_cliente.dart';
 import 'package:servi_pro/features/requests/presentation/screens/create_request_screen.dart';
 import 'package:servi_pro/features/requests/presentation/screens/mis_solicitudes_screen.dart';
 
-class ClientHome extends ConsumerStatefulWidget {
-  const ClientHome({super.key});
+class ClientShell extends ConsumerStatefulWidget {
+  const ClientShell({super.key});
 
   @override
-  ConsumerState<ClientHome> createState() => _ClientHomeState();
+  ConsumerState<ClientShell> createState() => _ClientShellState();
 }
 
-class _ClientHomeState extends ConsumerState<ClientHome> {
+class _ClientShellState extends ConsumerState<ClientShell> {
   int _selectedIndex = 0;
   late final PageController _pageController = PageController(initialPage: 0);
 
   final List<Widget> _pages = const [
-    Center(child: HomeClientScreen()),
-    Center(child: MisSolicitudesScreen()),
+    HomeClientScreen(),
+    MisSolicitudesScreen(),
     Center(child: Text("Trabajadores")),
-    Center(child: Text("Perfil")),
+    PerfilCliente(),
   ];
 
   void _onTabTapped(int index) {

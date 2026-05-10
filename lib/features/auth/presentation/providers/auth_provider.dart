@@ -25,3 +25,7 @@ final workerByIdProvider = FutureProvider.family<Trabajador?, String>((
   final usecase = ref.read(getWorkerByIdUsecaseProvider);
   return usecase(id: workerId);
 });
+
+final authStateProvider = StreamProvider<Usuario?>((ref) {
+  return ref.read(authRepositoryProvider).authStateChanges();
+});

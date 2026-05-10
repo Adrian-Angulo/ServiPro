@@ -7,14 +7,14 @@ import 'package:servi_pro/features/auth/presentation/providers/auth_provider.dar
 import 'package:servi_pro/features/auth/presentation/screens/worker/profile_worker.dart';
 import 'package:servi_pro/features/auth/presentation/screens/worker/solicitudes_worker_screen.dart';
 
-class WorketHome extends ConsumerStatefulWidget {
-  const WorketHome({super.key});
+class WorkerShell extends ConsumerStatefulWidget {
+  const WorkerShell({super.key});
 
   @override
-  ConsumerState<WorketHome> createState() => _WorketHomeState();
+  ConsumerState<WorkerShell> createState() => _WorkerShellState();
 }
 
-class _WorketHomeState extends ConsumerState<WorketHome> {
+class _WorkerShellState extends ConsumerState<WorkerShell> {
   int _currentIndex = 0;
 
   @override
@@ -31,9 +31,9 @@ class _WorketHomeState extends ConsumerState<WorketHome> {
   @override
   Widget build(BuildContext context) {
     final pages = [
-      const Center(child: Text('Inicio')),
       const SolicitudesWorkerScreen(),
       const MisPostulacionesScreen(),
+      const Center(child: Text('Inicio')),
       const ProfileWorker(),
     ];
 

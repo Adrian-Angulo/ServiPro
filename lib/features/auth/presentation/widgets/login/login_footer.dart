@@ -11,30 +11,6 @@ class LoginFooter extends StatelessWidget {
     return Column(
       children: [
         Row(
-          children: [
-            const Expanded(child: Divider()),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: Text(
-                'O continúa con',
-                style: AppTypography.bodySmall.copyWith(
-                  color: AppColors.grey500,
-                ),
-              ),
-            ),
-            const Expanded(child: Divider()),
-          ],
-        ),
-        const SizedBox(height: 20),
-        Row(
-          children: [
-            Expanded(
-              child: _SocialButton(label: 'Google', onPressed: () {}),
-            ),
-          ],
-        ),
-        const SizedBox(height: 28),
-        Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(

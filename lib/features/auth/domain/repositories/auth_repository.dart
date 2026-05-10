@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:servi_pro/features/auth/data/models/usuario.dart';
 
 abstract class AuthRepository {
@@ -29,4 +30,5 @@ abstract class AuthRepository {
   Future<Usuario?> getCurrentUser();
   Future<Usuario?> getWorkerById({required String id});
   Future<void> sendPasswordReset({required String email});
+  Stream<Usuario?> authStateChanges();
 }
