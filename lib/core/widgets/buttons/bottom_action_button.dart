@@ -3,7 +3,7 @@ import 'package:servi_pro/core/theme/app_colors.dart';
 import 'package:servi_pro/core/theme/app_spacing.dart';
 import 'package:servi_pro/core/theme/app_typography.dart';
 
-/// Botón fijo en la parte inferior de una pantalla de detalle.
+/// Botón flotante fijo en la parte inferior de una pantalla de detalle.
 class BottomActionButton extends StatelessWidget {
   final String label;
   final VoidCallback? onPressed;
@@ -11,6 +11,7 @@ class BottomActionButton extends StatelessWidget {
   final Color backgroundColor;
   final Color textColor;
   final Color disabledColor;
+  final IconData? icon;
 
   const BottomActionButton({
     super.key,
@@ -20,52 +21,73 @@ class BottomActionButton extends StatelessWidget {
     this.backgroundColor = AppColors.primary,
     this.textColor = Colors.white,
     this.disabledColor = AppColors.grey300,
+    this.icon,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.screenHorizontal),
-      decoration: BoxDecoration(
-        color: AppColors.background,
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.blackOverlay10,
-            blurRadius: 8,
-            offset: const Offset(0, -2),
-          ),
-        ],
+    final bool isDisabled = onPressed == null && !isLoading;
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.screenHorizontal,
+        vertical: AppSpacing.md,
       ),
       child: SafeArea(
-        child: SizedBox(
-          width: double.infinity,
-          child: ElevatedButton(
-            onPressed: isLoading ? null : onPressed,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: backgroundColor,
-              disabledBackgroundColor: disabledColor,
-              elevation: 2,
-              padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
-              shape: RoundedRectangleBorder(
+        child: Material(
+          elevation: 6,
+          shadowColor: backgroundColor.withOpacity(0.4),
+          borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+          child: InkWell(
+            onTap: isLoading ? null : onPressed,
+            borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+            child: Ink(
+              decoration: BoxDecoration(
+                color: isDisabled ? disabledColor : backgroundColor,
                 borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+                gradient: isDisabled
+                    ? null
+                    : LinearGradient(
+                        colors: [
+                          backgroundColor,
+                          backgroundColor.withOpacity(0.85),
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+              ),
+              padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  if (isLoading)
+                    const SizedBox(
+                      height: 20,
+                      width: 20,
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
+                        strokeWidth: 2.5,
+                      ),
+                    )
+                  else ...[
+                    if (icon != null) ...[
+                      Icon(
+                        icon,
+                        color: isDisabled ? AppColors.grey500 : textColor,
+                        size: 20,
+                      ),
+                      const SizedBox(width: AppSpacing.sm),
+                    ],
+                    Text(
+                      label,
+                      style: AppTypography.labelLarge.copyWith(
+                        color: isDisabled ? AppColors.grey500 : textColor,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
+                ],
               ),
             ),
-            child: isLoading
-                ? const SizedBox(
-                    height: 20,
-                    width: 20,
-                    child: CircularProgressIndicator(
-                      color: Colors.white,
-                      strokeWidth: 2.5,
-                    ),
-                  )
-                : Text(
-                    label,
-                    style: AppTypography.labelLarge.copyWith(
-                      color: onPressed == null ? AppColors.grey500 : textColor,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
           ),
         ),
       ),

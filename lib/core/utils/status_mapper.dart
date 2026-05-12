@@ -3,9 +3,11 @@ class StatusMapper {
 
   static String toUI(String status) {
     switch (status.toLowerCase()) {
+      case 'todos':
+        return 'Todos';
       case 'pending':
         return 'Pendiente';
-      case 'in_progress':
+      case 'inprogress':
         return 'En progreso';
       case 'completed':
         return 'Completado';

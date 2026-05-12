@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:servi_pro/core/domain/enums/rol.dart';
 import 'package:servi_pro/core/theme/app_colors.dart';
 import 'package:servi_pro/core/theme/app_spacing.dart';
 import 'package:servi_pro/core/theme/app_typography.dart';
-import 'package:servi_pro/core/utils/status_mapper.dart';
+import 'package:servi_pro/core/utils/category_helper.dart';
+import 'package:servi_pro/core/utils/enums.dart';
 import 'package:servi_pro/core/utils/time_formatter.dart';
+import 'package:servi_pro/core/widgets/badge/status_badge.dart';
 import 'package:servi_pro/core/widgets/buttons/bottom_action_button.dart';
 import 'package:servi_pro/features/application/presentation/providers/add_application_notifier.dart';
 import 'package:servi_pro/features/application/presentation/providers/application_providers.dart';
@@ -12,9 +15,6 @@ import 'package:servi_pro/features/application/presentation/widgets/postulacione
 import 'package:servi_pro/features/auth/presentation/providers/auth_provider.dart';
 import 'package:servi_pro/features/requests/domain/entities/request_entity.dart';
 import 'package:servi_pro/features/requests/presentation/providers/request_notifier.dart';
-import 'package:servi_pro/core/widgets/detail/detail_description_widget.dart';
-import 'package:servi_pro/core/widgets/detail/detail_header_widget.dart';
-import 'package:servi_pro/core/widgets/detail/detail_location_widget.dart';
 
 class VerDetallesSolicitudScreen extends ConsumerWidget {
   final RequestEntity request;
@@ -27,10 +27,6 @@ class VerDetallesSolicitudScreen extends ConsumerWidget {
     this.isWorkerView = false,
     this.alreadyApplied = false,
   });
-
-  String _mapStatusToUI(String status) => StatusMapper.toUI(status);
-  String _formatTimeAgo(DateTime dateCreated) =>
-      TimeFormatter.timeAgo(dateCreated);
 
   Future<void> _cancelRequest(BuildContext context, WidgetRef ref) async {
     final confirmed = await showDialog<bool>(
@@ -107,8 +103,8 @@ class VerDetallesSolicitudScreen extends ConsumerWidget {
         .read(addAppliNotifier.notifier)
         .addApplication(idWorker: user.id, idRequest: request.id!);
 
-    final result = ref.read(addAppliNotifier);
     if (!context.mounted) return;
+    final result = ref.watch(addAppliNotifier);
 
     if (result is AsyncError) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -143,8 +139,8 @@ class VerDetallesSolicitudScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final uiStatus = _mapStatusToUI(request.status);
-    final isPending = uiStatus == 'Pendiente';
+    final uiStatus = request.status;
+    final isPending = uiStatus == ServiceStatus.pending;
     final postulationState = ref.watch(addAppliNotifier);
     final isLoading = postulationState is AsyncLoading;
 
@@ -157,70 +153,246 @@ class VerDetallesSolicitudScreen extends ConsumerWidget {
           icon: const Icon(Icons.arrow_back, color: AppColors.grey900),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text('Detalles de Solicitud', style: AppTypography.titleLarge),
-        centerTitle: true,
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: SingleChildScrollView(
-              child: Column(
+      body: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.screenHorizontal,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                StatusBadge(status: request.status),
+                CategoryHelper.getIconWithLabel(request.idTypeService),
+              ],
+            ),
+            SizedBox(height: AppSpacing.md),
+            Text(request.title, style: AppTypography.titleLarge),
+            SizedBox(height: AppSpacing.xl),
+            Row(
+              spacing: AppSpacing.md,
+              children: [
+                ServiceDateItem(
+                  color: Colors.green,
+                  date: request.dateCreated,
+                  icon: Icons.calendar_month_outlined,
+                  title: 'Publicado',
+                ),
+
+                if (!isWorkerView) ...[
+                  Container(width: 1, height: 40, color: AppColors.grey500),
+                  ServiceDateItem(
+                    color: Colors.amber,
+                    date: request.dateCreated,
+                    icon: Icons.person,
+                    title: 'Asignado',
+                  ),
+                  Container(width: 1, height: 40, color: AppColors.grey500),
+                  ServiceDateItem(
+                    color: Colors.blue,
+                    date: request.dateCreated,
+                    icon: Icons.check_circle_outline_outlined,
+                    title: 'Finalizado',
+                  ),
+                ],
+              ],
+            ),
+            SizedBox(height: AppSpacing.xl),
+            Container(
+              padding: const EdgeInsets.all(AppSpacing.md),
+              decoration: BoxDecoration(
+                color: AppColors.background,
+                borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.grey500.withOpacity(0.5),
+                    blurRadius: 6,
+                    offset: Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  DetailHeaderWidget(
-                    title: request.title,
-                    status: uiStatus,
-                    timeAgo: _formatTimeAgo(request.dateCreated),
-                    date: request.dateCreated,
-                    typeService: request.idTypeService,
+                  Container(
+                    padding: const EdgeInsets.all(6),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: const Icon(
+                      Icons.description_outlined,
+                      size: 18,
+                      color: AppColors.primary,
+                    ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(AppSpacing.screenHorizontal),
+                  const SizedBox(width: AppSpacing.sm),
+                  Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        DetailLocationWidget(
-                          address: request.addres,
-                          distance: '2.5 km',
+                        Text(
+                          "Descripción del problema",
+                          style: AppTypography.labelLarge,
                         ),
-                        const SizedBox(height: AppSpacing.xl),
-                        DetailDescriptionWidget(description: request.details),
-                        const SizedBox(height: AppSpacing.lg),
-
-                        // Categoría
-
-                        // Sección postulaciones (solo vista cliente)
-                        if (!isWorkerView) ...[
-                          const SizedBox(height: AppSpacing.xl),
-                          PostulacionesSection(requestId: request.id!),
-                        ],
-
-                        const SizedBox(height: 80),
+                        const SizedBox(height: AppSpacing.xs),
+                        Text(
+                          request.details,
+                          style: AppTypography.bodyMedium,
+                          softWrap: true,
+                          overflow: TextOverflow.clip,
+                          maxLines: null,
+                        ),
                       ],
                     ),
                   ),
                 ],
               ),
             ),
-          ),
+            SizedBox(height: AppSpacing.md),
+            Container(
+              padding: const EdgeInsets.all(AppSpacing.md),
+              decoration: BoxDecoration(
+                color: AppColors.background,
+                borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
 
-          // Botón inferior — varía según el rol
-          if (isWorkerView)
-            BottomActionButton(
-              label: alreadyApplied ? 'Ya te postulaste' : 'Postularme',
-              onPressed: alreadyApplied || !isPending
-                  ? null
-                  : () => _applyToRequest(context, ref),
-              isLoading: isLoading,
-              backgroundColor: AppColors.primary,
-            )
-          else if (isPending)
-            BottomActionButton(
-              label: 'Cancelar Solicitud',
-              onPressed: () => _cancelRequest(context, ref),
-              isLoading: isLoading,
-              backgroundColor: AppColors.accent,
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.grey500.withOpacity(0.5),
+                    blurRadius: 6,
+                    offset: Offset(0, 0),
+                  ),
+                ],
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(6),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: const Icon(
+                      Icons.location_on,
+                      size: 18,
+                      color: AppColors.primary,
+                    ),
+                  ),
+                  const SizedBox(width: AppSpacing.sm),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("Dirección", style: AppTypography.labelLarge),
+                        const SizedBox(height: AppSpacing.xs),
+                        Text(
+                          request.addres,
+                          style: AppTypography.bodyMedium,
+                          softWrap: true,
+                          overflow: TextOverflow.clip,
+                          maxLines: null,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
+
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (!isWorkerView) ...[
+                      const SizedBox(height: AppSpacing.xl),
+                      PostulacionesSection(requestId: request.id!),
+                    ],
+                  ],
+                ),
+              ),
+            ),
+
+            // Botón inferior — varía según el rol
+            if (isWorkerView)
+              BottomActionButton(
+                label: alreadyApplied ? 'Ya te postulaste' : 'Postularme',
+                onPressed: alreadyApplied || !isPending
+                    ? null
+                    : () => _applyToRequest(context, ref),
+                isLoading: isLoading,
+                backgroundColor: AppColors.primary,
+              )
+            else if (isPending)
+              BottomActionButton(
+                label: 'Cancelar Solicitud',
+                onPressed: () => _cancelRequest(context, ref),
+                isLoading: isLoading,
+                backgroundColor: AppColors.accent,
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class ServiceDateItem extends StatelessWidget {
+  final IconData icon;
+  final Color color;
+  final String title;
+  final DateTime date;
+
+  const ServiceDateItem({
+    super.key,
+    required this.icon,
+    required this.color,
+    required this.title,
+    required this.date,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(6),
+            decoration: BoxDecoration(
+              color: color.withOpacity(0.12),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Icon(icon, size: 18, color: color),
+          ),
+          SizedBox(width: AppSpacing.xs),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xFF64748B),
+                ),
+              ),
+              const SizedBox(height: AppSpacing.xs),
+
+              Text(
+                TimeFormatter.shortDate(date),
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.grey700,
+                ),
+              ),
+            ],
+          ),
         ],
       ),
     );

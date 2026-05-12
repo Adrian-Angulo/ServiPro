@@ -10,7 +10,7 @@ abstract class AppColors {
   static const Color onAccent = Color.fromRGBO(255, 255, 255, 1.0);
 
   // ── Background ────────────────────────────────────
-  static const Color background = Color.fromRGBO(255, 255, 255, 1.0);
+  static const Color background = Color.fromRGBO(248, 250, 252, 1.0);
   static const Color backgroundSoft = Color.fromRGBO(
     247,
     250,

@@ -23,6 +23,7 @@ class ApplicationRepositoryImpl implements ApplicationRepository {
       await firebaseDatasource.addAplication(application);
       return Right(unit);
     } catch (e) {
+      print("ocurrio un error $e");
       return Left(FirebaseFailure(message: "error $e"));
     }
   }

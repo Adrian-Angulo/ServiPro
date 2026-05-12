@@ -3,8 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:servi_pro/core/theme/app_colors.dart';
 import 'package:servi_pro/core/theme/app_spacing.dart';
 import 'package:servi_pro/core/theme/app_typography.dart';
+import 'package:servi_pro/core/utils/enums.dart';
 import 'package:servi_pro/core/utils/status_mapper.dart';
-import 'package:servi_pro/core/utils/time_formatter.dart';
+
 import 'package:servi_pro/core/widgets/filters/list_request_filter_chip.dart';
 import 'package:servi_pro/features/auth/presentation/providers/auth_provider.dart';
 import 'package:servi_pro/features/requests/domain/entities/request_entity.dart';
@@ -18,7 +19,6 @@ import 'package:servi_pro/features/requests/presentation/widgets/cards/request_c
 class MisSolicitudesScreen extends ConsumerWidget {
   const MisSolicitudesScreen({super.key});
 
-  String _mapStatusToUI(String status) => StatusMapper.toUI(status);
 
   // Filtrar solicitudes
   List<RequestEntity> _filterRequests(
@@ -32,8 +32,7 @@ class MisSolicitudesScreen extends ConsumerWidget {
     // Filtrar por estado
     if (filter != RequestFilterType.todos) {
       filtered = filtered.where((r) {
-        final uiStatus = _mapStatusToUI(r.status);
-        return uiStatus == filter.label;
+        return r.status.name == filter.name;
       }).toList();
     }
 
@@ -52,17 +51,17 @@ class MisSolicitudesScreen extends ConsumerWidget {
 
     return {
       RequestFilterType.todos: userRequests.length,
-      RequestFilterType.pendiente: userRequests
-          .where((r) => _mapStatusToUI(r.status) == 'Pendiente')
+      RequestFilterType.pending: userRequests
+          .where((r) => r.status == ServiceStatus.pending)
           .length,
-      RequestFilterType.enProgreso: userRequests
-          .where((r) => _mapStatusToUI(r.status) == 'En progreso')
+      RequestFilterType.inProgress: userRequests
+          .where((r) => r.status == ServiceStatus.inProgress)
           .length,
-      RequestFilterType.completado: userRequests
-          .where((r) => _mapStatusToUI(r.status) == 'Completado')
+      RequestFilterType.completed: userRequests
+          .where((r) => r.status == ServiceStatus.completed)
           .length,
-      RequestFilterType.cancelado: userRequests
-          .where((r) => _mapStatusToUI(r.status) == 'Cancelado')
+      RequestFilterType.cancelled: userRequests
+          .where((r) => r.status == ServiceStatus.cancelled)
           .length,
     };
   }
@@ -176,22 +175,11 @@ class MisSolicitudesScreen extends ConsumerWidget {
       appBar: AppBar(
         backgroundColor: AppColors.background,
         elevation: 0,
-        title: Text('Mis Solicitudes', style: AppTypography.titleLarge),
+        title: Text(
+          'Mis Solicitudes',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
         centerTitle: true,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.add_circle_outline),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const CreateRequestScreen(),
-                ),
-              );
-            },
-            tooltip: 'Nueva solicitud',
-          ),
-        ],
       ),
       body: SafeArea(
         child: Column(
@@ -201,18 +189,11 @@ class MisSolicitudesScreen extends ConsumerWidget {
               data: (requests) {
                 if (userId == null) return const SizedBox.shrink();
 
-                final counts = _countByStatus(requests, userId);
-
-                return ListRequestFilterChip(
-                  selectedFilter: selectedFilter,
-                  counts: counts,
-                );
+                return ListRequestFilterChip(selectedFilter: selectedFilter);
               },
               loading: () => const SizedBox(height: 60),
               error: (_, __) => const SizedBox(height: 60),
             ),
-
-            const Divider(height: 1),
 
             // Lista de solicitudes
             Expanded(
@@ -230,7 +211,7 @@ class MisSolicitudesScreen extends ConsumerWidget {
 
                   if (filteredRequests.isEmpty) {
                     return EmptyRequestsWidget(
-                      filterType: selectedFilter.label,
+                      filterType: selectedFilter.name,
                       onCreateRequest: () {
                         Navigator.push(
                           context,
@@ -257,7 +238,6 @@ class MisSolicitudesScreen extends ConsumerWidget {
                           const SizedBox(height: AppSpacing.lg),
                       itemBuilder: (context, index) {
                         final request = filteredRequests[index];
-                        final uiStatus = _mapStatusToUI(request.status);
 
                         return GestureDetector(
                           onTap: () {
@@ -271,13 +251,7 @@ class MisSolicitudesScreen extends ConsumerWidget {
                               ),
                             );
                           },
-                          child: RequestCard(
-                            requestEntity: request,
-                            onPress: uiStatus == 'Pendiente'
-                                ? () =>
-                                      _cancelRequest(context, ref, request.id!)
-                                : null,
-                          ),
+                          child: RequestCard(requestEntity: request),
                         );
                       },
                     ),

@@ -39,11 +39,11 @@ class _CreateRequestScreenState extends ConsumerState<CreateRequestScreen> {
 
   final List<Map<String, dynamic>> categories = [
     {'icon': Icons.plumbing, 'label': 'Plomería'},
-    {'icon': Icons.electrical_services, 'label': 'Electricidad'},
+    {'icon': Icons.electric_bolt_rounded, 'label': 'Electricidad'},
     {'icon': Icons.carpenter, 'label': 'Carpintería'},
     {'icon': Icons.cleaning_services, 'label': 'Limpieza'},
     {'icon': Icons.format_paint, 'label': 'Pintura'},
-    {'icon': Icons.more_horiz, 'label': 'Otros'},
+    {'icon': Icons.miscellaneous_services, 'label': 'Otros'},
   ];
 
   @override

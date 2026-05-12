@@ -1,3 +1,4 @@
+import 'package:servi_pro/core/utils/enums.dart';
 import 'package:servi_pro/features/requests/domain/entities/request_entity.dart';
 
 class RequestModel extends RequestEntity {
@@ -12,6 +13,8 @@ class RequestModel extends RequestEntity {
     super.dateCreated,
     super.dateFinish,
   });
+
+
   factory RequestModel.fromMap(Map<String, dynamic> map) {
     return RequestModel(
       id: map['id'],
@@ -20,7 +23,7 @@ class RequestModel extends RequestEntity {
       idTypeService: map['idTypeService'],
       details: map['details'],
       addres: map['addres'],
-      status: map['status'],
+      status: ServiceStatus.values.firstWhere((e) => e.name == map['status']),
       dateCreated: map['dateCreated'] != null
           ? DateTime.parse(map['dateCreated'])
           : DateTime.now(),
@@ -37,7 +40,7 @@ class RequestModel extends RequestEntity {
       'idTypeService': idTypeService,
       'details': details,
       'addres': addres,
-      'status': status,
+      'status': status.name,
       'dateCreated': dateCreated.toIso8601String(),
       'dateFinish': dateFinish?.toIso8601String(),
     };
@@ -50,7 +53,7 @@ class RequestModel extends RequestEntity {
     String? idTypeService,
     String? details,
     String? addres,
-    String? status,
+    ServiceStatus? status,
     DateTime? dateCreated,
     DateTime? dateFinish,
   }) {

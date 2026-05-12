@@ -3,9 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:servi_pro/core/theme/app_colors.dart';
 import 'package:servi_pro/core/theme/app_spacing.dart';
 import 'package:servi_pro/core/theme/app_typography.dart';
-import 'package:servi_pro/core/utils/utils.dart';
+import 'package:servi_pro/core/utils/category_helper.dart';
+import 'package:servi_pro/features/application/presentation/providers/application_providers.dart';
 import 'package:servi_pro/features/auth/presentation/providers/auth_provider.dart';
 import 'package:servi_pro/features/requests/domain/entities/request_entity.dart';
+import 'package:servi_pro/features/requests/presentation/widgets/app_time_ago.dart';
+
 
 class RequestCard extends ConsumerWidget {
   final RequestEntity requestEntity;
@@ -15,12 +18,13 @@ class RequestCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final statusColor = Utils.getStatusColor(requestEntity.status);
     final user = ref.watch(authNotifierProvider).value;
+    final postulation = ref.watch(workerApplicationsProvider).value ?? [];
 
     if (user == null) return const SizedBox.shrink();
 
     return Card(
+      color: Colors.white,
       elevation: 6,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
@@ -34,7 +38,7 @@ class RequestCard extends ConsumerWidget {
               // Barra vertical de estado (izquierda)
               Container(
                 width: 6,
-                decoration: BoxDecoration(color: statusColor),
+                decoration: BoxDecoration(color: Color.fromRGBO(15, 23, 42, 1)),
               ),
 
               // Contenido principal
@@ -47,11 +51,24 @@ class RequestCard extends ConsumerWidget {
                       // Header: Estado y tiempo
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [],
+                        children: [
+                          CategoryHelper.getIconWithLabel(
+                            requestEntity.idTypeService,
+                          ),
+                          AppTimeAgo(date: requestEntity.dateCreated),
+                        ],
                       ),
 
-                      const SizedBox(height: AppSpacing.md),
+                      const SizedBox(height: AppSpacing.xs),
 
+                      Text(
+                        requestEntity.addres,
+                        style: AppTypography.bodyMedium.copyWith(
+                          color: AppColors.grey700,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: AppSpacing.xs),
                       // Título
                       Text(
                         requestEntity.title,
@@ -63,24 +80,25 @@ class RequestCard extends ConsumerWidget {
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
-
-                      const SizedBox(height: AppSpacing.md),
-
+                      const SizedBox(height: AppSpacing.xs),
                       // Descripción
                       Text(
                         requestEntity.details,
-                        style: AppTypography.bodyMedium.copyWith(
-                          color: AppColors.grey700,
-                          height: 1.5,
-                        ),
-                        maxLines: 3,
+                        style: AppTypography.bodyMedium.copyWith(height: 1.5),
+                        maxLines: 2,
                         overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: AppSpacing.xs),
+                      Text(
+                        postulation.isEmpty
+                            ? "No hay postulaciones "
+                            : 'Existe ${postulation.length} postulaciones',
                       ),
 
                       const SizedBox(height: AppSpacing.lg),
 
                       // Botón de acción (alineado a la derecha)
-                      if (onPress != null)
+                      if (onPress != null && user.rol.name == 'Trabajador')
                         Align(
                           alignment: Alignment.centerRight,
                           child: ElevatedButton(
@@ -100,9 +118,7 @@ class RequestCard extends ConsumerWidget {
                               ),
                             ),
                             child: Text(
-                              user.rol.name == "cliente"
-                                  ? 'Cancelar Solicitud'
-                                  : 'Postularme',
+                              'Postularme',
                               style: AppTypography.labelLarge.copyWith(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w600,

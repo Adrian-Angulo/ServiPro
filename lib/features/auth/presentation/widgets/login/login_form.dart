@@ -2,11 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:servi_pro/core/theme/app_colors.dart';
 import 'package:servi_pro/core/theme/app_typography.dart';
-import 'package:servi_pro/features/auth/data/models/usuario.dart';
 import 'package:servi_pro/features/auth/presentation/providers/auth_provider.dart';
-import 'package:servi_pro/features/auth/presentation/screens/client/client_shell.dart';
-import 'package:servi_pro/features/auth/presentation/screens/worker/worker_shell.dart';
-
 import 'package:servi_pro/features/auth/presentation/screens/restar_password/forgot_password_screen.dart';
 
 class LoginForm extends ConsumerStatefulWidget {
@@ -27,8 +23,6 @@ class _LoginFormState extends ConsumerState<LoginForm> {
     _passwordController.dispose();
     super.dispose();
   }
-
-  Future<void> _login() async {}
 
   @override
   Widget build(BuildContext context) {
@@ -120,19 +114,14 @@ class _LoginFormState extends ConsumerState<LoginForm> {
                       return;
                     }
 
-                    final success = await ref
+                     await ref
                         .read(authNotifierProvider.notifier)
                         .login(
                           email: _emailController.text.trim(),
                           password: _passwordController.text,
                         );
 
-                    if (!success && mounted) {
-                      final error = authState.error;
-                      ScaffoldMessenger.of(
-                        context,
-                      ).showSnackBar(SnackBar(content: Text(error.toString())));
-                    }
+                    
                   },
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primary,

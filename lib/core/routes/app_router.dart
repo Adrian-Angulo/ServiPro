@@ -8,6 +8,7 @@ import 'package:servi_pro/features/auth/data/models/usuario.dart';
 import 'package:servi_pro/features/auth/presentation/providers/auth_provider.dart';
 import 'package:servi_pro/features/auth/presentation/screens/client/client_shell.dart';
 import 'package:servi_pro/features/auth/presentation/screens/login_screen.dart';
+import 'package:servi_pro/features/auth/presentation/screens/restar_password/forgot_password_screen.dart';
 import 'package:servi_pro/features/auth/presentation/screens/worker/worker_shell.dart';
 import 'package:servi_pro/features/onboarding/onboarding_provider.dart';
 import 'package:servi_pro/features/onboarding/onboarding_screen.dart';
@@ -38,6 +39,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
       GoRoute(path: '/worker', builder: (context, state) => WorkerShell()),
       GoRoute(path: '/cliente', builder: (context, state) => ClientShell()),
+      GoRoute(path: '/reset-password', builder: (context, state) => ForgotPasswordScreen()),
       GoRoute(
         path: '/splash',
         builder: (context, state) => Scaffold(

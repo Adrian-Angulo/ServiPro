@@ -4,6 +4,7 @@ import 'package:servi_pro/features/auth/data/models/usuario.dart';
 import 'package:servi_pro/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:servi_pro/features/auth/domain/repositories/auth_repository.dart';
 import 'package:servi_pro/features/auth/domain/usecases/get_worker_by_id_usecase.dart';
+import 'package:servi_pro/features/auth/domain/usecases/reset_passwordk_usecase.dart';
 import 'package:servi_pro/features/auth/presentation/providers/auth_notifier.dart';
 
 final authRepositoryProvider = Provider<AuthRepository>(
@@ -16,6 +17,10 @@ final authNotifierProvider = AsyncNotifierProvider<AuthNotifier, Usuario?>(
 
 final getWorkerByIdUsecaseProvider = Provider<GetWorkerByIdUsecase>((ref) {
   return GetWorkerByIdUsecase(repository: ref.read(authRepositoryProvider));
+});
+
+final resetPasswordProvider = Provider<ResetPasswordUsecase>((ref) {
+  return ResetPasswordUsecase(authRepository: ref.read(authRepositoryProvider));
 });
 
 final workerByIdProvider = FutureProvider.family<Trabajador?, String>((

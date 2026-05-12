@@ -42,4 +42,11 @@ class TimeFormatter {
     final minute = date.minute.toString().padLeft(2, '0');
     return '${date.day} de ${months[date.month - 1]} de ${date.year} a las $hour:$minute';
   }
+
+  static String shortDate(DateTime date) {
+    final day = date.day.toString().padLeft(2, '0');
+    final month = date.month.toString().padLeft(2, '0');
+    final year = date.year.toString().substring(2);
+    return '$day/$month/$year';
+  }
 }

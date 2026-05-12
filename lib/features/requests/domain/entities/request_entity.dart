@@ -1,3 +1,5 @@
+import 'package:servi_pro/core/utils/enums.dart';
+
 class RequestEntity {
   String? id;
   final String idClient;
@@ -5,7 +7,7 @@ class RequestEntity {
   final String idTypeService;
   final String details;
   final String addres;
-  String status;
+  ServiceStatus status;
   DateTime dateCreated;
   DateTime? dateFinish;
 
@@ -15,7 +17,7 @@ class RequestEntity {
     required this.idTypeService,
     required this.details,
     required this.addres,
-    this.status = "pending",
+    this.status = ServiceStatus.pending,
     DateTime? dateCreated,
 
     this.dateFinish,
@@ -28,7 +30,7 @@ class RequestEntity {
       idTypeService: map['idTypeService'] ?? "",
       details: map['details'] as String? ?? '',
       addres: map['addres'] as String? ?? '',
-      status: map['status'] as String,
+      status: ServiceStatus.values.firstWhere((e) => e.name == map['status']),
       dateCreated: map['dateCreated'] != null
           ? DateTime.parse(map['dateCreated'] as String)
           : DateTime.now(),

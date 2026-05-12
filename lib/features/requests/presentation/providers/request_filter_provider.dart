@@ -1,15 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-enum RequestFilterType {
-  todos('Todos'),
-  pendiente('Pendiente'),
-  enProgreso('En progreso'),
-  completado('Completado'),
-  cancelado('Cancelado');
-
-  final String label;
-  const RequestFilterType(this.label);
-}
+enum RequestFilterType { todos, pending, inProgress, completed, cancelled }
 
 // Provider para el filtro seleccionado
 final requestFilterProvider = StateProvider<RequestFilterType>((ref) {

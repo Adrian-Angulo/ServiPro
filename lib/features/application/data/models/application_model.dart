@@ -14,7 +14,7 @@ class ApplicationModel {
   });
 
   Map<String, dynamic> toMap() {
-    return {'idworker': idworker, 'idrequest': idrequest, 'state': state};
+    return {'idworker': idworker, 'idrequest': idrequest, 'state': state.name};
   }
 
   factory ApplicationModel.fromMap(Map<String, dynamic> map) {
@@ -22,7 +22,10 @@ class ApplicationModel {
       id: map['id'] ?? '',
       idworker: map['idworker'] ?? '',
       idrequest: map['idrequest'] ?? '',
-      state: map['state'] ?? 'pending',
+      state: ApplicationStatus.values.firstWhere(
+        (e) => e.name == map['state'],
+        orElse: () => ApplicationStatus.postulado,
+      ),
     );
   }
 

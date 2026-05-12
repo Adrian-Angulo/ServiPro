@@ -5,14 +5,9 @@ import 'package:servi_pro/core/widgets/filters/request_filter_chip.dart';
 import 'package:servi_pro/features/requests/presentation/providers/request_filter_provider.dart';
 
 class ListRequestFilterChip extends ConsumerWidget {
-  const ListRequestFilterChip({
-    super.key,
-    required this.selectedFilter,
-    required this.counts,
-  });
+  const ListRequestFilterChip({super.key, required this.selectedFilter});
 
   final RequestFilterType selectedFilter;
-  final Map<RequestFilterType, int> counts;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -30,12 +25,11 @@ class ListRequestFilterChip extends ConsumerWidget {
         itemBuilder: (context, index) {
           final filter = RequestFilterType.values[index];
           return RequestFilterChip(
-            label: filter.label,
+            label: filter.name,
             isSelected: selectedFilter == filter,
-            count: counts[filter],
+
             onTap: () {
-              ref.read(requestFilterProvider.notifier).state =
-                  filter;
+              ref.read(requestFilterProvider.notifier).state = filter;
             },
           );
         },

@@ -166,4 +166,11 @@ class AuthRepositoryImpl implements AuthRepository {
     if (!doc.exists) return null;
     return AppUserFactory.fromMap(doc.data()!);
   }
+  
+  @override
+  Future<void> resetPassword({required String email}) {
+    return _firebaseAuth.sendPasswordResetEmail(email: email);
+  }
+
+  
 }
