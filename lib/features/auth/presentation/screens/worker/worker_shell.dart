@@ -3,9 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:servi_pro/core/theme/app_colors.dart';
 import 'package:servi_pro/features/application/presentation/providers/application_providers.dart';
 import 'package:servi_pro/features/application/presentation/screens/postulaciones_screen.dart';
-import 'package:servi_pro/features/auth/presentation/screens/worker/mis_postulaciones_screen.dart';
 import 'package:servi_pro/features/auth/presentation/providers/auth_provider.dart';
 import 'package:servi_pro/features/auth/presentation/screens/worker/profile_worker.dart';
+import 'package:servi_pro/features/notifications/presentation/providers/notification_providers.dart';
 import 'package:servi_pro/features/requests/presentation/screens/worker/inicio_worker.dart';
 
 class WorkerShell extends ConsumerStatefulWidget {
@@ -34,7 +34,7 @@ class _WorkerShellState extends ConsumerState<WorkerShell> {
     final pages = [
       InicioWorker(),
       PostulacionesScreen(),
-      const Center(child: Text('Inicio')),
+
       const ProfileWorker(),
     ];
 
@@ -48,23 +48,62 @@ class _WorkerShellState extends ConsumerState<WorkerShell> {
         unselectedItemColor: AppColors.grey500,
         showUnselectedLabels: true,
         elevation: 8,
-        items: const [
-          BottomNavigationBarItem(
+        items: [
+          const BottomNavigationBarItem(
             icon: Icon(Icons.grid_view_outlined),
             activeIcon: Icon(Icons.grid_view_rounded),
             label: 'Inicio',
           ),
-          BottomNavigationBarItem(
+          const BottomNavigationBarItem(
             icon: Icon(Icons.near_me_outlined),
             activeIcon: Icon(Icons.near_me_rounded),
             label: 'Aplicaciones',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.notifications_active_outlined),
-            activeIcon: Icon(Icons.notifications_active_sharp),
+          /* BottomNavigationBarItem(
+            icon: Stack(
+              children: [
+                const Icon(Icons.notifications_active_outlined),
+                Consumer(
+                  builder: (context, ref, child) {
+                    final user = ref.watch(authNotifierProvider).value;
+                    if (user == null) return const SizedBox();
+
+                    final unreadCount = ref.watch(unreadCountProvider(user.id));
+
+                    if (unreadCount == 0) return const SizedBox();
+
+                    return Positioned(
+                      right: 0,
+                      top: 0,
+                      child: Container(
+                        padding: const EdgeInsets.all(2),
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        constraints: const BoxConstraints(
+                          minWidth: 16,
+                          minHeight: 16,
+                        ),
+                        child: Text(
+                          unreadCount > 99 ? '99+' : unreadCount.toString(),
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
+            activeIcon: const Icon(Icons.notifications_active_sharp),
             label: 'Alertas',
-          ),
-          BottomNavigationBarItem(
+          ), */
+          const BottomNavigationBarItem(
             icon: Icon(Icons.person_outline),
             activeIcon: Icon(Icons.person),
             label: 'Perfil',

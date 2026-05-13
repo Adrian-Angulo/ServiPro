@@ -9,8 +9,15 @@ import 'package:servi_pro/features/reviews/presentation/providers/review_provide
 
 class AddReviewDialog extends ConsumerStatefulWidget {
   final String workerId;
+  final String requestId;
+  final String applicationId;
 
-  const AddReviewDialog({super.key, required this.workerId});
+  const AddReviewDialog({
+    super.key,
+    required this.workerId,
+    required this.requestId,
+    required this.applicationId,
+  });
 
   @override
   ConsumerState<AddReviewDialog> createState() => _AddReviewDialogState();
@@ -23,7 +30,10 @@ class _AddReviewDialogState extends ConsumerState<AddReviewDialog> {
   Future<void> _submitReview() async {
     if (_rating == 0) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Por favor, selecciona una calificación (estrellas).'), backgroundColor: AppColors.error),
+        const SnackBar(
+          content: Text('Por favor, selecciona una calificación (estrellas).'),
+          backgroundColor: AppColors.error,
+        ),
       );
       return;
     }
@@ -34,24 +44,34 @@ class _AddReviewDialogState extends ConsumerState<AddReviewDialog> {
     final review = ReviewEntity(
       workerId: widget.workerId,
       clientId: user.id,
-      clientName: user.email.split('@').first, // Usamos el inicio del email como nombre si no hay campo nombre en usuario cliente
+      clientName: user.email
+          .split('@')
+          .first, // Usamos el inicio del email como nombre si no hay campo nombre en usuario cliente
       rating: _rating,
       comment: _commentController.text.trim(),
+      requestId: widget.requestId,
+      applicationId: widget.applicationId,
     );
 
     await ref.read(addReviewNotifierProvider.notifier).addReview(review);
-    
+
     if (!mounted) return;
     final state = ref.read(addReviewNotifierProvider);
-    
+
     if (state is AsyncError) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Error al guardar la reseña. Inténtalo nuevamente.'), backgroundColor: AppColors.error),
+        const SnackBar(
+          content: Text('Error al guardar la reseña. Inténtalo nuevamente.'),
+          backgroundColor: AppColors.error,
+        ),
       );
     } else {
-      ref.invalidate(reviewsByWorkerProvider(widget.workerId));
+      invalidateWorkerRatingCaches(ref, widget.workerId);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('¡Reseña guardada con éxito!'), backgroundColor: Colors.green),
+        const SnackBar(
+          content: Text('¡Reseña guardada con éxito!'),
+          backgroundColor: Colors.green,
+        ),
       );
       Navigator.pop(context);
     }
@@ -64,7 +84,9 @@ class _AddReviewDialogState extends ConsumerState<AddReviewDialog> {
 
     return Dialog(
       backgroundColor: AppColors.background,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSpacing.radiusLg)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+      ),
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.lg),
         child: Column(
@@ -72,7 +94,9 @@ class _AddReviewDialogState extends ConsumerState<AddReviewDialog> {
           children: [
             Text(
               'Calificar al Trabajador',
-              style: AppTypography.titleLarge.copyWith(fontWeight: FontWeight.bold),
+              style: AppTypography.titleLarge.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
             ),
             const SizedBox(height: AppSpacing.md),
             Row(
@@ -80,7 +104,9 @@ class _AddReviewDialogState extends ConsumerState<AddReviewDialog> {
               children: List.generate(5, (index) {
                 return IconButton(
                   icon: Icon(
-                    index < _rating ? Icons.star_rounded : Icons.star_outline_rounded,
+                    index < _rating
+                        ? Icons.star_rounded
+                        : Icons.star_outline_rounded,
                     color: Colors.amber,
                     size: 40,
                   ),
@@ -114,18 +140,36 @@ class _AddReviewDialogState extends ConsumerState<AddReviewDialog> {
               children: [
                 TextButton(
                   onPressed: isLoading ? null : () => Navigator.pop(context),
-                  child: Text('Cancelar', style: TextStyle(color: AppColors.grey700)),
+                  child: Text(
+                    'Cancelar',
+                    style: TextStyle(color: AppColors.grey700),
+                  ),
                 ),
                 const SizedBox(width: AppSpacing.md),
                 ElevatedButton(
                   onPressed: isLoading ? null : _submitReview,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primary,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSpacing.radiusMd)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                    ),
                   ),
                   child: isLoading
-                      ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-                      : const Text('Enviar Reseña', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                      ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                            strokeWidth: 2,
+                          ),
+                        )
+                      : const Text(
+                          'Enviar Reseña',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                 ),
               ],
             ),

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:servi_pro/core/errors/failures.dart';
+import 'package:servi_pro/core/utils/enums.dart';
 import 'package:servi_pro/features/requests/data/models/request_model.dart';
 import 'package:servi_pro/features/requests/domain/entities/request_entity.dart';
 import 'package:servi_pro/features/requests/domain/repository/request_repository.dart';
@@ -37,6 +38,17 @@ class RequestImpl implements RequestRepository {
         ),
       );
     }
+  }
+
+  @override
+  Stream<List<RequestEntity>> watchAllRequests() {
+    return _firestore.collection('requests').snapshots().map((snapshot) {
+      return snapshot.docs
+          .map(
+            (doc) => RequestModel.fromMap(doc.data()).copyWith(id: doc.id),
+          )
+          .toList();
+    });
   }
 
   @override
@@ -127,6 +139,71 @@ class RequestImpl implements RequestRepository {
       return left(
         UnexpectedFailure(
           message: 'Error al obtener la solicitud: ${e.toString()}',
+        ),
+      );
+    }
+  }
+
+  @override
+  Future<Either<Failure, Unit>> markAsCompleted({
+    required String requestId,
+    required String workerId,
+  }) async {
+    try {
+      await _firestore.collection('requests').doc(requestId).update({
+        'status': ServiceStatus.awaitingConfirmation.name,
+        'completedByWorker': true,
+        'completedAt': DateTime.now().toIso8601String(),
+      });
+
+      return right(unit);
+    } on SocketException {
+      return left(const NetworkFailure());
+    } on FirebaseException catch (e) {
+      return left(
+        FirebaseFailure(
+          message:
+              'Error al marcar como completado: ${e.message ?? "Error desconocido"}',
+          code: e.code,
+        ),
+      );
+    } catch (e) {
+      return left(
+        UnexpectedFailure(
+          message:
+              'Error al marcar la solicitud como completada: ${e.toString()}',
+        ),
+      );
+    }
+  }
+
+  @override
+  Future<Either<Failure, Unit>> confirmCompletion({
+    required String requestId,
+    required String clientId,
+  }) async {
+    try {
+      await _firestore.collection('requests').doc(requestId).update({
+        'status': ServiceStatus.completed.name,
+        'confirmedByClient': true,
+        'confirmedAt': DateTime.now().toIso8601String(),
+      });
+
+      return right(unit);
+    } on SocketException {
+      return left(const NetworkFailure());
+    } on FirebaseException catch (e) {
+      return left(
+        FirebaseFailure(
+          message:
+              'Error al confirmar finalización: ${e.message ?? "Error desconocido"}',
+          code: e.code,
+        ),
+      );
+    } catch (e) {
+      return left(
+        UnexpectedFailure(
+          message: 'Error al confirmar la finalización: ${e.toString()}',
         ),
       );
     }

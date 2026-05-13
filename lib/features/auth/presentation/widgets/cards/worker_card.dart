@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:servi_pro/core/theme/app_colors.dart';
 import 'package:servi_pro/core/theme/app_spacing.dart';
 import 'package:servi_pro/features/auth/data/models/trabajador.dart';
 
 class WorkerCard extends StatelessWidget {
   final Trabajador trabajador;
   final VoidCallback? onTap;
-  final VoidCallback? onMessageTap;
+ 
 
   const WorkerCard({
     super.key,
     required this.trabajador,
     this.onTap,
-    this.onMessageTap,
+   
   });
 
   /// Obtiene las iniciales del nombre del trabajador
@@ -31,144 +30,179 @@ class WorkerCard extends StatelessWidget {
       onTap: onTap,
       child: Card(
         color: Colors.white,
-        elevation: 2,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-        ),
+        elevation: 4,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.md),
-          child: Row(
+          padding: const EdgeInsets.all(AppSpacing.lg),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Avatar con iniciales
-              Container(
-                decoration: BoxDecoration(
-                  color: const Color.fromRGBO(49, 155, 148, 0.5),
-                  borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                ),
-                padding: const EdgeInsets.all(AppSpacing.md),
-                child: Text(
-                  _getInitials(trabajador.nombreCompleto),
-                  style: GoogleFonts.nunito(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 0.15,
-                    color: AppColors.surface,
-                  ),
-                ),
-              ),
-              const SizedBox(width: AppSpacing.md),
-
-              // Información del trabajador
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Nombre
-                    Text(
-                      trabajador.nombreCompleto,
-                      style: GoogleFonts.nunito(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 0.15,
-                        color: Colors.black,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: AppSpacing.xs),
-
-                    // Ocupación
-                    Text(
-                      'Profesional de servicios',
-                      style: GoogleFonts.nunito(
-                        fontSize: 14,
-                        letterSpacing: 0.15,
-                        color: const Color.fromARGB(255, 130, 130, 130),
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: AppSpacing.xs),
-
-                    // Ubicación y Valoración
-                    Row(
-                      children: [
-                        // Ubicación
-                        Expanded(
-                          child: Row(
-                            children: [
-                              const Icon(
-                                Icons.location_on_outlined,
-                                size: 16,
-                                color: Color.fromARGB(255, 130, 130, 130),
-                              ),
-                              const SizedBox(width: 4),
-                              Expanded(
-                                child: Text(
-                                  trabajador.ciudad,
-                                  style: GoogleFonts.nunito(
-                                    fontSize: 12,
-                                    letterSpacing: 0.15,
-                                    color: const Color.fromARGB(
-                                      255,
-                                      130,
-                                      130,
-                                      130,
-                                    ),
-                                  ),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                            ],
+              // Header: Avatar, Nombre y Botón de Mensaje
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Avatar circular con iniciales
+                  Stack(
+                    children: [
+                      Container(
+                        width: 60,
+                        height: 60,
+                        decoration: BoxDecoration(
+                          color: const Color.fromRGBO(49, 155, 148, 0.3),
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(
+                            color: const Color.fromRGBO(49, 155, 148, 0.5),
+                            width: 2,
                           ),
                         ),
-                        const SizedBox(width: AppSpacing.sm),
+                        child: Center(
+                          child: Text(
+                            _getInitials(trabajador.nombreCompleto),
+                            style: GoogleFonts.nunito(
+                              fontSize: 28,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 0.15,
+                              color: const Color.fromRGBO(49, 155, 148, 1),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(width: AppSpacing.lg),
 
-                        // Valoración
+                  // Nombre y Ocupación
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          trabajador.nombreCompleto,
+                          style: GoogleFonts.nunito(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 0.15,
+                            color: Colors.black,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          'Profesional de servicios',
+                          style: GoogleFonts.nunito(
+                            fontSize: 14,
+                            letterSpacing: 0.15,
+                            color: const Color.fromARGB(255, 130, 130, 130),
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        // Ubicación
                         Row(
                           children: [
                             const Icon(
-                              Icons.star_rate_rounded,
-                              size: 16,
-                              color: Colors.amber,
+                              Icons.location_on_outlined,
+                              size: 18,
+                              color: Color.fromARGB(255, 130, 130, 130),
                             ),
-                            const SizedBox(width: 4),
+                            const SizedBox(width: 6),
                             Text(
-                              '4.5',
+                              trabajador.ciudad,
                               style: GoogleFonts.nunito(
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
                                 letterSpacing: 0.15,
-                                color: Colors.amber,
+                                color: const Color.fromARGB(255, 130, 130, 130),
                               ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ],
                         ),
                       ],
                     ),
-                  ],
-                ),
+                  ),
+                  // Valoración
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Row(
+                        children: [
+                          const Icon(
+                            Icons.star_rate_rounded,
+                            size: 20,
+                            color: Colors.amber,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            trabajador.reviewsCount > 0
+                                ? trabajador.averageRating.toStringAsFixed(1)
+                                : '—',
+                            style: GoogleFonts.nunito(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        trabajador.reviewsCount == 1
+                            ? '(1 reseña)'
+                            : '(${trabajador.reviewsCount} reseñas)',
+                        style: GoogleFonts.nunito(
+                          fontSize: 12,
+                          color: const Color.fromARGB(255, 130, 130, 130),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
 
-              const SizedBox(width: AppSpacing.md),
+              const SizedBox(height: AppSpacing.md),
 
-              // Botón de mensaje
-              GestureDetector(
-                onTap: onMessageTap,
-                child: Container(
-                  padding: const EdgeInsets.all(AppSpacing.sm),
-                  decoration: BoxDecoration(
-                    color: const Color.fromRGBO(158, 158, 158, 0.3),
-                    borderRadius: BorderRadius.circular(16),
+              // Estadísticas: Servicios, Satisfacción, Valoración
+              /* Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  // Servicios completados
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            const Icon(
+                              Icons.people,
+                              size: 18,
+                              color: Color.fromARGB(255, 130, 130, 130),
+                            ),
+                            const SizedBox(width: 6),
+                            Text(
+                              '128 servicios',
+                              style: GoogleFonts.nunito(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          'completados',
+                          style: GoogleFonts.nunito(
+                            fontSize: 12,
+                            color: const Color.fromARGB(255, 130, 130, 130),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                  child: const Icon(
-                    Icons.messenger,
-                    color: Color.fromARGB(255, 20, 142, 243),
-                    size: 20,
-                  ),
-                ),
-              ),
+                ],
+              ), */
             ],
           ),
         ),

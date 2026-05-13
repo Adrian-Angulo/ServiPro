@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:servi_pro/features/auth/data/models/usuario.dart';
 
 abstract class AuthRepository {
@@ -23,6 +22,7 @@ abstract class AuthRepository {
     required String celular,
     required String cedula,
     required String sobreMi,
+    required String profesion,
   });
 
   Future<Usuario> login({required String email, required String password});
@@ -30,6 +30,13 @@ abstract class AuthRepository {
   Future<Usuario?> getCurrentUser();
   Future<Usuario?> getWorkerById({required String id});
   Future<List<Usuario>> getAllWorkers();
+
+  /// Actualiza promedio y conteo desnormalizados en `users/{workerId}`.
+  Future<void> syncWorkerRatingStats({
+    required String workerId,
+    required double averageRating,
+    required int reviewsCount,
+  });
   Future<void> sendPasswordReset({required String email});
   Stream<Usuario?> authStateChanges();
   Future<void> resetPassword({required String email});

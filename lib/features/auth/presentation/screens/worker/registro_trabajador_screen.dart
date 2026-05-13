@@ -26,6 +26,7 @@ class _RegistroTrabajadorScreenState
   final _celularController = TextEditingController();
   final _cedulaController = TextEditingController();
   final _sobreMiController = TextEditingController();
+  final _profesionController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
 
@@ -45,8 +46,6 @@ class _RegistroTrabajadorScreenState
     _confirmPasswordController.dispose();
     super.dispose();
   }
-
- 
 
   @override
   Widget build(BuildContext context) {
@@ -180,6 +179,13 @@ class _RegistroTrabajadorScreenState
                       ),
                       const SizedBox(height: AppSpacing.md),
 
+                      _AuthField(
+                        label: 'Profesión',
+                        hint: 'Ej. Ingeniero,arquitecto,etc.',
+                        controller: _profesionController,
+                      ),
+                      const SizedBox(height: AppSpacing.md),
+
                       Row(
                         children: [
                           Expanded(
@@ -262,6 +268,7 @@ class _RegistroTrabajadorScreenState
                           return null;
                         },
                       ),
+
                       const SizedBox(height: AppSpacing.xl),
 
                       _SectionHeader(
@@ -319,10 +326,11 @@ class _RegistroTrabajadorScreenState
                                         celular: _celularController.text.trim(),
                                         cedula: _cedulaController.text.trim(),
                                         sobreMi: _sobreMiController.text.trim(),
+                                        profesion: _profesionController.text
+                                            .trim(),
                                       );
 
                                   if (success && mounted) {
-                                    
                                     //Mesaje de Registro
                                   }
                                 },

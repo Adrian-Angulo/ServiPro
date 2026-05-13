@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:servi_pro/features/auth/presentation/providers/auth_provider.dart';
 import 'package:servi_pro/features/reviews/data/datasources/review_firebase_datasource.dart';
 import 'package:servi_pro/features/reviews/data/repositories/review_repository_impl.dart';
 import 'package:servi_pro/features/reviews/domain/entities/review_entity.dart';
@@ -11,7 +12,10 @@ final reviewDatasourceProvider = Provider((ref) {
 });
 
 final repoReviewProvider = Provider<ReviewRepository>((ref) {
-  return ReviewRepositoryImpl(ref.read(reviewDatasourceProvider));
+  return ReviewRepositoryImpl(
+    ref.read(reviewDatasourceProvider),
+    ref.read(authRepositoryProvider),
+  );
 });
 
 final addReviewUsecaseProvider = Provider((ref) {
@@ -50,3 +54,11 @@ class AddReviewNotifier extends AsyncNotifier<void> {
 final addReviewNotifierProvider = AsyncNotifierProvider<AddReviewNotifier, void>(() {
   return AddReviewNotifier();
 });
+
+/// Invalida caches que muestran calificación o listas de trabajadores.
+void invalidateWorkerRatingCaches(WidgetRef ref, String workerId) {
+  ref.invalidate(reviewsByWorkerProvider(workerId));
+  ref.invalidate(workerByIdProvider(workerId));
+  ref.invalidate(allWorkersProvider);
+  ref.invalidate(recommendedWorkersProvider);
+}

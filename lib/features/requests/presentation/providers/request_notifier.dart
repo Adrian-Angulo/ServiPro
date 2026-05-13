@@ -12,12 +12,30 @@ import 'package:servi_pro/features/requests/domain/usecases/get_request_by_id_us
 import 'package:servi_pro/features/requests/domain/usecases/register_use_case.dart';
 
 class RequestNotifier extends AsyncNotifier<List<RequestEntity>> {
+  StreamSubscription<List<RequestEntity>>? _requestsSubscription;
+
   @override
   FutureOr<List<RequestEntity>> build() async {
+    final repo = ref.read(requestRepositoryProvider);
     final useCase = ref.read(getAllRequestsUseCaseProvider);
     final result = await useCase.call();
+    final initial = result.fold((failure) => throw failure, (requests) => requests);
 
-    return result.fold((failure) => throw failure, (requests) => requests);
+    _requestsSubscription?.cancel();
+    _requestsSubscription = repo.watchAllRequests().listen(
+      (requests) {
+        state = AsyncValue.data(requests);
+      },
+      onError: (Object error, StackTrace stackTrace) {
+        state = AsyncValue.error(error, stackTrace);
+      },
+    );
+    ref.onDispose(() {
+      _requestsSubscription?.cancel();
+      _requestsSubscription = null;
+    });
+
+    return initial;
   }
 
   Future<Failure?> registerRequest({required RequestEntity request}) async {

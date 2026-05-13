@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:latlong2/latlong.dart';
+import 'package:servi_pro/core/errors/failures.dart';
 import 'package:servi_pro/core/theme/app_colors.dart';
 import 'package:servi_pro/core/theme/app_spacing.dart';
 import 'package:servi_pro/core/theme/app_typography.dart';
 import 'package:servi_pro/features/auth/presentation/providers/auth_provider.dart';
 import 'package:servi_pro/features/requests/domain/entities/request_entity.dart';
 import 'package:servi_pro/features/requests/presentation/providers/request_notifier.dart';
+import 'package:servi_pro/core/utils/service_category_catalog.dart';
 import 'package:servi_pro/features/requests/presentation/widgets/form/action_buttons.dart';
 import 'package:servi_pro/features/requests/presentation/widgets/cards/service_category_card.dart';
 import 'package:servi_pro/core/widgets/inputs/title_input_field.dart';
@@ -26,33 +27,37 @@ class _CreateRequestScreenState extends ConsumerState<CreateRequestScreen> {
   final TextEditingController descriptionController = TextEditingController();
   final TextEditingController addressController = TextEditingController();
 
-  // Datos de ubicación
-  LatLng? selectedLocation;
-  String? selectedAddress;
-
   // Focus nodes
   final FocusNode _titleFocusNode = FocusNode();
   final FocusNode _descriptionFocusNode = FocusNode();
+  final FocusNode _addressFocusNode = FocusNode();
 
   // Estado de carga
   bool _isLoading = false;
 
-  final List<Map<String, dynamic>> categories = [
-    {'icon': Icons.plumbing, 'label': 'Plomería'},
-    {'icon': Icons.electric_bolt_rounded, 'label': 'Electricidad'},
-    {'icon': Icons.carpenter, 'label': 'Carpintería'},
-    {'icon': Icons.cleaning_services, 'label': 'Limpieza'},
-    {'icon': Icons.format_paint, 'label': 'Pintura'},
-    {'icon': Icons.miscellaneous_services, 'label': 'Otros'},
-  ];
+  void _onFormFieldChanged() {
+    if (mounted) setState(() {});
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    titleController.addListener(_onFormFieldChanged);
+    descriptionController.addListener(_onFormFieldChanged);
+    addressController.addListener(_onFormFieldChanged);
+  }
 
   @override
   void dispose() {
+    titleController.removeListener(_onFormFieldChanged);
+    descriptionController.removeListener(_onFormFieldChanged);
+    addressController.removeListener(_onFormFieldChanged);
     titleController.dispose();
     descriptionController.dispose();
     addressController.dispose();
     _titleFocusNode.dispose();
     _descriptionFocusNode.dispose();
+    _addressFocusNode.dispose();
     super.dispose();
   }
 
@@ -65,9 +70,9 @@ class _CreateRequestScreenState extends ConsumerState<CreateRequestScreen> {
 
   void _handleCancel() {
     if (selectedCategory != null ||
-        titleController.text.isNotEmpty ||
-        descriptionController.text.isNotEmpty ||
-        addressController.text.isNotEmpty) {
+        titleController.text.trim().isNotEmpty ||
+        descriptionController.text.trim().isNotEmpty ||
+        addressController.text.trim().isNotEmpty) {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
@@ -121,9 +126,9 @@ class _CreateRequestScreenState extends ConsumerState<CreateRequestScreen> {
     // Obtener el usuario autenticado
     final authState = ref.read(authNotifierProvider);
     final userId = authState.when(
-      data: (user) => user?.id, // Usar 'id' en lugar de 'uid'
+      data: (user) => user?.id,
       loading: () => null,
-      error: (_, __) => null,
+      error: (_, _) => null,
     );
 
     if (userId == null) {
@@ -133,29 +138,24 @@ class _CreateRequestScreenState extends ConsumerState<CreateRequestScreen> {
 
     setState(() => _isLoading = true);
 
-    // Crear la entidad de solicitud
-    final request = RequestEntity(
-      idClient: userId,
-      title: titleController.text.trim(),
-      idTypeService: selectedCategory!,
-      details: descriptionController.text.trim(),
-      addres: addressController.text.trim(),
-    );
+    Failure? failure;
+    try {
+      final request = RequestEntity(
+        idClient: userId,
+        title: titleController.text.trim(),
+        idTypeService: selectedCategory!,
+        details: descriptionController.text.trim(),
+        addres: addressController.text.trim(),
+      );
 
-    // Debug: Imprimir datos
-    debugPrint('📝 Creando solicitud:');
-    debugPrint('   Usuario: $userId');
-    debugPrint('   Título: ${request.title}');
-    debugPrint('   Categoría: ${request.idTypeService}');
-    debugPrint('   Descripción: ${request.details}');
-    debugPrint('   Dirección: ${request.addres}');
-
-    // Registrar la solicitud
-    final failure = await ref
-        .read(requestNotifierProvider.notifier)
-        .registerRequest(request: request);
-
-    setState(() => _isLoading = false);
+      failure = await ref
+          .read(requestNotifierProvider.notifier)
+          .registerRequest(request: request);
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    }
 
     if (!mounted) return;
 
@@ -267,18 +267,19 @@ class _CreateRequestScreenState extends ConsumerState<CreateRequestScreen> {
                                 mainAxisSpacing: AppSpacing.md,
                                 childAspectRatio: 0.9,
                               ),
-                          itemCount: categories.length,
+                          itemCount: kRequestServiceCategoriesOrdered.length,
                           itemBuilder: (context, index) {
-                            final category = categories[index];
+                            final category =
+                                kRequestServiceCategoriesOrdered[index];
                             return ServiceCategoryCard(
-                              icon: category['icon'],
-                              label: category['label'],
-                              isSelected: selectedCategory == category['label'],
+                              icon: category.icon,
+                              label: category.label,
+                              isSelected: selectedCategory == category.label,
                               onTap: _isLoading
                                   ? () {}
                                   : () {
                                       setState(() {
-                                        selectedCategory = category['label'];
+                                        selectedCategory = category.label;
                                       });
                                     },
                             );
@@ -313,7 +314,7 @@ class _CreateRequestScreenState extends ConsumerState<CreateRequestScreen> {
                         const SizedBox(height: AppSpacing.xs),
                         TitleInputField(
                           controller: addressController,
-                          focusNode: FocusNode(),
+                          focusNode: _addressFocusNode,
                           hasFocus: false,
                           labelText: "Dirección",
                           hintText: "Ej: Cra 24 #17-21, Barrio chapal",

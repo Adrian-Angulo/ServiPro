@@ -4,8 +4,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:servi_pro/core/theme/app_colors.dart';
 import 'package:servi_pro/core/theme/app_spacing.dart';
 import 'package:servi_pro/core/theme/app_typography.dart';
+import 'package:servi_pro/features/auth/presentation/providers/auth_provider.dart';
 import 'package:servi_pro/features/auth/presentation/screens/client/perfil_cliente.dart';
 import 'package:servi_pro/features/auth/presentation/screens/client/trabajadores_screen.dart';
+import 'package:servi_pro/features/auth/presentation/screens/client/worker_perfil_simple_view.dart';
+import 'package:servi_pro/features/auth/presentation/widgets/cards/worker_card.dart';
 import 'package:servi_pro/features/requests/presentation/screens/client/create_request_screen.dart';
 import 'package:servi_pro/features/requests/presentation/screens/client/mis_solicitudes_screen.dart';
 
@@ -71,13 +74,15 @@ class _ClientShellState extends ConsumerState<ClientShell> {
   }
 }
 
-class HomeClientScreen extends StatelessWidget {
+class HomeClientScreen extends ConsumerWidget {
   final Function(int)? onTabTapped;
 
   const HomeClientScreen({super.key, this.onTabTapped});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final recommendedWorkers = ref.watch(recommendedWorkersProvider);
+
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.symmetric(
@@ -85,7 +90,6 @@ class HomeClientScreen extends StatelessWidget {
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
-
           children: [
             const SizedBox(height: AppSpacing.screenHorizontal),
             Column(
@@ -151,7 +155,6 @@ class HomeClientScreen extends StatelessWidget {
               },
             ),
             SizedBox(height: AppSpacing.md),
-
             Text(
               "Trabajadores recomendados",
               style: GoogleFonts.nunito(
@@ -163,114 +166,119 @@ class HomeClientScreen extends StatelessWidget {
             ),
             SizedBox(height: AppSpacing.md),
             Expanded(
-              child: ListView.separated(
-                itemBuilder: (context, index) => Card(
-                  color: Colors.white,
-                  elevation: 2,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            color: const Color.fromRGBO(49, 155, 148, 0.5),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          padding: EdgeInsets.all(8),
-                          child: Text(
-                            "MD",
-                            style: GoogleFonts.nunito(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 0.15,
-                              color: AppColors.surface,
-                            ),
-                          ),
+              child: recommendedWorkers.when(
+                // Estado: Cargando
+                loading: () => Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const CircularProgressIndicator(),
+                      const SizedBox(height: AppSpacing.md),
+                      Text(
+                        'Cargando trabajadores...',
+                        style: GoogleFonts.nunito(
+                          fontSize: 14,
+                          color: Colors.grey[600],
+                          letterSpacing: 0.15,
                         ),
-                        SizedBox(width: AppSpacing.md),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Marta Rosero",
-                                style: GoogleFonts.nunito(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  letterSpacing: 0.15,
-                                  color: Colors.black,
-                                ),
-                              ),
-                              Text(
-                                "Electricista experto",
-                                style: GoogleFonts.nunito(
-                                  fontSize: 14,
-
-                                  letterSpacing: 0.15,
-                                  color: const Color.fromARGB(
-                                    255,
-                                    130,
-                                    130,
-                                    130,
-                                  ),
-                                ),
-                              ),
-
-                              Row(
-                                children: [
-                                  Icon(
-                                    size: 20,
-                                    Icons.star_rate_rounded,
-                                    color: Colors.amber,
-                                  ),
-                                  Text(
-                                    "4.9",
-                                    style: GoogleFonts.nunito(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.bold,
-                                      letterSpacing: 0.15,
-                                      color: Colors.amber,
-                                    ),
-                                  ),
-                                  SizedBox(width: AppSpacing.md),
-                                  Text(
-                                    "49 trabajos",
-                                    style: GoogleFonts.nunito(
-                                      fontSize: 14,
-
-                                      letterSpacing: 0.15,
-                                      color: const Color.fromARGB(
-                                        255,
-                                        130,
-                                        130,
-                                        130,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-
-                        Container(
-                          padding: EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            color: const Color.fromRGBO(158, 158, 158, 0.3),
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          child: Icon(
-                            Icons.messenger,
-                            color: const Color.fromARGB(255, 20, 142, 243),
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
-                separatorBuilder: (context, index) =>
-                    SizedBox(height: AppSpacing.xs),
-                itemCount: 5,
+
+                // Estado: Error
+                error: (error, stack) => Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.error_outline,
+                        size: 48,
+                        color: Colors.red[400],
+                      ),
+                      const SizedBox(height: AppSpacing.md),
+                      Text(
+                        'Error al cargar trabajadores',
+                        style: GoogleFonts.nunito(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black87,
+                          letterSpacing: 0.15,
+                        ),
+                      ),
+                      const SizedBox(height: AppSpacing.sm),
+                      Text(
+                        error.toString(),
+                        style: GoogleFonts.nunito(
+                          fontSize: 12,
+                          color: Colors.grey[600],
+                          letterSpacing: 0.15,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                ),
+
+                // Estado: Datos cargados
+                data: (workers) {
+                  // Lista vacía
+                  if (workers.isEmpty) {
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.people_outline,
+                            size: 48,
+                            color: Colors.grey[400],
+                          ),
+                          const SizedBox(height: AppSpacing.md),
+                          Text(
+                            'No hay trabajadores disponibles',
+                            style: GoogleFonts.nunito(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                              letterSpacing: 0.15,
+                            ),
+                          ),
+                          const SizedBox(height: AppSpacing.sm),
+                          Text(
+                            'Vuelve más tarde',
+                            style: GoogleFonts.nunito(
+                              fontSize: 12,
+                              color: Colors.grey[600],
+                              letterSpacing: 0.15,
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+
+                  // Lista con trabajadores
+                  return ListView.separated(
+                    itemCount: workers.length,
+                    itemBuilder: (context, index) {
+                      final worker = workers[index];
+                      return WorkerCard(
+                        trabajador: worker,
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  WorkerPerfilSimpleView(workerId: worker.id),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                    separatorBuilder: (context, index) =>
+                        const SizedBox(height: AppSpacing.xs),
+                  );
+                },
               ),
             ),
           ],

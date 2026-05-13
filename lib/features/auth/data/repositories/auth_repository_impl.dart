@@ -12,13 +12,22 @@ class AuthRepositoryImpl implements AuthRepository {
 
   AuthRepositoryImpl();
 
+  /// `doc.data()` no incluye el id del documento; unificar con `id` del path.
+  Map<String, dynamic> _userDataWithId(
+    DocumentSnapshot<Map<String, dynamic>> doc,
+  ) {
+    final data = doc.data();
+    if (data == null) return {'id': doc.id};
+    return {'id': doc.id, ...data};
+  }
+
   @override
   Stream<Usuario?> authStateChanges() {
     return _firebaseAuth.authStateChanges().asyncMap((usu) async {
       if (usu == null) return null;
       final doc = await _firestore.collection('users').doc(usu.uid).get();
       if (!doc.exists || doc.data() == null) return null;
-      return AppUserFactory.fromMap(doc.data()!);
+      return AppUserFactory.fromMap(_userDataWithId(doc));
     });
   }
 
@@ -78,6 +87,7 @@ class AuthRepositoryImpl implements AuthRepository {
     required String celular,
     required String cedula,
     required String sobreMi,
+    required String profesion,
   }) async {
     try {
       final credential = await _firebaseAuth.createUserWithEmailAndPassword(
@@ -97,6 +107,7 @@ class AuthRepositoryImpl implements AuthRepository {
         celular: celular,
         cedula: cedula,
         sobreMi: sobreMi,
+        profesion: profesion,
         rol: Rol.trabajador,
       );
 
@@ -128,7 +139,7 @@ class AuthRepositoryImpl implements AuthRepository {
 
     final doc = await _firestore.collection('users').doc(uid).get();
 
-    return AppUserFactory.fromMap(doc.data()!);
+    return AppUserFactory.fromMap(_userDataWithId(doc));
   }
 
   //Cerrar sesion -------------------------------------------
@@ -148,7 +159,7 @@ class AuthRepositoryImpl implements AuthRepository {
 
     final doc = await _firestore.collection('users').doc(user.uid).get();
 
-    return AppUserFactory.fromMap(doc.data()!);
+    return AppUserFactory.fromMap(_userDataWithId(doc));
   }
 
   //Recuperar contraseña------------------------------------
@@ -163,8 +174,20 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<Usuario?> getWorkerById({required String id}) async {
     final doc = await _firestore.collection('users').doc(id).get();
-    if (!doc.exists) return null;
-    return AppUserFactory.fromMap(doc.data()!);
+    if (!doc.exists || doc.data() == null) return null;
+    return AppUserFactory.fromMap(_userDataWithId(doc));
+  }
+
+  @override
+  Future<void> syncWorkerRatingStats({
+    required String workerId,
+    required double averageRating,
+    required int reviewsCount,
+  }) async {
+    await _firestore.collection('users').doc(workerId).update({
+      'averageRating': averageRating,
+      'reviewsCount': reviewsCount,
+    });
   }
 
   @override
@@ -176,7 +199,7 @@ class AuthRepositoryImpl implements AuthRepository {
           .get();
 
       final workers = querySnapshot.docs
-          .map((doc) => AppUserFactory.fromMap(doc.data()))
+          .map((doc) => AppUserFactory.fromMap(_userDataWithId(doc)))
           .toList();
 
       return workers;

@@ -1,1 +1,7 @@
-enum ServiceStatus { pending, inProgress, completed, cancelled }
+enum ServiceStatus {
+  pending,
+  inProgress,
+  awaitingConfirmation,
+  completed,
+  cancelled,
+}

@@ -85,6 +85,7 @@ class ApplicationFirebaseDatasource implements IApplicationDatasource {
       
       if (state == "aceptado") {
         updates["status"] = "pending";
+        updates["dateAssigned"] = FieldValue.delete();
       }
       
       batch.update(requestRef, updates);

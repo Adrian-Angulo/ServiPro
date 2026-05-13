@@ -8,6 +8,9 @@ class ReviewModel extends ReviewEntity {
     required super.clientName,
     required super.rating,
     required super.comment,
+    required super.requestId,
+    required super.applicationId,
+    super.isVerified = true,
     super.createdAt,
   });
 
@@ -19,6 +22,9 @@ class ReviewModel extends ReviewEntity {
       clientName: map['clientName'] ?? 'Cliente Anónimo',
       rating: (map['rating'] ?? 0.0).toDouble(),
       comment: map['comment'] ?? '',
+      requestId: map['requestId'] ?? '',
+      applicationId: map['applicationId'] ?? '',
+      isVerified: map['isVerified'] ?? true,
       createdAt: map['createdAt'] != null
           ? DateTime.parse(map['createdAt'])
           : DateTime.now(),
@@ -32,6 +38,9 @@ class ReviewModel extends ReviewEntity {
       'clientName': clientName,
       'rating': rating,
       'comment': comment,
+      'requestId': requestId,
+      'applicationId': applicationId,
+      'isVerified': isVerified,
       'createdAt': createdAt.toIso8601String(),
     };
   }

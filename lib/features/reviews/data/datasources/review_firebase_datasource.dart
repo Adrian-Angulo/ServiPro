@@ -7,7 +7,7 @@ class ReviewFirebaseDatasource implements IReviewDatasource {
   final FirebaseFirestore firestore;
 
   ReviewFirebaseDatasource({FirebaseFirestore? firestore})
-      : firestore = firestore ?? FirebaseFirestore.instance;
+    : firestore = firestore ?? FirebaseFirestore.instance;
 
   @override
   Future<void> addReview(ReviewEntity review) async {
@@ -19,6 +19,8 @@ class ReviewFirebaseDatasource implements IReviewDatasource {
         rating: review.rating,
         comment: review.comment,
         createdAt: review.createdAt,
+        requestId: review.requestId,
+        applicationId: review.applicationId,
       );
 
       await firestore.collection('reviews').add(model.toMap());

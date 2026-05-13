@@ -20,6 +20,9 @@ class StatusBadge extends StatelessWidget {
 
       case ServiceStatus.cancelled:
         return const Color(0xFFFFEAEA);
+      case ServiceStatus.awaitingConfirmation:
+        // TODO: Handle this case.
+        throw UnimplementedError();
     }
   }
 
@@ -36,6 +39,9 @@ class StatusBadge extends StatelessWidget {
 
       case ServiceStatus.cancelled:
         return const Color(0xFFE53935);
+      case ServiceStatus.awaitingConfirmation:
+        // TODO: Handle this case.
+        throw UnimplementedError();
     }
   }
 
@@ -52,6 +58,9 @@ class StatusBadge extends StatelessWidget {
 
       case ServiceStatus.cancelled:
         return Icons.cancel_rounded;
+      case ServiceStatus.awaitingConfirmation:
+        // TODO: Handle this case.
+        throw UnimplementedError();
     }
   }
 
@@ -68,6 +77,9 @@ class StatusBadge extends StatelessWidget {
 
       case ServiceStatus.cancelled:
         return 'Cancelado';
+      case ServiceStatus.awaitingConfirmation:
+        // TODO: Handle this case.
+        throw UnimplementedError();
     }
   }
 

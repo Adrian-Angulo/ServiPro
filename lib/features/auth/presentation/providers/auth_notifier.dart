@@ -66,6 +66,7 @@ class AuthNotifier extends AsyncNotifier<Usuario?> {
     required String celular,
     required String cedula,
     required String sobreMi,
+    required String profesion,
   }) async {
     state = const AsyncValue.loading();
 
@@ -80,6 +81,7 @@ class AuthNotifier extends AsyncNotifier<Usuario?> {
         celular: celular,
         cedula: cedula,
         sobreMi: sobreMi,
+        profesion: profesion,
       );
 
       final user = await repository.getCurrentUser();

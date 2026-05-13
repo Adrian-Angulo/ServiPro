@@ -7,9 +7,17 @@ import 'package:servi_pro/features/auth/domain/usecases/get_worker_by_id_usecase
 import 'package:servi_pro/features/auth/domain/usecases/get_all_workers_usecase.dart';
 import 'package:servi_pro/features/auth/domain/usecases/reset_passwordk_usecase.dart';
 import 'package:servi_pro/features/auth/presentation/providers/auth_notifier.dart';
+import 'package:servi_pro/features/requests/domain/usecases/mark_request_completed_usecase.dart';
+import 'package:servi_pro/features/requests/domain/usecases/confirm_request_completion_usecase.dart';
+import 'package:servi_pro/features/requests/data/repository/request_impl.dart';
+import 'package:servi_pro/features/requests/domain/repository/request_repository.dart';
 
 final authRepositoryProvider = Provider<AuthRepository>(
   (ref) => AuthRepositoryImpl(),
+);
+
+final requestRepositoryProvider = Provider<RequestRepository>(
+  (ref) => RequestImpl(),
 );
 
 final authNotifierProvider = AsyncNotifierProvider<AuthNotifier, Usuario?>(
@@ -28,6 +36,21 @@ final resetPasswordProvider = Provider<ResetPasswordUsecase>((ref) {
   return ResetPasswordUsecase(authRepository: ref.read(authRepositoryProvider));
 });
 
+final markRequestCompletedProvider = Provider<MarkRequestCompletedUsecase>((
+  ref,
+) {
+  return MarkRequestCompletedUsecase(
+    repository: ref.read(requestRepositoryProvider),
+  );
+});
+
+final confirmRequestCompletionProvider =
+    Provider<ConfirmRequestCompletionUsecase>((ref) {
+      return ConfirmRequestCompletionUsecase(
+        repository: ref.read(requestRepositoryProvider),
+      );
+    });
+
 final workerByIdProvider = FutureProvider.family<Trabajador?, String>((
   ref,
   workerId,
@@ -40,6 +63,15 @@ final allWorkersProvider = FutureProvider<List<Trabajador>>((ref) async {
   final usecase = ref.read(getAllWorkersUsecaseProvider);
   final users = await usecase();
   return users.whereType<Trabajador>().toList();
+});
+
+final recommendedWorkersProvider = FutureProvider<List<Trabajador>>((
+  ref,
+) async {
+  final usecase = ref.read(getAllWorkersUsecaseProvider);
+  final users = await usecase();
+  final workers = users.whereType<Trabajador>().toList();
+  return workers.take(5).toList();
 });
 
 final authStateProvider = StreamProvider<Usuario?>((ref) {

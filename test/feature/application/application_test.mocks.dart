@@ -105,13 +105,64 @@ class MockApplicationRepository extends _i1.Mock
   @override
   _i3.Future<_i4.Either<_i5.Failure, _i4.Unit>> cancelApplication({
     required String? id,
+    required String? idRequest,
   }) =>
       (super.noSuchMethod(
-            Invocation.method(#cancelApplication, [], {#id: id}),
+            Invocation.method(#cancelApplication, [], {
+              #id: id,
+              #idRequest: idRequest,
+            }),
             returnValue: _i3.Future<_i4.Either<_i5.Failure, _i4.Unit>>.value(
               _i6.dummyValue<_i4.Either<_i5.Failure, _i4.Unit>>(
                 this,
-                Invocation.method(#cancelApplication, [], {#id: id}),
+                Invocation.method(#cancelApplication, [], {
+                  #id: id,
+                  #idRequest: idRequest,
+                }),
+              ),
+            ),
+          )
+          as _i3.Future<_i4.Either<_i5.Failure, _i4.Unit>>);
+
+  @override
+  _i3.Future<_i4.Either<_i5.Failure, _i4.Unit>> acceptApplication({
+    required String? applicationId,
+    required String? requestId,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#acceptApplication, [], {
+              #applicationId: applicationId,
+              #requestId: requestId,
+            }),
+            returnValue: _i3.Future<_i4.Either<_i5.Failure, _i4.Unit>>.value(
+              _i6.dummyValue<_i4.Either<_i5.Failure, _i4.Unit>>(
+                this,
+                Invocation.method(#acceptApplication, [], {
+                  #applicationId: applicationId,
+                  #requestId: requestId,
+                }),
+              ),
+            ),
+          )
+          as _i3.Future<_i4.Either<_i5.Failure, _i4.Unit>>);
+
+  @override
+  _i3.Future<_i4.Either<_i5.Failure, _i4.Unit>> completeRequest({
+    required String? applicationId,
+    required String? requestId,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#completeRequest, [], {
+              #applicationId: applicationId,
+              #requestId: requestId,
+            }),
+            returnValue: _i3.Future<_i4.Either<_i5.Failure, _i4.Unit>>.value(
+              _i6.dummyValue<_i4.Either<_i5.Failure, _i4.Unit>>(
+                this,
+                Invocation.method(#completeRequest, [], {
+                  #applicationId: applicationId,
+                  #requestId: requestId,
+                }),
               ),
             ),
           )

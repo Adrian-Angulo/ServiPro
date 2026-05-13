@@ -146,7 +146,7 @@ class VerDetallesSolicitudScreen extends ConsumerWidget {
     }
   }
 
-  Future<void> _cancelApplication(BuildContext context, WidgetRef ref, {bool isAcceptedWorker = false}) async {
+  Future<void> _cancelApplication(BuildContext context, WidgetRef ref) async {
     final user = ref.read(authNotifierProvider).value;
     if (user == null) return;
     
@@ -156,6 +156,8 @@ class VerDetallesSolicitudScreen extends ConsumerWidget {
     // Buscar la postulación correspondiente
     final application = applications.where((p) => p.idworker == user.id && p.idrequest == request.id).firstOrNull;
     if (application == null || application.id == null) return;
+
+    final wasAccepted = application.state == ApplicationStatus.aceptado;
 
     ref.invalidate(applicationsByRequestProvider(request.id!));
 
@@ -176,10 +178,11 @@ class VerDetallesSolicitudScreen extends ConsumerWidget {
         ),
       );
     } else {
-      // 1. Actualizamos contador y estado si era el trabajador aceptado
+      // 1. Actualizamos contador y estado si la postulación estaba aceptada
       if (request.postulationsCount > 0) request.postulationsCount--;
-      if (isAcceptedWorker) {
+      if (wasAccepted) {
         request.status = ServiceStatus.pending;
+        request.dateAssigned = null;
       }
       
       // 2. Forzamos a Riverpod a repintar la lista de solicitudes anterior
@@ -610,7 +613,7 @@ class VerDetallesSolicitudScreen extends ConsumerWidget {
                 label: alreadyApplied ? 'Cancelar Postulacion' : 'Postularme',
                 onPressed: () {
                    if (alreadyApplied) {
-                      _cancelApplication(context, ref, isAcceptedWorker: isAcceptedWorker);
+                      _cancelApplication(context, ref);
                    } else if (isPending) {
                       _applyToRequest(context, ref);
                    }

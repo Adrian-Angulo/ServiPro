@@ -68,6 +68,14 @@ class MockRequestRepository extends _i1.Mock implements _i2.RequestRepository {
           as _i3.Future<_i4.Either<_i5.Failure, List<_i6.RequestEntity>>>);
 
   @override
+  _i3.Stream<List<_i6.RequestEntity>> watchAllRequests() =>
+      (super.noSuchMethod(
+            Invocation.method(#watchAllRequests, []),
+            returnValue: _i3.Stream<List<_i6.RequestEntity>>.empty(),
+          )
+          as _i3.Stream<List<_i6.RequestEntity>>);
+
+  @override
   _i3.Future<_i4.Either<_i5.Failure, _i4.Unit>> deleteRequest(String? id) =>
       (super.noSuchMethod(
             Invocation.method(#deleteRequest, [id]),
@@ -75,6 +83,66 @@ class MockRequestRepository extends _i1.Mock implements _i2.RequestRepository {
               _i7.dummyValue<_i4.Either<_i5.Failure, _i4.Unit>>(
                 this,
                 Invocation.method(#deleteRequest, [id]),
+              ),
+            ),
+          )
+          as _i3.Future<_i4.Either<_i5.Failure, _i4.Unit>>);
+
+  @override
+  _i3.Future<_i4.Either<_i5.Failure, _i6.RequestEntity>> getRequestById(
+    String? id,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#getRequestById, [id]),
+            returnValue:
+                _i3.Future<_i4.Either<_i5.Failure, _i6.RequestEntity>>.value(
+                  _i7.dummyValue<_i4.Either<_i5.Failure, _i6.RequestEntity>>(
+                    this,
+                    Invocation.method(#getRequestById, [id]),
+                  ),
+                ),
+          )
+          as _i3.Future<_i4.Either<_i5.Failure, _i6.RequestEntity>>);
+
+  @override
+  _i3.Future<_i4.Either<_i5.Failure, _i4.Unit>> markAsCompleted({
+    required String? requestId,
+    required String? workerId,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#markAsCompleted, [], {
+              #requestId: requestId,
+              #workerId: workerId,
+            }),
+            returnValue: _i3.Future<_i4.Either<_i5.Failure, _i4.Unit>>.value(
+              _i7.dummyValue<_i4.Either<_i5.Failure, _i4.Unit>>(
+                this,
+                Invocation.method(#markAsCompleted, [], {
+                  #requestId: requestId,
+                  #workerId: workerId,
+                }),
+              ),
+            ),
+          )
+          as _i3.Future<_i4.Either<_i5.Failure, _i4.Unit>>);
+
+  @override
+  _i3.Future<_i4.Either<_i5.Failure, _i4.Unit>> confirmCompletion({
+    required String? requestId,
+    required String? clientId,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#confirmCompletion, [], {
+              #requestId: requestId,
+              #clientId: clientId,
+            }),
+            returnValue: _i3.Future<_i4.Either<_i5.Failure, _i4.Unit>>.value(
+              _i7.dummyValue<_i4.Either<_i5.Failure, _i4.Unit>>(
+                this,
+                Invocation.method(#confirmCompletion, [], {
+                  #requestId: requestId,
+                  #clientId: clientId,
+                }),
               ),
             ),
           )

@@ -6,7 +6,14 @@ class Trabajador extends Usuario {
   String ciudad;
   String celular;
   String cedula;
+  String profesion;
   String sobreMi;
+
+  /// Promedio persistido en Firestore (se sincroniza al crear reseñas).
+  double averageRating;
+
+  /// Total de reseñas persistido en Firestore.
+  int reviewsCount;
 
   Trabajador({
     required super.id,
@@ -17,8 +24,11 @@ class Trabajador extends Usuario {
     required this.ciudad,
     required this.celular,
     required this.cedula,
+    required this.profesion,
     required this.sobreMi,
     required super.rol,
+    this.averageRating = 0,
+    this.reviewsCount = 0,
   });
 
   Map<String, dynamic> toMap() {
@@ -32,8 +42,23 @@ class Trabajador extends Usuario {
       'celular': celular,
       'cedula': cedula,
       'sobreMi': sobreMi,
-      'rol': rol.name
+      'profesion': profesion,
+      'rol': rol.name,
+      'averageRating': averageRating,
+      'reviewsCount': reviewsCount,
     };
+  }
+
+  /// Lee el primer campo no vacío entre varias claves (p. ej. datos legacy o
+  /// nombres distintos en Firestore: `Profesion`, `profession`, etc.).
+  static String _firstString(Map<String, dynamic> map, List<String> keys) {
+    for (final key in keys) {
+      final raw = map[key];
+      if (raw == null) continue;
+      final s = raw is String ? raw : raw.toString();
+      if (s.trim().isNotEmpty) return s.trim();
+    }
+    return '';
   }
 
   factory Trabajador.fromMap(Map<String, dynamic> map) {
@@ -46,13 +71,39 @@ class Trabajador extends Usuario {
       ciudad: map['ciudad'],
       celular: map['celular'],
       cedula: map['cedula'],
-      sobreMi: map['sobreMi'],
+      sobreMi: map['sobreMi'] ?? '',
+      profesion: _firstString(map, const [
+        'profesion',
+        'profesión',
+        'Profesion',
+        'profession',
+        'ocupacion',
+        'ocupación',
+        'especialidad',
+      ]),
       rol: map['rol'] == 'trabajador' ? Rol.trabajador : Rol.cliente,
+      averageRating: _parseDouble(map['averageRating']),
+      reviewsCount: _parseInt(map['reviewsCount']),
     );
+  }
+
+  static double _parseDouble(dynamic v) {
+    if (v == null) return 0;
+    if (v is double) return v;
+    if (v is int) return v.toDouble();
+    if (v is num) return v.toDouble();
+    return double.tryParse(v.toString()) ?? 0;
+  }
+
+  static int _parseInt(dynamic v) {
+    if (v == null) return 0;
+    if (v is int) return v;
+    if (v is num) return v.toInt();
+    return int.tryParse(v.toString()) ?? 0;
   }
 
   @override
   String toString() {
-    return 'Trabajador{email: $email, nombreCompleto: $nombreCompleto, edad: $edad, ciudad: $ciudad, celular: $celular, cedula: $cedula}';
+    return 'Trabajador{email: $email, nombreCompleto: $nombreCompleto, edad: $edad, ciudad: $ciudad, celular: $celular, cedula: $cedula, profesion: $profesion}';
   }
 }

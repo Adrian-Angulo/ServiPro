@@ -5,6 +5,9 @@ class ReviewEntity {
   final String clientName;
   final double rating;
   final String comment;
+  final String requestId;
+  final String applicationId;
+  final bool isVerified;
   final DateTime createdAt;
 
   ReviewEntity({
@@ -14,6 +17,9 @@ class ReviewEntity {
     required this.clientName,
     required this.rating,
     required this.comment,
+    required this.requestId,
+    required this.applicationId,
+    this.isVerified = true,
     DateTime? createdAt,
   }) : createdAt = createdAt ?? DateTime.now();
 }
