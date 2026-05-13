@@ -11,14 +11,13 @@ import 'package:servi_pro/features/auth/presentation/providers/auth_provider.dar
 import 'package:servi_pro/features/requests/domain/entities/request_entity.dart';
 import 'package:servi_pro/features/requests/presentation/providers/request_filter_provider.dart';
 import 'package:servi_pro/features/requests/presentation/providers/request_notifier.dart';
-import 'package:servi_pro/features/requests/presentation/screens/create_request_screen.dart';
+import 'package:servi_pro/features/requests/presentation/screens/client/create_request_screen.dart';
 import 'package:servi_pro/features/requests/presentation/screens/ver_detalles_solicitud_screen.dart';
 import 'package:servi_pro/core/widgets/empty/empty_requests_widget.dart';
 import 'package:servi_pro/features/requests/presentation/widgets/cards/request_card.dart';
 
 class MisSolicitudesScreen extends ConsumerWidget {
   const MisSolicitudesScreen({super.key});
-
 
   // Filtrar solicitudes
   List<RequestEntity> _filterRequests(
@@ -239,20 +238,7 @@ class MisSolicitudesScreen extends ConsumerWidget {
                       itemBuilder: (context, index) {
                         final request = filteredRequests[index];
 
-                        return GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    VerDetallesSolicitudScreen(
-                                      request: request,
-                                    ),
-                              ),
-                            );
-                          },
-                          child: RequestCard(requestEntity: request),
-                        );
+                        return RequestCard(requestEntity: request);
                       },
                     ),
                   );

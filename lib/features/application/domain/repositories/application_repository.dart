@@ -16,5 +16,18 @@ abstract class ApplicationRepository {
     required String idWorker,
   });
 
-  Future<Either<Failure, Unit>> cancelApplication({required String id});
+  Future<Either<Failure, Unit>> cancelApplication({
+    required String id,
+    required String idRequest,
+  });
+
+  Future<Either<Failure, Unit>> acceptApplication({
+    required String applicationId,
+    required String requestId,
+  });
+
+  Future<Either<Failure, Unit>> completeRequest({
+    required String applicationId,
+    required String requestId,
+  });
 }

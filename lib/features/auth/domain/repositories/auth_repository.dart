@@ -29,8 +29,8 @@ abstract class AuthRepository {
   Future<void> logout();
   Future<Usuario?> getCurrentUser();
   Future<Usuario?> getWorkerById({required String id});
+  Future<List<Usuario>> getAllWorkers();
   Future<void> sendPasswordReset({required String email});
   Stream<Usuario?> authStateChanges();
   Future<void> resetPassword({required String email});
-
 }

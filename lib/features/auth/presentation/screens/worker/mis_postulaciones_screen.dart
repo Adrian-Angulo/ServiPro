@@ -43,7 +43,7 @@ class _MisPostulacionesScreenState
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final user = ref.read(authNotifierProvider).value;
       if (user != null) {
-        ref.read(workerApplicationsProvider.notifier).load(user.id);
+        ref.read(workerApplicationsProvider.notifier).refresh();
       }
     });
   }
@@ -51,7 +51,7 @@ class _MisPostulacionesScreenState
   void _reload() {
     final user = ref.read(authNotifierProvider).value;
     if (user != null) {
-      ref.read(workerApplicationsProvider.notifier).load(user.id);
+      ref.read(workerApplicationsProvider.notifier).refresh();
     }
   }
 
@@ -166,7 +166,7 @@ class _MisPostulacionesScreenState
                   final request = requests.firstWhere(
                     (r) => r.id == app.idrequest,
                   );
-                  return ApplicationCard(application: app, request: request);
+                  return ApplicationCard(application: app);
                 },
               ),
             ),

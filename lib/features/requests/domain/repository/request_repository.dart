@@ -6,4 +6,5 @@ abstract class RequestRepository {
   Future<Either<Failure, Unit>> registerRequest(RequestEntity request);
   Future<Either<Failure, List<RequestEntity>>> allRequest();
   Future<Either<Failure, Unit>> deleteRequest(String id);
+  Future<Either<Failure, RequestEntity>> getRequestById(String id);
 }

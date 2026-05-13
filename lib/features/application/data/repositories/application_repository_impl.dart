@@ -29,9 +29,45 @@ class ApplicationRepositoryImpl implements ApplicationRepository {
   }
 
   @override
-  Future<Either<Failure, Unit>> cancelApplication({required String id}) {
-    // TODO: implement cancelApplication
-    throw UnimplementedError();
+  Future<Either<Failure, Unit>> cancelApplication({
+    required String id,
+    required String idRequest,
+  }) async {
+    try {
+      await firebaseDatasource.cancelApplication(id, idRequest);
+      return Right(unit);
+    } catch (e) {
+      print("ocurrio un error al cancelar $e");
+      return Left(FirebaseFailure(message: "error al cancelar $e"));
+    }
+  }
+
+  @override
+  Future<Either<Failure, Unit>> acceptApplication({
+    required String applicationId,
+    required String requestId,
+  }) async {
+    try {
+      await firebaseDatasource.acceptApplication(applicationId, requestId);
+      return Right(unit);
+    } catch (e) {
+      print("ocurrio un error al aceptar $e");
+      return Left(FirebaseFailure(message: "error al aceptar $e"));
+    }
+  }
+
+  @override
+  Future<Either<Failure, Unit>> completeRequest({
+    required String applicationId,
+    required String requestId,
+  }) async {
+    try {
+      await firebaseDatasource.completeRequest(applicationId, requestId);
+      return Right(unit);
+    } catch (e) {
+      print("ocurrio un error al completar $e");
+      return Left(FirebaseFailure(message: "error al completar $e"));
+    }
   }
 
   @override

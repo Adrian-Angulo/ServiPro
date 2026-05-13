@@ -166,11 +166,28 @@ class AuthRepositoryImpl implements AuthRepository {
     if (!doc.exists) return null;
     return AppUserFactory.fromMap(doc.data()!);
   }
-  
+
+  @override
+  Future<List<Usuario>> getAllWorkers() async {
+    try {
+      final querySnapshot = await _firestore
+          .collection('users')
+          .where('rol', isEqualTo: 'trabajador')
+          .get();
+
+      final workers = querySnapshot.docs
+          .map((doc) => AppUserFactory.fromMap(doc.data()))
+          .toList();
+
+      return workers;
+    } catch (e) {
+      print('Error al obtener trabajadores: $e');
+      rethrow;
+    }
+  }
+
   @override
   Future<void> resetPassword({required String email}) {
     return _firebaseAuth.sendPasswordResetEmail(email: email);
   }
-
-  
 }

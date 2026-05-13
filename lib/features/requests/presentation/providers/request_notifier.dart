@@ -2,11 +2,13 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:servi_pro/core/errors/failures.dart';
+import 'package:servi_pro/features/application/presentation/providers/application_providers.dart';
 import 'package:servi_pro/features/requests/data/repository/request_impl.dart';
 import 'package:servi_pro/features/requests/domain/entities/request_entity.dart';
 import 'package:servi_pro/features/requests/domain/repository/request_repository.dart';
 import 'package:servi_pro/features/requests/domain/usecases/deleted_request_use_case.dart';
 import 'package:servi_pro/features/requests/domain/usecases/get_all_requests_use_case.dart';
+import 'package:servi_pro/features/requests/domain/usecases/get_request_by_id_usecase.dart';
 import 'package:servi_pro/features/requests/domain/usecases/register_use_case.dart';
 
 class RequestNotifier extends AsyncNotifier<List<RequestEntity>> {
@@ -94,7 +96,39 @@ final deleteRequestUseCaseProvider = Provider<DeletedRequestUseCase>((ref) {
   return DeletedRequestUseCase(repository: repo);
 });
 
+final getResquestByIdProvider = Provider<GetRequestByIdUsecase>((ref) {
+  final repo = ref.read(requestRepositoryProvider);
+  return GetRequestByIdUsecase(repository: repo);
+});
+
 final requestNotifierProvider =
     AsyncNotifierProvider<RequestNotifier, List<RequestEntity>>(
       RequestNotifier.new,
     );
+
+//provider para treaer las postulaciones por cada request
+final requestPostulationsCountProvider = Provider.family<int, String>((
+  ref,
+  requestId,
+) {
+  final applications = ref.watch(workerApplicationsProvider);
+  return applications.when(
+    data: (data) => data.where((data) => data.idrequest == requestId).length,
+    error: (error, stackTrace) {
+      print("error: $error al tarea solicitudes");
+      return 0;
+    },
+    loading: () {
+      return 0;
+    },
+  );
+});
+
+final resquestByIdProvider = FutureProvider.family<RequestEntity, String>((
+  ref,
+  id,
+) async {
+  final usecase = ref.read(getResquestByIdProvider);
+  final result = await usecase(id);
+  return result.fold((failure) => throw failure, (request) => request);
+});

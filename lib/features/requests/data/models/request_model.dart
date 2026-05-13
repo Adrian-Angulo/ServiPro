@@ -9,8 +9,10 @@ class RequestModel extends RequestEntity {
     required super.details,
     required super.addres,
     required super.title,
+    super.postulationsCount = 0,
     super.status,
     super.dateCreated,
+    super.dateAssigned,
     super.dateFinish,
   });
 
@@ -23,10 +25,14 @@ class RequestModel extends RequestEntity {
       idTypeService: map['idTypeService'],
       details: map['details'],
       addres: map['addres'],
+      postulationsCount: map['postulationsCount'] as int? ?? 0,
       status: ServiceStatus.values.firstWhere((e) => e.name == map['status']),
       dateCreated: map['dateCreated'] != null
           ? DateTime.parse(map['dateCreated'])
           : DateTime.now(),
+      dateAssigned: map['dateAssigned'] != null
+          ? DateTime.parse(map['dateAssigned'])
+          : null,
       dateFinish: map['dateFinish'] != null
           ? DateTime.parse(map['dateFinish'])
           : null,
@@ -40,8 +46,10 @@ class RequestModel extends RequestEntity {
       'idTypeService': idTypeService,
       'details': details,
       'addres': addres,
+      'postulationsCount': postulationsCount,
       'status': status.name,
       'dateCreated': dateCreated.toIso8601String(),
+      'dateAssigned': dateAssigned?.toIso8601String(),
       'dateFinish': dateFinish?.toIso8601String(),
     };
   }
@@ -53,8 +61,10 @@ class RequestModel extends RequestEntity {
     String? idTypeService,
     String? details,
     String? addres,
+    int? postulationsCount,
     ServiceStatus? status,
     DateTime? dateCreated,
+    DateTime? dateAssigned,
     DateTime? dateFinish,
   }) {
     return RequestModel(
@@ -64,8 +74,10 @@ class RequestModel extends RequestEntity {
       idTypeService: idTypeService ?? this.idTypeService,
       details: details ?? this.details,
       addres: addres ?? this.addres,
+      postulationsCount: postulationsCount ?? this.postulationsCount,
       status: status ?? this.status,
       dateCreated: dateCreated ?? this.dateCreated,
+      dateAssigned: dateAssigned ?? this.dateAssigned,
       dateFinish: dateFinish ?? this.dateFinish,
     );
   }

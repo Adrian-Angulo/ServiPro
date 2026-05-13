@@ -12,21 +12,16 @@ import 'package:servi_pro/core/widgets/buttons/bottom_action_button.dart';
 import 'package:servi_pro/features/application/presentation/providers/add_application_notifier.dart';
 import 'package:servi_pro/features/application/presentation/providers/application_providers.dart';
 import 'package:servi_pro/features/application/presentation/widgets/postulaciones_section.dart';
+import 'package:servi_pro/features/application/domain/entities/application_entity.dart';
 import 'package:servi_pro/features/auth/presentation/providers/auth_provider.dart';
 import 'package:servi_pro/features/requests/domain/entities/request_entity.dart';
 import 'package:servi_pro/features/requests/presentation/providers/request_notifier.dart';
+import 'package:servi_pro/features/requests/presentation/widgets/cards/count_postulaciones_widget.dart';
 
 class VerDetallesSolicitudScreen extends ConsumerWidget {
   final RequestEntity request;
-  final bool isWorkerView;
-  final bool alreadyApplied;
 
-  const VerDetallesSolicitudScreen({
-    super.key,
-    required this.request,
-    this.isWorkerView = false,
-    this.alreadyApplied = false,
-  });
+  const VerDetallesSolicitudScreen({super.key, required this.request});
 
   Future<void> _cancelRequest(BuildContext context, WidgetRef ref) async {
     final confirmed = await showDialog<bool>(
@@ -98,13 +93,16 @@ class VerDetallesSolicitudScreen extends ConsumerWidget {
   Future<void> _applyToRequest(BuildContext context, WidgetRef ref) async {
     final user = ref.read(authNotifierProvider).value;
     if (user == null) return;
+    ref.invalidate(applicationsByRequestProvider(request.id!));
 
     await ref
         .read(addAppliNotifier.notifier)
         .addApplication(idWorker: user.id, idRequest: request.id!);
 
     if (!context.mounted) return;
-    final result = ref.watch(addAppliNotifier);
+    
+    // NOTA: Usamos ref.read en lugar de ref.watch dentro de un callback para evitar warnings
+    final result = ref.read(addAppliNotifier);
 
     if (result is AsyncError) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -115,8 +113,19 @@ class VerDetallesSolicitudScreen extends ConsumerWidget {
         ),
       );
     } else {
-      // Recargar postulaciones para actualizar el filtro
-      await ref.read(workerApplicationsProvider.notifier).load(user.id);
+      // 1. Incrementamos el contador local para que la UI se actualice
+      request.postulationsCount++;
+      
+      // 2. Forzamos a Riverpod a repintar la lista de solicitudes anterior
+      // clonando la lista actual, así la tarjeta en la pantalla anterior se actualiza.
+      final currentRequests = ref.read(requestNotifierProvider).valueOrNull;
+      if (currentRequests != null) {
+        // En Riverpod, reasignar el state notifica a los listeners (la UI)
+        ref.read(requestNotifierProvider.notifier).state = AsyncData([...currentRequests]);
+      }
+
+      // 3. Recargar postulaciones para actualizar el filtro
+      await ref.read(workerApplicationsProvider.notifier).refresh();
 
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -137,12 +146,194 @@ class VerDetallesSolicitudScreen extends ConsumerWidget {
     }
   }
 
+  Future<void> _cancelApplication(BuildContext context, WidgetRef ref, {bool isAcceptedWorker = false}) async {
+    final user = ref.read(authNotifierProvider).value;
+    if (user == null) return;
+    
+    final applications = ref.read(workerApplicationsProvider).value;
+    if (applications == null) return;
+    
+    // Buscar la postulación correspondiente
+    final application = applications.where((p) => p.idworker == user.id && p.idrequest == request.id).firstOrNull;
+    if (application == null || application.id == null) return;
+
+    ref.invalidate(applicationsByRequestProvider(request.id!));
+
+    await ref
+        .read(addAppliNotifier.notifier)
+        .cancelApplication(id: application.id!, idRequest: request.id!);
+
+    if (!context.mounted) return;
+    
+    final result = ref.read(addAppliNotifier);
+
+    if (result is AsyncError) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Error al cancelar la postulación. Intenta de nuevo.'),
+          backgroundColor: AppColors.error,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    } else {
+      // 1. Actualizamos contador y estado si era el trabajador aceptado
+      if (request.postulationsCount > 0) request.postulationsCount--;
+      if (isAcceptedWorker) {
+        request.status = ServiceStatus.pending;
+      }
+      
+      // 2. Forzamos a Riverpod a repintar la lista de solicitudes anterior
+      final currentRequests = ref.read(requestNotifierProvider).valueOrNull;
+      if (currentRequests != null) {
+        ref.read(requestNotifierProvider.notifier).state = AsyncData([...currentRequests]);
+      }
+
+      // 3. Recargar postulaciones para actualizar el filtro
+      await ref.read(workerApplicationsProvider.notifier).refresh();
+
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Row(
+              children: [
+                Icon(Icons.info_outline, color: Colors.white),
+                SizedBox(width: 8),
+                Text('Postulación cancelada.'),
+              ],
+            ),
+            backgroundColor: AppColors.primary,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+        Navigator.pop(context);
+      }
+    }
+  }
+
+  Future<void> _showCompleteConfirmation(BuildContext context, WidgetRef ref) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: AppColors.background,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSpacing.radiusLg)),
+          title: Row(
+            children: [
+              Icon(Icons.check_circle_outline, color: Colors.blue, size: 28),
+              SizedBox(width: 8),
+              Text('Finalizar Servicio', style: AppTypography.titleLarge),
+            ],
+          ),
+          content: Text(
+            '¿Confirmas que el trabajador ha finalizado este servicio satisfactoriamente?',
+            style: AppTypography.bodyLarge.copyWith(color: AppColors.grey700),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: Text('Cancelar', style: TextStyle(color: AppColors.grey700)),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.pop(context, true),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSpacing.radiusMd)),
+              ),
+              child: Text('Sí, Finalizar', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (confirmed == true) {
+      await _completeRequest(context, ref);
+    }
+  }
+
+  Future<void> _completeRequest(BuildContext context, WidgetRef ref) async {
+    final apps = ref.read(applicationsByRequestProvider(request.id!)).valueOrNull;
+    final acceptedApp = apps?.where((a) => a.state == ApplicationStatus.aceptado).firstOrNull;
+    
+    if (acceptedApp == null) {
+       ScaffoldMessenger.of(context).showSnackBar(
+         SnackBar(content: Text('Error: No se encontró al trabajador asignado.'), backgroundColor: AppColors.error),
+       );
+       return;
+    }
+
+    await ref.read(addAppliNotifier.notifier).completeRequest(
+      applicationId: acceptedApp.id, 
+      requestId: request.id!
+    );
+
+    if (!context.mounted) return;
+    
+    final result = ref.read(addAppliNotifier);
+
+    if (result is AsyncError) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Error al finalizar el servicio. Intenta de nuevo.'),
+          backgroundColor: AppColors.error,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    } else {
+      // 1. Actualizamos localmente
+      request.status = ServiceStatus.completed;
+      request.dateFinish = DateTime.now();
+      
+      // 2. Forzamos a Riverpod a repintar
+      final currentRequests = ref.read(requestNotifierProvider).valueOrNull;
+      if (currentRequests != null) {
+        ref.read(requestNotifierProvider.notifier).state = AsyncData([...currentRequests]);
+      }
+      
+      ref.invalidate(applicationsByRequestProvider(request.id!));
+
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Row(
+              children: [
+                Icon(Icons.check_circle, color: Colors.white),
+                SizedBox(width: 8),
+                Text('Trabajo finalizado con éxito.'),
+              ],
+            ),
+            backgroundColor: Colors.blue,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final user = ref.watch(authNotifierProvider).value;
+    final alreadyApplied = ref.watch(alreadyAppliedProvider(request.id!));
+    final isWorkerView = user!.rol == Rol.trabajador;
     final uiStatus = request.status;
     final isPending = uiStatus == ServiceStatus.pending;
     final postulationState = ref.watch(addAppliNotifier);
     final isLoading = postulationState is AsyncLoading;
+
+    bool isAcceptedWorker = false;
+    bool isAssignedToOther = false;
+
+    if (isWorkerView) {
+      final applications = ref.watch(workerApplicationsProvider).valueOrNull;
+      if (applications != null) {
+        final myApplication = applications.where((p) => p.idrequest == request.id).firstOrNull;
+        if (myApplication != null && myApplication.state == ApplicationStatus.aceptado) {
+          isAcceptedWorker = true;
+        } else if (uiStatus == ServiceStatus.inProgress) {
+          isAssignedToOther = true;
+        }
+      }
+    }
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -181,24 +372,120 @@ class VerDetallesSolicitudScreen extends ConsumerWidget {
                   title: 'Publicado',
                 ),
 
-                if (!isWorkerView) ...[
+                if (request.dateAssigned != null) ...[
                   Container(width: 1, height: 40, color: AppColors.grey500),
                   ServiceDateItem(
                     color: Colors.amber,
-                    date: request.dateCreated,
+                    date: request.dateAssigned!,
                     icon: Icons.person,
                     title: 'Asignado',
                   ),
+                ],
+
+                if (request.dateFinish != null) ...[
                   Container(width: 1, height: 40, color: AppColors.grey500),
                   ServiceDateItem(
                     color: Colors.blue,
-                    date: request.dateCreated,
+                    date: request.dateFinish!,
                     icon: Icons.check_circle_outline_outlined,
                     title: 'Finalizado',
                   ),
                 ],
+
+                if (isWorkerView && request.status == ServiceStatus.pending) CountPostulacionesWidget(request: request),
               ],
             ),
+            
+            if (isAcceptedWorker) ...[
+              const SizedBox(height: AppSpacing.xl),
+              Container(
+                padding: const EdgeInsets.all(AppSpacing.md),
+                decoration: BoxDecoration(
+                  color: Colors.green.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+                  border: Border.all(color: Colors.green.shade300, width: 1.5),
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Colors.green,
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(Icons.star_rounded, color: Colors.white, size: 24),
+                    ),
+                    const SizedBox(width: AppSpacing.md),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '¡Felicidades!',
+                            style: AppTypography.titleMedium.copyWith(
+                              color: Colors.green.shade800,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            'El cliente te ha asignado a esta solicitud.',
+                            style: AppTypography.bodyMedium.copyWith(
+                              color: Colors.green.shade900,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ] else if (isAssignedToOther) ...[
+              const SizedBox(height: AppSpacing.xl),
+              Container(
+                padding: const EdgeInsets.all(AppSpacing.md),
+                decoration: BoxDecoration(
+                  color: Colors.orange.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+                  border: Border.all(color: Colors.orange.shade300, width: 1.5),
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Colors.orange,
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(Icons.info_outline_rounded, color: Colors.white, size: 24),
+                    ),
+                    const SizedBox(width: AppSpacing.md),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Solicitud Asignada',
+                            style: AppTypography.titleMedium.copyWith(
+                              color: Colors.orange.shade800,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            'Esta solicitud ya fue asignada a otro trabajador.',
+                            style: AppTypography.bodyMedium.copyWith(
+                              color: Colors.orange.shade900,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+
             SizedBox(height: AppSpacing.xl),
             Container(
               padding: const EdgeInsets.all(AppSpacing.md),
@@ -310,7 +597,7 @@ class VerDetallesSolicitudScreen extends ConsumerWidget {
                   children: [
                     if (!isWorkerView) ...[
                       const SizedBox(height: AppSpacing.xl),
-                      PostulacionesSection(requestId: request.id!),
+                      PostulacionesSection(request: request),
                     ],
                   ],
                 ),
@@ -320,12 +607,18 @@ class VerDetallesSolicitudScreen extends ConsumerWidget {
             // Botón inferior — varía según el rol
             if (isWorkerView)
               BottomActionButton(
-                label: alreadyApplied ? 'Ya te postulaste' : 'Postularme',
-                onPressed: alreadyApplied || !isPending
-                    ? null
-                    : () => _applyToRequest(context, ref),
+                label: alreadyApplied ? 'Cancelar Postulacion' : 'Postularme',
+                onPressed: () {
+                   if (alreadyApplied) {
+                      _cancelApplication(context, ref, isAcceptedWorker: isAcceptedWorker);
+                   } else if (isPending) {
+                      _applyToRequest(context, ref);
+                   }
+                },
                 isLoading: isLoading,
-                backgroundColor: AppColors.primary,
+                backgroundColor: alreadyApplied
+                    ? AppColors.error
+                    : AppColors.primary,
               )
             else if (isPending)
               BottomActionButton(
@@ -333,6 +626,13 @@ class VerDetallesSolicitudScreen extends ConsumerWidget {
                 onPressed: () => _cancelRequest(context, ref),
                 isLoading: isLoading,
                 backgroundColor: AppColors.accent,
+              )
+            else if (!isWorkerView && uiStatus == ServiceStatus.inProgress)
+              BottomActionButton(
+                label: 'Finalizar Trabajo',
+                onPressed: () => _showCompleteConfirmation(context, ref),
+                isLoading: isLoading,
+                backgroundColor: Colors.blue,
               ),
           ],
         ),

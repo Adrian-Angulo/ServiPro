@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:servi_pro/core/theme/app_colors.dart';
 import 'package:servi_pro/features/application/presentation/providers/application_providers.dart';
+import 'package:servi_pro/features/application/presentation/screens/postulaciones_screen.dart';
 import 'package:servi_pro/features/auth/presentation/screens/worker/mis_postulaciones_screen.dart';
 import 'package:servi_pro/features/auth/presentation/providers/auth_provider.dart';
 import 'package:servi_pro/features/auth/presentation/screens/worker/profile_worker.dart';
-import 'package:servi_pro/features/auth/presentation/screens/worker/solicitudes_worker_screen.dart';
+import 'package:servi_pro/features/requests/presentation/screens/worker/inicio_worker.dart';
 
 class WorkerShell extends ConsumerStatefulWidget {
   const WorkerShell({super.key});
@@ -23,7 +24,7 @@ class _WorkerShellState extends ConsumerState<WorkerShell> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final user = ref.read(authNotifierProvider).value;
       if (user != null) {
-        ref.read(workerApplicationsProvider.notifier).load(user.id);
+        ref.read(workerApplicationsProvider.notifier).refresh();
       }
     });
   }
@@ -31,8 +32,8 @@ class _WorkerShellState extends ConsumerState<WorkerShell> {
   @override
   Widget build(BuildContext context) {
     final pages = [
-      const SolicitudesWorkerScreen(),
-      const MisPostulacionesScreen(),
+      InicioWorker(),
+      PostulacionesScreen(),
       const Center(child: Text('Inicio')),
       const ProfileWorker(),
     ];

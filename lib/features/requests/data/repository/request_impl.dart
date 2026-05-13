@@ -55,14 +55,14 @@ class RequestImpl implements RequestRepository {
         dateFinish: request.dateFinish,
       );
 
-      await _firestore.collection('requests').add(requestModel.toMap(), );
+      await _firestore.collection('requests').add(requestModel.toMap());
 
       return right(unit);
     } on SocketException {
       return left(const NetworkFailure());
     } on FirebaseException catch (e) {
       return left(
-        FirebaseFailure(  
+        FirebaseFailure(
           message: 'Error al guardar: ${e.message ?? "Error desconocido"}',
           code: e.code,
         ),
@@ -95,6 +95,38 @@ class RequestImpl implements RequestRepository {
       return left(
         UnexpectedFailure(
           message: 'Error al eliminar la solicitud: ${e.toString()}',
+        ),
+      );
+    }
+  }
+
+  @override
+  Future<Either<Failure, RequestEntity>> getRequestById(String id) async {
+    try {
+      final doc = await _firestore.collection('requests').doc(id).get();
+
+      if (!doc.exists || doc.data() == null) {
+        return left(
+          const UnexpectedFailure(message: 'Solicitud no encontrada'),
+        );
+      }
+
+      final request = RequestModel.fromMap(doc.data()!).copyWith(id: doc.id);
+
+      return right(request);
+    } on SocketException {
+      return left(const NetworkFailure());
+    } on FirebaseException catch (e) {
+      return left(
+        FirebaseFailure(
+          message: 'Error de Firebase: ${e.message ?? "Error desconocido"}',
+          code: e.code,
+        ),
+      );
+    } catch (e) {
+      return left(
+        UnexpectedFailure(
+          message: 'Error al obtener la solicitud: ${e.toString()}',
         ),
       );
     }

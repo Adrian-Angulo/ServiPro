@@ -5,16 +5,23 @@ class ApplicationModel {
   final String idworker;
   final String idrequest;
   final ApplicationStatus state;
+  final DateTime createdAt;
 
   ApplicationModel({
     required this.id,
     required this.idworker,
     required this.idrequest,
     required this.state,
+    required this.createdAt,
   });
 
   Map<String, dynamic> toMap() {
-    return {'idworker': idworker, 'idrequest': idrequest, 'state': state.name};
+    return {
+      'idworker': idworker,
+      'idrequest': idrequest,
+      'state': state.name,
+      'createdAt': createdAt.toIso8601String(),
+    };
   }
 
   factory ApplicationModel.fromMap(Map<String, dynamic> map) {
@@ -26,6 +33,9 @@ class ApplicationModel {
         (e) => e.name == map['state'],
         orElse: () => ApplicationStatus.postulado,
       ),
+      createdAt: map['createdAt'] != null
+          ? DateTime.parse(map['createdAt'])
+          : DateTime.now(),
     );
   }
 
@@ -35,6 +45,7 @@ class ApplicationModel {
       idworker: entity.idworker,
       idrequest: entity.idrequest,
       state: entity.state,
+      createdAt: entity.createdAt,
     );
   }
 
@@ -44,6 +55,7 @@ class ApplicationModel {
       idworker: idworker,
       idrequest: idrequest,
       state: state,
+      createdAt: createdAt,
     );
   }
 }
