@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:servi_pro/core/theme/app_colors.dart';
 import 'package:servi_pro/core/theme/app_typography.dart';
+import 'package:servi_pro/features/auth/presentation/providers/auth_provider.dart';
+import 'package:servi_pro/features/auth/presentation/screens/restar_password/password_reset_success_screen.dart';
 import 'package:servi_pro/features/auth/presentation/screens/restar_password/verify_code_screen.dart';
 
-class ForgotPasswordScreen extends StatefulWidget {
+class ForgotPasswordScreen extends ConsumerStatefulWidget {
   const ForgotPasswordScreen({super.key});
 
   @override
-  State<ForgotPasswordScreen> createState() => _ForgotPasswordScreenState();
+  ConsumerState<ForgotPasswordScreen> createState() =>
+      _ForgotPasswordScreenState();
 }
 
-class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
+class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
   final _emailController = TextEditingController();
   bool _loading = false;
 
@@ -31,14 +35,14 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
     setState(() => _loading = true);
     // Simulado — conectar a Firebase después de verificar UI
-    await Future.delayed(const Duration(milliseconds: 800));
+    await ref
+        .read(authNotifierProvider.notifier)
+        .sendPasswordReset(email: email);
     if (mounted) {
       setState(() => _loading = false);
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (_) => VerifyCodeScreen(email: email),
-        ),
-      );
+      Navigator.of(
+        context,
+      ).push(MaterialPageRoute(builder: (_) => PasswordResetSuccessScreen()));
     }
   }
 

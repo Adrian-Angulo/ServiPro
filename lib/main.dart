@@ -24,23 +24,6 @@ class MyApp extends ConsumerWidget {
       routerConfig: router,
     );
 
-    /*     return MaterialApp(
-      title: 'ServiPro',
-      theme: AppTheme.light,
-      debugShowCheckedModeBanner: false,
-      home: isFirstLaunch.when(
-        loading: () => const Scaffold(
-          backgroundColor: AppColors.backgroundSoft,
-          body: Center(
-            child: CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation(AppColors.primary),
-            ),
-          ),
-        ),
-        error: (_, __) => const LoginScreen(),
-        data: (isFirst) =>
-            isFirst ? const OnboardingScreen() : const LoginScreen(),
-      ),
-    ); */
+   
   }
 }

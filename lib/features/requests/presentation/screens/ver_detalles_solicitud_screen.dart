@@ -100,7 +100,7 @@ class VerDetallesSolicitudScreen extends ConsumerWidget {
         .addApplication(idWorker: user.id, idRequest: request.id!);
 
     if (!context.mounted) return;
-    
+
     // NOTA: Usamos ref.read en lugar de ref.watch dentro de un callback para evitar warnings
     final result = ref.read(addAppliNotifier);
 
@@ -115,13 +115,15 @@ class VerDetallesSolicitudScreen extends ConsumerWidget {
     } else {
       // 1. Incrementamos el contador local para que la UI se actualice
       request.postulationsCount++;
-      
+
       // 2. Forzamos a Riverpod a repintar la lista de solicitudes anterior
       // clonando la lista actual, así la tarjeta en la pantalla anterior se actualiza.
       final currentRequests = ref.read(requestNotifierProvider).valueOrNull;
       if (currentRequests != null) {
         // En Riverpod, reasignar el state notifica a los listeners (la UI)
-        ref.read(requestNotifierProvider.notifier).state = AsyncData([...currentRequests]);
+        ref.read(requestNotifierProvider.notifier).state = AsyncData([
+          ...currentRequests,
+        ]);
       }
 
       // 3. Recargar postulaciones para actualizar el filtro
@@ -149,12 +151,14 @@ class VerDetallesSolicitudScreen extends ConsumerWidget {
   Future<void> _cancelApplication(BuildContext context, WidgetRef ref) async {
     final user = ref.read(authNotifierProvider).value;
     if (user == null) return;
-    
+
     final applications = ref.read(workerApplicationsProvider).value;
     if (applications == null) return;
-    
+
     // Buscar la postulación correspondiente
-    final application = applications.where((p) => p.idworker == user.id && p.idrequest == request.id).firstOrNull;
+    final application = applications
+        .where((p) => p.idworker == user.id && p.idrequest == request.id)
+        .firstOrNull;
     if (application == null || application.id == null) return;
 
     final wasAccepted = application.state == ApplicationStatus.aceptado;
@@ -166,13 +170,15 @@ class VerDetallesSolicitudScreen extends ConsumerWidget {
         .cancelApplication(id: application.id!, idRequest: request.id!);
 
     if (!context.mounted) return;
-    
+
     final result = ref.read(addAppliNotifier);
 
     if (result is AsyncError) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text('Error al cancelar la postulación. Intenta de nuevo.'),
+          content: const Text(
+            'Error al cancelar la postulación. Intenta de nuevo.',
+          ),
           backgroundColor: AppColors.error,
           behavior: SnackBarBehavior.floating,
         ),
@@ -184,11 +190,13 @@ class VerDetallesSolicitudScreen extends ConsumerWidget {
         request.status = ServiceStatus.pending;
         request.dateAssigned = null;
       }
-      
+
       // 2. Forzamos a Riverpod a repintar la lista de solicitudes anterior
       final currentRequests = ref.read(requestNotifierProvider).valueOrNull;
       if (currentRequests != null) {
-        ref.read(requestNotifierProvider.notifier).state = AsyncData([...currentRequests]);
+        ref.read(requestNotifierProvider.notifier).state = AsyncData([
+          ...currentRequests,
+        ]);
       }
 
       // 3. Recargar postulaciones para actualizar el filtro
@@ -213,13 +221,18 @@ class VerDetallesSolicitudScreen extends ConsumerWidget {
     }
   }
 
-  Future<void> _showCompleteConfirmation(BuildContext context, WidgetRef ref) async {
+  Future<void> _showCompleteConfirmation(
+    BuildContext context,
+    WidgetRef ref,
+  ) async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) {
         return AlertDialog(
           backgroundColor: AppColors.background,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSpacing.radiusLg)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+          ),
           title: Row(
             children: [
               Icon(Icons.check_circle_outline, color: Colors.blue, size: 28),
@@ -234,15 +247,26 @@ class VerDetallesSolicitudScreen extends ConsumerWidget {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context, false),
-              child: Text('Cancelar', style: TextStyle(color: AppColors.grey700)),
+              child: Text(
+                'Cancelar',
+                style: TextStyle(color: AppColors.grey700),
+              ),
             ),
             ElevatedButton(
               onPressed: () => Navigator.pop(context, true),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.blue,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSpacing.radiusMd)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                ),
               ),
-              child: Text('Sí, Finalizar', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+              child: Text(
+                'Sí, Finalizar',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
           ],
         );
@@ -255,29 +279,37 @@ class VerDetallesSolicitudScreen extends ConsumerWidget {
   }
 
   Future<void> _completeRequest(BuildContext context, WidgetRef ref) async {
-    final apps = ref.read(applicationsByRequestProvider(request.id!)).valueOrNull;
-    final acceptedApp = apps?.where((a) => a.state == ApplicationStatus.aceptado).firstOrNull;
-    
+    final apps = ref
+        .read(applicationsByRequestProvider(request.id!))
+        .valueOrNull;
+    final acceptedApp = apps
+        ?.where((a) => a.state == ApplicationStatus.aceptado)
+        .firstOrNull;
+
     if (acceptedApp == null) {
-       ScaffoldMessenger.of(context).showSnackBar(
-         SnackBar(content: Text('Error: No se encontró al trabajador asignado.'), backgroundColor: AppColors.error),
-       );
-       return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error: No se encontró al trabajador asignado.'),
+          backgroundColor: AppColors.error,
+        ),
+      );
+      return;
     }
 
-    await ref.read(addAppliNotifier.notifier).completeRequest(
-      applicationId: acceptedApp.id, 
-      requestId: request.id!
-    );
+    await ref
+        .read(addAppliNotifier.notifier)
+        .completeRequest(applicationId: acceptedApp.id, requestId: request.id!);
 
     if (!context.mounted) return;
-    
+
     final result = ref.read(addAppliNotifier);
 
     if (result is AsyncError) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text('Error al finalizar el servicio. Intenta de nuevo.'),
+          content: const Text(
+            'Error al finalizar el servicio. Intenta de nuevo.',
+          ),
           backgroundColor: AppColors.error,
           behavior: SnackBarBehavior.floating,
         ),
@@ -286,13 +318,15 @@ class VerDetallesSolicitudScreen extends ConsumerWidget {
       // 1. Actualizamos localmente
       request.status = ServiceStatus.completed;
       request.dateFinish = DateTime.now();
-      
+
       // 2. Forzamos a Riverpod a repintar
       final currentRequests = ref.read(requestNotifierProvider).valueOrNull;
       if (currentRequests != null) {
-        ref.read(requestNotifierProvider.notifier).state = AsyncData([...currentRequests]);
+        ref.read(requestNotifierProvider.notifier).state = AsyncData([
+          ...currentRequests,
+        ]);
       }
-      
+
       ref.invalidate(applicationsByRequestProvider(request.id!));
 
       if (context.mounted) {
@@ -329,8 +363,11 @@ class VerDetallesSolicitudScreen extends ConsumerWidget {
     if (isWorkerView) {
       final applications = ref.watch(workerApplicationsProvider).valueOrNull;
       if (applications != null) {
-        final myApplication = applications.where((p) => p.idrequest == request.id).firstOrNull;
-        if (myApplication != null && myApplication.state == ApplicationStatus.aceptado) {
+        final myApplication = applications
+            .where((p) => p.idrequest == request.id)
+            .firstOrNull;
+        if (myApplication != null &&
+            myApplication.state == ApplicationStatus.aceptado) {
           isAcceptedWorker = true;
         } else if (uiStatus == ServiceStatus.inProgress) {
           isAssignedToOther = true;
@@ -375,7 +412,7 @@ class VerDetallesSolicitudScreen extends ConsumerWidget {
                   title: 'Publicado',
                 ),
 
-                if (request.dateAssigned != null) ...[
+                /* if (request.dateAssigned != null) ...[
                   Container(width: 1, height: 40, color: AppColors.grey500),
                   ServiceDateItem(
                     color: Colors.amber,
@@ -383,8 +420,8 @@ class VerDetallesSolicitudScreen extends ConsumerWidget {
                     icon: Icons.person,
                     title: 'Asignado',
                   ),
-                ],
-
+                ], */
+                
                 if (request.dateFinish != null) ...[
                   Container(width: 1, height: 40, color: AppColors.grey500),
                   ServiceDateItem(
@@ -395,10 +432,11 @@ class VerDetallesSolicitudScreen extends ConsumerWidget {
                   ),
                 ],
 
-                if (isWorkerView && request.status == ServiceStatus.pending) CountPostulacionesWidget(request: request),
+                if (isWorkerView && request.status == ServiceStatus.pending)
+                  CountPostulacionesWidget(request: request),
               ],
             ),
-            
+
             if (isAcceptedWorker) ...[
               const SizedBox(height: AppSpacing.xl),
               Container(
@@ -416,7 +454,11 @@ class VerDetallesSolicitudScreen extends ConsumerWidget {
                         color: Colors.green,
                         shape: BoxShape.circle,
                       ),
-                      child: const Icon(Icons.star_rounded, color: Colors.white, size: 24),
+                      child: const Icon(
+                        Icons.star_rounded,
+                        color: Colors.white,
+                        size: 24,
+                      ),
                     ),
                     const SizedBox(width: AppSpacing.md),
                     Expanded(
@@ -460,7 +502,11 @@ class VerDetallesSolicitudScreen extends ConsumerWidget {
                         color: Colors.orange,
                         shape: BoxShape.circle,
                       ),
-                      child: const Icon(Icons.info_outline_rounded, color: Colors.white, size: 24),
+                      child: const Icon(
+                        Icons.info_outline_rounded,
+                        color: Colors.white,
+                        size: 24,
+                      ),
                     ),
                     const SizedBox(width: AppSpacing.md),
                     Expanded(
@@ -612,11 +658,11 @@ class VerDetallesSolicitudScreen extends ConsumerWidget {
               BottomActionButton(
                 label: alreadyApplied ? 'Cancelar Postulacion' : 'Postularme',
                 onPressed: () {
-                   if (alreadyApplied) {
-                      _cancelApplication(context, ref);
-                   } else if (isPending) {
-                      _applyToRequest(context, ref);
-                   }
+                  if (alreadyApplied) {
+                    _cancelApplication(context, ref);
+                  } else if (isPending) {
+                    _applyToRequest(context, ref);
+                  }
                 },
                 isLoading: isLoading,
                 backgroundColor: alreadyApplied
